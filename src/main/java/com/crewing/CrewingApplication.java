@@ -1,0 +1,13 @@
+package com.crewing;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class CrewingApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(CrewingApplication.class, args);
+    }
+
+}
