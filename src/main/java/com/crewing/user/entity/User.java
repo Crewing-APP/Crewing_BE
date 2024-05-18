@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -50,8 +51,22 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private SocialType socialType;
 
+    @Column
     private String socialId;
+    @Column
     private String refreshToken;
+
+    //추가 회원 가입
+    @Column
+    private String birth;
+
+    @Column
+    private String gender;
+    @Column
+    private String name;
+
+    @OneToMany(mappedBy = "user")
+    private List<Interest> interests = new ArrayList<>();
 
     @Builder
     public User(String email, String password, String nickname, String imageUrl, Role role, SocialType socialType,
@@ -75,9 +90,16 @@ public class User extends BaseTimeEntity {
         this.password = passwordEncoder.encode(this.password);
     }
 
-
     public void updateRefreshToken(String updateRefreshToken) {
         this.refreshToken = updateRefreshToken;
     }
 
+    public void addInterest(Interest interest) {
+        interest.setUser(this);
+        this.interests.add(interest);
+    }
+
+    public void signUpOauth() {
+
+    }
 }

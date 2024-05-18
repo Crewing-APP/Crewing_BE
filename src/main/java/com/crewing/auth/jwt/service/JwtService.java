@@ -110,7 +110,6 @@ public class JwtService {
                     TokenResponse.builder()
                             .accessToken(accessToken)
                             .refreshToken(refreshToken)
-                            .role(role)
                             .build()
                             .convertToJson()
             );

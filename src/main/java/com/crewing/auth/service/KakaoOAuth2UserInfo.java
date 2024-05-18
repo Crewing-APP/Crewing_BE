@@ -1,4 +1,5 @@
-package com.crewing.auth.oauth.entity;
+package com.crewing.auth.service;
+
 
 import java.util.Map;
 
@@ -17,13 +18,13 @@ public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
         Map<String, Object> account = (Map<String, Object>) attributes.get("kakao_account");
 
         if (account == null) {
-            return "KAKAO" + getId();
+            return null;
         }
 
         Map<String, Object> profile = (Map<String, Object>) account.get("profile");
 
         if (profile == null) {
-            return "KAKAO" + getId();
+            return null;
         }
 
         return (String) profile.get("nickname");
