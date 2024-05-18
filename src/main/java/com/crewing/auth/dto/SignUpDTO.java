@@ -1,6 +1,5 @@
 package com.crewing.auth.dto;
 
-import com.crewing.user.entity.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,25 +41,9 @@ public class SignUpDTO {
     @AllArgsConstructor
     @Builder
     public static class OauthSignUpRequest {
-        @NotBlank
-        private String name;
-        @NotBlank
-        private int age;
-        @NotBlank
-        private String city;
-        @NotBlank
-        private String school;
+
 
     }
-
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class SignUpResponse {
-        private TokenResponse tokenResponse;
-    }
-
 
     @Getter
     @NoArgsConstructor
@@ -69,7 +52,6 @@ public class SignUpDTO {
     public static class TokenResponse {
         private String accessToken;
         private String refreshToken;
-        private Role role;
 
         @JsonIgnore
         private final ObjectMapper objectMapper = new ObjectMapper();

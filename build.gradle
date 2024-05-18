@@ -39,8 +39,9 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:4.8.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign' //feign
+    implementation platform("org.springframework.cloud:spring-cloud-dependencies:2023.0.1") //feign
 }
 
 tasks.named('test') {
