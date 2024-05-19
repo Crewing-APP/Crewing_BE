@@ -1,45 +1,46 @@
 package com.crewing.auth.api;
 
+import com.crewing.auth.dto.LoginDTO.LoginResponse;
 import com.crewing.auth.dto.LoginDTO.OauthLoginRequest;
+import com.crewing.auth.dto.SignUpDTO.OauthSignUpRequest;
 import com.crewing.auth.dto.SignUpDTO.TokenResponse;
-import com.crewing.external.OauthApi.GoogleOauth;
-import java.util.Map;
+import com.crewing.auth.entity.PrincipalDetails;
+import com.crewing.auth.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Auth", description = "회원가입 및 로그인 API")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/v1/auth")
 public class AuthController {
-    private final GoogleOauth googleOauth;
+    private final AuthService authService;
 
+    @Operation(summary = "로그인", description = "Oauth Token을 통한 로그인")
     @PostMapping("/oauth/login/{socialType}")
-    public ResponseEntity<TokenResponse> loginOauth(@RequestBody OauthLoginRequest request,
+    public ResponseEntity<LoginResponse> loginOauth(@RequestBody OauthLoginRequest request,
                                                     @PathVariable String socialType) {
+        LoginResponse response = authService.loginOauth(request.getAccessToken(), socialType);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "추가 회원가입", description = "추가정보가 필요한 유저 회원가입")
     @PostMapping("/oauth/signUp")
-    public ResponseEntity<TokenResponse> signUpOauth() {
-
+    public ResponseEntity<TokenResponse> signUpOauth(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                     @RequestBody OauthSignUpRequest request) {
+        authService.signUpOauth(request, principalDetails.getId());
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/test")
-    public void test() {
-        Map<String, Object> oauthUserInfo = googleOauth.getOauthUserInfo(
-                "ya29.a0AXooCgsdJzZYZaHkubLlIyt-E98tTDVxbe_0-U5_ihcV1A50YYXpYazbKyR8LfIZoFpv3s3vgA-cwB8vhsfv0Gqj4zrvy8BrBR7bLb_HbIIfGLPo0I84sqLq2Wcok6ePEt-LAtg_lhYUoB0p2ei9J5NSVYpZcUqGNfnxaCgYKAUcSARASFQHGX2Mi2lePUYuXKg9jPH1xZhbHMw0171");
-
-        log.info("asdasdas {}", oauthUserInfo.get("id"));
-//        log.info("asdasdasd {} ", info.getResult());
-    }
 }

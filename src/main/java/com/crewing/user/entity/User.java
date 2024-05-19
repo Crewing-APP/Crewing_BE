@@ -65,7 +65,7 @@ public class User extends BaseTimeEntity {
     @Column
     private String name;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Interest> interests = new ArrayList<>();
 
     @Builder
@@ -99,7 +99,22 @@ public class User extends BaseTimeEntity {
         this.interests.add(interest);
     }
 
-    public void signUpOauth() {
+    public void updateInterests(List<Interest> interests) {
+        this.interests.clear();
 
+        interests.forEach(
+                this::addInterest
+        );
     }
+
+    public void signUpOauth(String birth, String gender, String name, List<Interest> interests) {
+        this.birth = birth;
+        this.gender = gender;
+        this.name = name;
+
+        updateInterests(interests);
+        authorizeUser();
+    }
+
+
 }

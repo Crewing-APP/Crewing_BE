@@ -61,7 +61,7 @@ public class SecurityConfig {
                     request.requestMatchers("/api/v1/exhibit/user/**").hasRole("STUDENT"); //Exhibit - Student
                     request.requestMatchers("/api/v1/exhibit/**").permitAll(); //Exhibit - All
                     request.requestMatchers("/api/v1/group/groups/**").permitAll(); //Group - All
-//                    request.anyRequest().authenticated(); // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
+                    request.anyRequest().authenticated(); // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
                 })
 
                 .exceptionHandling(e -> e.authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
