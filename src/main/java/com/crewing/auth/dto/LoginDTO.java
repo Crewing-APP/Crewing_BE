@@ -10,6 +10,8 @@ public class LoginDTO {
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
     public static class OauthLoginRequest {
         private String accessToken;
     }
