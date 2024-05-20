@@ -105,4 +105,22 @@ public class AuthService {
 
         userRepository.save(user);
     }
+
+    public TokenResponse getDevToken(String email) {
+        User user = User.builder()
+                .email(email)
+                .role(Role.USER)
+                .nickname("dev")
+                .name("dev")
+                .birth("dev")
+                .build();
+        
+        userRepository.save(user);
+
+        String accessToken = jwtService.createAccessToken(email);
+        String refreshToken = jwtService.createRefreshToken();
+        jwtService.updateRefreshToken(email, refreshToken);
+
+        return TokenResponse.builder().accessToken(accessToken).refreshToken(refreshToken).build();
+    }
 }
