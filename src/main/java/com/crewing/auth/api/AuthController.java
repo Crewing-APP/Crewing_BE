@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +26,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
     private final AuthService authService;
+
+    @Operation(summary = "개발용 토큰 발급", description = "디비에 레코드 추가하고 진행할것")
+    @GetMapping("/test/{email}")
+    public ResponseEntity<TokenResponse> login(@PathVariable String email) {
+        return ResponseEntity.ok().body(authService.getDevToken(email));
+    }
 
     @Operation(summary = "로그인", description = "Oauth Token을 통한 로그인")
     @PostMapping("/oauth/login/{socialType}")

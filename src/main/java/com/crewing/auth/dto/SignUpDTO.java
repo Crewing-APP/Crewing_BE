@@ -19,6 +19,7 @@ public class SignUpDTO {
         private String birth;
         private String gender;
         private String name;
+        private String nickname;
         private List<String> interests;
     }
 
