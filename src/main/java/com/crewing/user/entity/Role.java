@@ -9,7 +9,7 @@ public enum Role {
 
     GUEST("GUEST"),
     USER("USER"),
-    STUDENT("ADMIN");
+    ADMIN("ADMIN");
 
     private final String key;
 }
