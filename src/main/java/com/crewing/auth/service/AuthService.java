@@ -6,9 +6,6 @@ import com.crewing.auth.dto.SignUpDTO.TokenResponse;
 import com.crewing.auth.jwt.service.JwtService;
 import com.crewing.common.error.user.UserNotFoundException;
 import com.crewing.external.OauthApi;
-import com.crewing.external.OauthApi.GoogleOauth;
-import com.crewing.external.OauthApi.KakaoOauth;
-import com.crewing.external.OauthApi.NaverOauth;
 import com.crewing.user.entity.Interest;
 import com.crewing.user.entity.Role;
 import com.crewing.user.entity.SocialType;
@@ -17,22 +14,20 @@ import com.crewing.user.repository.InterestRepository;
 import com.crewing.user.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Slf4j
 @Service
 public class AuthService {
-    private final GoogleOauth googleOauth;
-    private final NaverOauth naverOauth;
-    private final KakaoOauth kakaoOauth;
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final InterestRepository interestRepository;
     private final OauthApi oauthApi;
+    private final PasswordEncoder passwordEncoder;
 
     public LoginResponse loginOauth(String oauthAccessToken, String social) {
         SocialType socialType = SocialType.valueOf(social);
@@ -77,18 +72,6 @@ public class AuthService {
         return userRepository.save(createdUser);
     }
 
-    private Map<String, Object> getAttributesInfo(String accessToken, SocialType socialType) {
-        if (socialType.equals(SocialType.GOOGLE)) {
-            googleOauth.getOauthUserInfo(accessToken);
-        } else if (socialType.equals(SocialType.NAVER)) {
-            naverOauth.getOauthUserInfo(accessToken);
-        } else if (socialType.equals(SocialType.KAKAO)) {
-            kakaoOauth.getOauthUserInfo(accessToken);
-        }
-
-        return null;
-    }
-
     public void signUpOauth(OauthSignUpRequest request, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
@@ -109,12 +92,15 @@ public class AuthService {
     public TokenResponse getDevToken(String email) {
         User user = User.builder()
                 .email(email)
-                .role(Role.USER)
+                .role(Role.ADMIN)
                 .nickname("dev")
                 .name("dev")
+                .password("1234")
                 .birth("dev")
                 .build();
-        
+
+        user.passwordEncode(passwordEncoder);
+
         userRepository.save(user);
 
         String accessToken = jwtService.createAccessToken(email);
