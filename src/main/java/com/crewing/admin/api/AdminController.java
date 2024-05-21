@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 //todo : 동아리 관련 관리 기능 (신청 받기 , 동아리 리스트 조회 등등)
-@Tag(name = "관리자", description = "관리자 API")
+@Tag(name = "관리자", description = "관리자 권한으로 유저 및 동아리를 관리합니다")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/admin")
