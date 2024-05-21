@@ -1,5 +1,7 @@
 package com.crewing.auth.jwt.service;
 
+import com.crewing.common.error.user.UserAccessDeniedException;
+import com.crewing.user.entity.Role;
 import com.crewing.user.entity.User;
 import com.crewing.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +24,14 @@ public class LoginService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("해당 이메일이 존재하지 않습니다."));
 //        return new PrincipalDetails(user);
 
+        if (user.getRole() != Role.ADMIN) {
+            throw new UserAccessDeniedException();
+        }
+
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
                 .password(user.getPassword())
                 .roles(user.getRole().getKey())
                 .build();
     }
-
 }
