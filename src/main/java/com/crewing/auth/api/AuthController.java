@@ -1,5 +1,6 @@
 package com.crewing.auth.api;
 
+import com.crewing.auth.dto.LoginDTO.LoginRequest;
 import com.crewing.auth.dto.LoginDTO.LoginResponse;
 import com.crewing.auth.dto.LoginDTO.OauthLoginRequest;
 import com.crewing.auth.dto.SignUpDTO.OauthSignUpRequest;
@@ -27,7 +28,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final AuthService authService;
 
-    @Operation(summary = "개발용 토큰 발급", description = "디비에 레코드 추가하고 진행할것")
+    @PostMapping("/login")
+    @Operation(summary = "어드민 로그인", description = "어드민 전용 로그인")
+    public ResponseEntity<TokenResponse> loginAdmin(@RequestBody LoginRequest request) {
+
+        return ResponseEntity.ok().body(new TokenResponse());
+    }
+
+    @Operation(summary = "개발용 토큰 발급", description = "해당 이메일에 맞는 어드민 계정 생성 및 토큰 발급 , 비밀번호 1234 고정")
     @GetMapping("/test/{email}")
     public ResponseEntity<TokenResponse> login(@PathVariable String email) {
         return ResponseEntity.ok().body(authService.getDevToken(email));
