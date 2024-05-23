@@ -68,7 +68,7 @@ public class OAuthAttributes {
                 .email(UUID.randomUUID() + "@socialUser.com")
 //                .email(oauth2UserInfo.)
                 .nickname(oauth2UserInfo.getNickname())
-                .imageUrl(oauth2UserInfo.getImageUrl())
+                .profileImage(oauth2UserInfo.getImageUrl())
                 .role(Role.GUEST)
                 .build();
     }

@@ -13,7 +13,7 @@ public class LoginDTO {
     @NoArgsConstructor
     @Builder
     public static class OauthLoginRequest {
-        private String accessToken;
+        private String oauthAccessToken;
     }
 
     @Getter
