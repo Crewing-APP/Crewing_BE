@@ -17,7 +17,7 @@ import lombok.Setter;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
+@Getter //todo : 관심사 종류 확정되면 ENUM으로 변경하자
 public class Interest {
 
     @Id
