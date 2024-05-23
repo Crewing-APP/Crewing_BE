@@ -90,6 +90,10 @@ public class AuthService {
     }
 
     public TokenResponse getDevToken(String email) {
+        if (userRepository.existsByEmail(email)) {
+            throw new RuntimeException();
+        }
+
         User user = User.builder()
                 .email(email)
                 .role(Role.ADMIN)
