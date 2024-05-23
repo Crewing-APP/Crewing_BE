@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 public class SignUpDTO {
 
     @Getter
-    @NoArgsConstructor
     @AllArgsConstructor
     @Builder
     public static class OauthSignUpRequest {

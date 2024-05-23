@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.jackson.Jacksonized;
 
 public class UserDTO {
 
@@ -21,7 +22,7 @@ public class UserDTO {
         private String email;
         private String password;
         private String nickname;
-        private String imageUrl;
+        private String profileImage;
         private Role role;
         private SocialType socialType;
         private String socialId;
@@ -29,10 +30,16 @@ public class UserDTO {
         private String gender;
         private String name;
 
+        private List<InterestInfo> interests;
+
         public static UserInfoResponse toDTO(User user) {
             return new UserInfoResponse(user.getId(), user.getEmail(), user.getPassword(), user.getNickname(),
-                    user.getImageUrl(), user.getRole(), user.getSocialType(), user.getSocialId(), user.getBirth(),
-                    user.getGender(), user.getName());
+                    user.getProfileImage(), user.getRole(), user.getSocialType(), user.getSocialId(), user.getBirth(),
+                    user.getGender(), user.getName(),
+                    user.getInterests().stream()
+                            .map(data -> InterestInfo.builder().interest(data.getInterest()).build())
+                            .toList()
+            );
         }
     }
 
@@ -51,4 +58,23 @@ public class UserDTO {
             return new UserInfoResponses(responses);
         }
     }
+
+
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    @Jacksonized
+    public static class InterestUpdateRequest {
+        private List<InterestInfo> interests;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    @Jacksonized
+    public static class InterestInfo {
+        private String interest;
+
+    }
+
 }

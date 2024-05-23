@@ -42,7 +42,7 @@ public class User extends BaseTimeEntity {
     private String nickname;
 
     @Column
-    private String imageUrl;
+    private String profileImage;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -69,12 +69,12 @@ public class User extends BaseTimeEntity {
     private List<Interest> interests = new ArrayList<>();
 
     @Builder
-    public User(String email, String password, String nickname, String imageUrl, Role role, SocialType socialType,
+    public User(String email, String password, String nickname, String profileImage, Role role, SocialType socialType,
                 String socialId, String refreshToken, String birth, String gender, String name) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
-        this.imageUrl = imageUrl;
+        this.profileImage = profileImage;
         this.role = role;
         this.socialType = socialType;
         this.socialId = socialId;
@@ -119,5 +119,12 @@ public class User extends BaseTimeEntity {
         authorizeUser();
     }
 
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updateProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
 
 }
