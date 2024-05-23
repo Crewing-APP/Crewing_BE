@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Auth", description = "회원가입 및 로그인 API")
+@Tag(name = "인증", description = "사용자 식별 및 토큰 관리")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
