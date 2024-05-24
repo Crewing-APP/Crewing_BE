@@ -1,26 +1,21 @@
 package com.crewing.club.dto;
 
-import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
-import java.util.List;
 
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CreateClubRequest {
-
+public class ClubUpdateRequest {
     @NotBlank
     private String name;
 
+    @NotBlank
     private String oneLiner;
 
+    @NotBlank
     private String introduction;
 
-    @NotBlank
-    private List<String> category;
-
+    private String application;
 }

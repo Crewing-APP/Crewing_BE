@@ -13,8 +13,11 @@ public enum ErrorCode {
     FILE_NOT_UPLOAD("C05", "Internal Server Error.", HttpStatus.BAD_REQUEST.value()),
     //User
     USER_ACCESS_DENIED("U01", "User Access is Denied.", HttpStatus.UNAUTHORIZED.value()),
-    USER_NOT_FOUND("U02", "User is not Found.", HttpStatus.BAD_REQUEST.value());
-    
+    USER_NOT_FOUND("U02", "User is not Found.", HttpStatus.BAD_REQUEST.value()),
+    //Club
+    CLUB_NOT_FOUND("CL01", "Club is not Found.", HttpStatus.BAD_REQUEST.value()),
+    CLUB_ACCESS_DENIED("CL02","No permission to modify club",HttpStatus.UNAUTHORIZED.value());
+
     private final String code;
     private final String message;
     private final int status;
