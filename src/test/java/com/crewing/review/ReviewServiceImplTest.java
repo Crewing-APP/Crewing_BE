@@ -48,6 +48,10 @@ public class ReviewServiceImplTest {
 
     @BeforeAll
     void setting(){
+        reviewRepository.deleteAll();
+        memberRepository.deleteAll();
+        clubRepository.deleteAll();
+        userRepository.deleteAll();
         authService.getDevToken("tlsdmsgp33@naver.com");
         this.user = userRepository.findByEmail("tlsdmsgp33@naver.com").get();
         Club newClub = Club.builder()
@@ -89,6 +93,19 @@ public class ReviewServiceImplTest {
         Assertions.assertThat(review.getUser().getUserId()).isEqualTo(user.getId());
         List<Review> reviews = reviewRepository.findAll();
         System.out.println(reviews.size());
+    }
+
+    @Test
+    @DisplayName("리뷰 평균 구하기 테스트")
+    void getReviewAvg(){
+        ReviewCreateRequest reviewCreateRequest = ReviewCreateRequest.builder()
+                .clubId(this.club.getClubId())
+                .rate(5)
+                .review("test")
+                .build();
+        ReviewResponse review = reviewService.createReview(reviewCreateRequest, user);
+        float avg = reviewRepository.findAverageRateByClubId(this.club);
+        Assertions.assertThat(avg).isEqualTo(5.0f);
     }
 
 //    @Test

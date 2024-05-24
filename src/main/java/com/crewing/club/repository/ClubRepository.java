@@ -14,4 +14,5 @@ import java.util.Optional;
 public interface ClubRepository extends JpaRepository<Club,Long> {
     Page<Club> findAll(int category, Pageable pageable);
     Page<Club> findAllByCategory(int category, Pageable pageable);
+    Page<Club> findAllByNameContaining(String search, Pageable pageable);
 }
