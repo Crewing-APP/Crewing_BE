@@ -24,7 +24,7 @@ jobs:
         run: ./gradlew clean build
 
       - name: Deploy Prod use SCP
-        uses: appleboy/scp-action@v0.1.3
+        uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
@@ -34,7 +34,7 @@ jobs:
           strip_components: 2
 
       - name: Transfer Deploy Script use SCP
-        uses: appleboy/scp-action@master
+        uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
@@ -43,7 +43,7 @@ jobs:
           target: "/home/ubuntu/deploy"
 
       - name: Execute Server Init Script
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v0.1.4
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
