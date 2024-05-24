@@ -8,6 +8,8 @@ import com.crewing.club.repository.ClubRepository;
 import com.crewing.common.error.BusinessException;
 import com.crewing.common.error.EntityNotFoundException;
 import com.crewing.common.error.ErrorCode;
+import com.crewing.common.error.club.ClubAccessDeniedException;
+import com.crewing.common.error.club.ClubNotFoundException;
 import com.crewing.member.entity.Member;
 import com.crewing.member.entity.Role;
 import com.crewing.member.repository.MemberRepository;
@@ -50,8 +52,8 @@ public class ClubServiceImpl implements ClubService{
     @Override
     @Transactional
     public Club updateClub(Long clubId, ClubUpdateRequest clubUpdateRequest, User user, String profile){
-        Club club = clubRepository.findById(clubId).orElseThrow(()->new EntityNotFoundException(ErrorCode.CLUB_NOT_FOUND));
-        Member member = memberRepository.findByClubAndUserAndRole(club,user, Role.MANAGER).orElseThrow(()->new BusinessException(ErrorCode.CLUB_ACCESS_DENIED));
+        Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
+        Member member = memberRepository.findByClubAndUserAndRole(club,user, Role.MANAGER).orElseThrow(ClubAccessDeniedException::new);
 
         Club newClub = club.toBuilder().
                 name(clubUpdateRequest.getName()).
@@ -67,8 +69,8 @@ public class ClubServiceImpl implements ClubService{
     @Override
     @Transactional
     public void deleteClub(Long clubId, User user){
-        Club club = clubRepository.findById(clubId).orElseThrow(()->new EntityNotFoundException(ErrorCode.CLUB_NOT_FOUND));
-        Member member = memberRepository.findByClubAndUserAndRole(club,user, Role.MANAGER).orElseThrow(()->new BusinessException(ErrorCode.CLUB_ACCESS_DENIED));
+        Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
+        Member member = memberRepository.findByClubAndUserAndRole(club,user, Role.MANAGER).orElseThrow(ClubAccessDeniedException::new);
 
         clubRepository.delete(club);
     }
@@ -76,7 +78,7 @@ public class ClubServiceImpl implements ClubService{
     @Override
     @Transactional
     public Club changeStatus(Long clubId, User user, Status status) {
-        Club club = clubRepository.findById(clubId).orElseThrow(()->new EntityNotFoundException(ErrorCode.CLUB_NOT_FOUND));
+        Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
         Club newClub = club.toBuilder().
                 status(status).
                 build();

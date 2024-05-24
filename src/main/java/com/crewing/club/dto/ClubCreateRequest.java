@@ -6,8 +6,6 @@ import lombok.*;
 
 @Getter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ClubCreateRequest {
 
     @NotBlank

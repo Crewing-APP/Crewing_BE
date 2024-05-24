@@ -5,6 +5,7 @@ import com.crewing.club.entity.Club;
 import com.crewing.club.repository.ClubRepository;
 import com.crewing.common.error.EntityNotFoundException;
 import com.crewing.common.error.ErrorCode;
+import com.crewing.common.error.club.ClubNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +23,7 @@ public class ClubReadServiceImpl implements ClubReadService{
     @Override
     @Transactional
     public ClubInfoResponse getClubInfo(Long clubId) {
-        Club club = clubRepository.findById(clubId).orElseThrow(()->new EntityNotFoundException(ErrorCode.CLUB_NOT_FOUND));
+        Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
 
         ClubInfoResponse clubInfo = ClubInfoResponse.builder().
                 name(club.getName()).

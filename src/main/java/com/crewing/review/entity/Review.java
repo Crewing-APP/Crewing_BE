@@ -1,9 +1,11 @@
-package com.crewing.member.entity;
+package com.crewing.review.entity;
 
 import com.crewing.club.entity.Club;
+import com.crewing.common.entity.BaseTimeEntity;
 import com.crewing.user.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -11,11 +13,13 @@ import lombok.*;
 @Builder(toBuilder = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Member {
+public class Review extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_id")
-    private Long memberId;
+    @Column(name = "review_id")
+    private Long reviewId;
+
+    private String review;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -25,6 +29,6 @@ public class Member {
     @JoinColumn(name = "club_id")
     private Club club;
 
-    @NotBlank
-    private Role role;
+    @Column(nullable = false)
+    private int rate;
 }

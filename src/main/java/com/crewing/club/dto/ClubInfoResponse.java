@@ -8,8 +8,6 @@ import java.util.List;
 
 @Getter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ClubInfoResponse {
     private Long clubId;
     private String name;
