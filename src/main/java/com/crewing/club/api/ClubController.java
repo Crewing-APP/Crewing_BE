@@ -37,6 +37,6 @@ public class ClubController {
     @DeleteMapping("/delete/{clubId}")
     public ResponseEntity<String> delete(@PathVariable Long clubId, @AuthenticationPrincipal User user){
         clubServiceImpl.deleteClub(clubId,user);
-        return ResponseEntity.ok().body("Delete successful");
+        return ResponseEntity.ok().body("Delete successful!");
     }
 }
