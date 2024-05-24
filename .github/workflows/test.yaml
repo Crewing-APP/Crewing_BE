@@ -29,9 +29,9 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          script: |
-              cd Crewing_BE/
-              ./gradlew clean build
+          script: 
+                  cd Crewing_BE/
+                  ./gradlew clean build
               
           
       - name : 배포 스크립트 실행
@@ -40,6 +40,7 @@ jobs:
             host: ${{ secrets.HOST }}
             username: ${{ secrets.USERNAME }}
             key: ${{ secrets.SSH_KEY }}
-            run : | 
-              sh /home/ubuntu/deploy.sh
+            script: 
+                    sh /home/ubuntu/deploy.sh
+            
             
