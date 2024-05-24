@@ -24,7 +24,7 @@ jobs:
         run: ./gradlew clean build
 
       - name: Deploy Prod use SCP
-        uses: appleboy/scp-action@v0.1.4
+        uses: appleboy/scp-action@v0.1.2
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
@@ -34,7 +34,7 @@ jobs:
           strip_components: 2
 
       - name: Transfer Deploy Script use SCP
-        uses: appleboy/scp-action@v0.1.4
+        uses: appleboy/scp-action@v0.1.2
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
