@@ -3,6 +3,7 @@ package com.crewing.club.entity;
 import com.crewing.common.entity.BaseTimeEntity;
 import com.crewing.file.entity.File;
 import com.crewing.member.entity.Member;
+import com.crewing.review.entity.Review;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -42,4 +43,7 @@ public class Club extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
     private List<Member> memberList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
+    private List<Review> reviewList = new ArrayList<>();
 }
