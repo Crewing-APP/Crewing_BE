@@ -30,8 +30,10 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: 
-                  cd Crewing_BE/
-                  ./gradlew clean build
+                  # cd Crewing_BE/
+                  # ./gradlew clean build
+                  echo DB
+            
               
           
       - name : 배포 스크립트 실행
