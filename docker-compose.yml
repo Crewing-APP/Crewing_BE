@@ -1,0 +1,20 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: crewing
+      MYSQL_USER: username
+      MYSQL_PASSWORD: password
+    ports:
+      - "3305:3306"
+  redis-server:
+    image: redis
+    command: redis-server --port 6379
+    hostname: redis
+    ports:
+      - "6379:6379"
+    restart: always
+
