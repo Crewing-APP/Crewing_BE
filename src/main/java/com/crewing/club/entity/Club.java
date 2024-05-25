@@ -1,7 +1,7 @@
 package com.crewing.club.entity;
 
 import com.crewing.common.entity.BaseTimeEntity;
-import com.crewing.file.entity.File;
+import com.crewing.file.entity.ClubFile;
 import com.crewing.member.entity.Member;
 import com.crewing.review.entity.Review;
 import jakarta.persistence.*;
@@ -39,7 +39,7 @@ public class Club extends BaseTimeEntity {
     private Status status;
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
-    private List<File> fileList = new ArrayList<>();
+    private List<ClubFile> clubFileList = new ArrayList<>();
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
     private List<Member> memberList = new ArrayList<>();

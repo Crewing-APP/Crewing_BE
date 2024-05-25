@@ -16,4 +16,6 @@ public class ClubUpdateRequest {
     private String introduction;
 
     private String application;
+
+
 }

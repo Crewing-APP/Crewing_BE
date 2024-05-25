@@ -1,6 +1,7 @@
 package com.crewing.club.api;
 
 import com.crewing.club.dto.ClubCreateRequest;
+import com.crewing.club.dto.ClubInfoResponse;
 import com.crewing.club.dto.ClubListResponse;
 import com.crewing.club.dto.ClubUpdateRequest;
 import com.crewing.club.entity.Club;
@@ -15,6 +16,10 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,15 +32,23 @@ public class ClubController {
 
     @Operation(summary = "동아리 생성", description = "최초 동아리 생성, 생성자는 매니저 자동 임명")
     @PostMapping("/create")
-    public ResponseEntity<Club> create(@RequestPart(value = "content") ClubCreateRequest clubCreateRequest, @RequestPart String profile, @AuthenticationPrincipal User user){
-        Club club = clubServiceImpl.createClub(clubCreateRequest,user,profile);
+    public ResponseEntity<Club> create(@RequestPart(value = "content") ClubCreateRequest clubCreateRequest,
+                                       @RequestPart(required = false) MultipartFile profile,
+                                       @RequestPart(required = false) List<MultipartFile> images,
+                                       @AuthenticationPrincipal User user) throws IOException {
+        Club club = clubServiceImpl.createClub(clubCreateRequest,user,profile,images);
         return ResponseEntity.ok().body(club);
     }
 
     @Operation(summary = "동아리 수정", description = "동아리 정보 수정, 매니저만 가능")
     @PatchMapping("/edit/{clubId}")
-    public ResponseEntity<Club> update(@PathVariable Long clubId, @RequestPart(value = "content") ClubUpdateRequest clubUpdateRequest, @RequestPart String profile, @AuthenticationPrincipal User user){
-        Club club = clubServiceImpl.updateClub(clubId,clubUpdateRequest,user,profile);
+    public ResponseEntity<Club> update(@PathVariable Long clubId,
+                                       @RequestPart(value = "content") ClubUpdateRequest clubUpdateRequest,
+                                       @RequestPart(required = false) MultipartFile profile,
+                                       @RequestPart(required = false) List<MultipartFile> images,
+                                       @RequestPart(required = false) List<String> deletedImages,
+                                       @AuthenticationPrincipal User user) throws IOException {
+        Club club = clubServiceImpl.updateClub(clubId,clubUpdateRequest,user,profile,images,deletedImages);
         return ResponseEntity.ok().body(club);
     }
 
@@ -46,6 +59,13 @@ public class ClubController {
         return ResponseEntity.ok().body("Delete successful!");
     }
 
+    @Operation(summary = "동아리 상세 조회", description = "동아리 상세 정보 조회")
+    @GetMapping("/{clubId}")
+    public ResponseEntity<ClubInfoResponse> getClubInfo(@PathVariable Long clubId){
+        ClubInfoResponse clubInfo = clubReadService.getClubInfo(clubId);
+        return ResponseEntity.ok().body(clubInfo);
+    }
+
     @Operation(summary = "동아리 목록 조회", description = "동아리 목록 조회, 페이징으로 조회 가능")
     @GetMapping("/clubs")
     public ResponseEntity<ClubListResponse> getAllClub(@PageableDefault(size = 10) Pageable pageable){
@@ -54,20 +74,17 @@ public class ClubController {
     }
 
     @Operation(summary = "카테고리별 동아리 목록 조회", description = "카테고리별 동아리 목록 조회, 페이징으로 조회 가능")
-    @GetMapping("/clubs")
+    @GetMapping("/clubs/category")
     public ResponseEntity<ClubListResponse> getAllClubByCategory(@PageableDefault(size = 10) Pageable pageable,@RequestParam int category){
         ClubListResponse clubList = clubReadServiceImpl.getAllFilterClubInfo(pageable,category);
         return ResponseEntity.ok().body(clubList);
     }
 
     @Operation(summary = "검색어별 동아리 목록 조회", description = "제목 검색으로 동아리 목록 조회, 페이징으로 조회 가능")
-    @GetMapping("/clubs")
+    @GetMapping("/clubs/search")
     public ResponseEntity<ClubListResponse> getAllClubBySearch(@PageableDefault(size = 10) Pageable pageable, @RequestParam String search){
         ClubListResponse clubList = clubReadServiceImpl.getAllSearchClubInfo(pageable,search);
         return ResponseEntity.ok().body(clubList);
     }
-
-
-
 
 }

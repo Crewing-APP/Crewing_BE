@@ -9,7 +9,7 @@ import lombok.*;
 @Builder(toBuilder = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class File {
+public class ClubFile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long fileId;

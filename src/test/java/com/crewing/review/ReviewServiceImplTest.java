@@ -1,6 +1,5 @@
 package com.crewing.review;
 
-import com.crewing.auth.dto.SignUpDTO;
 import com.crewing.auth.service.AuthService;
 import com.crewing.club.entity.Club;
 import com.crewing.club.entity.Status;
@@ -18,7 +17,6 @@ import com.crewing.user.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
@@ -59,7 +57,7 @@ public class ReviewServiceImplTest {
                 .application("test")
                 .category(0)
                 .introduction("test")
-                .fileList(null)
+                .clubFileList(null)
                 .oneLiner("test")
                 .profile("test")
                 .status(Status.UNDEFINED)

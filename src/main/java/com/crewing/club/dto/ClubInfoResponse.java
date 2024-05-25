@@ -1,9 +1,8 @@
 package com.crewing.club.dto;
 
-import com.crewing.file.entity.File;
+import com.crewing.file.entity.ClubFile;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -16,7 +15,7 @@ public class ClubInfoResponse {
     private float reviewAvg;
     private int reviewNum;
     private String profile;
-    private List<File> fileList;
+    private List<ClubFile> clubFileList;
     private String application;
     private int category;
 }
