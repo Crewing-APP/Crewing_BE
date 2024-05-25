@@ -42,6 +42,8 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign' //feign
     implementation platform("org.springframework.cloud:spring-cloud-dependencies:2023.0.1") //feign
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis' //redis
 }
 
 tasks.named('test') {
