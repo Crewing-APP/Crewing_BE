@@ -6,7 +6,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: crewing
-      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_USER: crewing
       MYSQL_PASSWORD: ${DB_PASSWORD}
     ports:
       - "3305:3306"
@@ -18,7 +18,7 @@ services:
       - "6378:6379"
     restart: always
   crewing-server:
-    image: crewing-server
+    image: crewing-server:latest
     build: .
     ports:
       - "8081:8080"
