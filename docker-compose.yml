@@ -1,0 +1,38 @@
+version: '3'
+services:
+  mysql-server:
+    image: mysql:latest
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: crewing
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3305:3306"
+  redis-server:
+    image: redis
+    command: redis-server --port 6379
+    hostname: redis
+    ports:
+      - "6378:6379"
+    restart: always
+  crewing-server:
+    image: crewing-server
+    build: .
+    ports:
+      - "8081:8080"
+    environment:
+      DB_CLASS: com.mysql.cj.jdbc.Driver
+
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+
+      SPRING_DATA_REDIS_HOST: redis-server
+      SPRING_DATA_REDIS_PORT: 6379
+
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+    depends_on:
+      - mysql-server
+      - redis-server
