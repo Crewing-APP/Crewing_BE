@@ -11,6 +11,7 @@ public class MemberInfoResponse {
     private Long clubId;
     private Role role;
 
+    @Getter
     @Builder
     public static class UserInfo{
         private Long userId;

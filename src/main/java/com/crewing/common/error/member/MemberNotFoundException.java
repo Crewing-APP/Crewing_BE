@@ -5,6 +5,6 @@ import com.crewing.common.error.ErrorCode;
 
 public class MemberNotFoundException extends BusinessException {
     public MemberNotFoundException() {
-        super(ErrorCode.Member_NOT_FOUND);
+        super(ErrorCode.MEMBER_NOT_FOUND);
     }
 }
