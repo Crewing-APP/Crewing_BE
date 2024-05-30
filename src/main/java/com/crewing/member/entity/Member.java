@@ -1,6 +1,7 @@
 package com.crewing.member.entity;
 
 import com.crewing.club.entity.Club;
+import com.crewing.member.dto.MemberInfoResponse;
 import com.crewing.user.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -27,4 +28,19 @@ public class Member {
 
     @NotBlank
     private Role role;
+
+    public MemberInfoResponse toMemberInfoResponse(){
+        MemberInfoResponse.UserInfo userInfo = MemberInfoResponse.UserInfo.builder()
+                .userId(this.user.getId())
+                .imageUrl(this.user.getImageUrl())
+                .nickname(this.user.getNickname())
+                .build();
+
+        return MemberInfoResponse.builder()
+                .memberId(this.memberId)
+                .user(userInfo)
+                .clubId(this.club.getClubId())
+                .role(this.role)
+                .build();
+    }
 }
