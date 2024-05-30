@@ -22,7 +22,10 @@ public enum ErrorCode {
     REVIEW_ACCESS_DENIED("R02","No permission to review",HttpStatus.FORBIDDEN.value()),
     REVIEW_ALREADY_EXISTS("R03","A review already exists for this club",HttpStatus.BAD_REQUEST.value()),
     //File
-    FILE_FAILED_S3_UPLOAD("F01","File upload to S3 failed",HttpStatus.INTERNAL_SERVER_ERROR.value());
+    FILE_FAILED_S3_UPLOAD("F01","File upload to S3 failed",HttpStatus.INTERNAL_SERVER_ERROR.value()),
+    //Member
+    Member_ACCESS_DENIED("M01","No permission to member",HttpStatus.FORBIDDEN.value()),
+    Member_NOT_FOUND("M02","Member is not Found.", HttpStatus.NOT_FOUND.value());
 
     private final String code;
     private final String message;
