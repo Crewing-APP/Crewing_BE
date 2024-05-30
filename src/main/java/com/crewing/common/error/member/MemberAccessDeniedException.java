@@ -4,7 +4,7 @@ import com.crewing.common.error.BusinessException;
 import com.crewing.common.error.ErrorCode;
 
 public class MemberAccessDeniedException  extends BusinessException {
-    public MemberAccessDeniedException(ErrorCode errorCode) {
+    public MemberAccessDeniedException() {
         super(ErrorCode.Member_ACCESS_DENIED);
     }
 }
