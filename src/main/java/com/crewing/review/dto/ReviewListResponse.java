@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 @Getter
 @Builder
 public class ReviewListResponse {
@@ -17,5 +19,5 @@ public class ReviewListResponse {
     private int pageNum;
     private int pageSize;
     private Long totalCnt;
-    private Page<ReviewResponse> reviews;
+    private List<ReviewResponse> reviews;
 }

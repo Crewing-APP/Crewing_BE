@@ -20,6 +20,6 @@ public class ClubCreateRequest {
     private String application;
 
     @NotNull
-    private  int category;
+    private int category;
 
 }

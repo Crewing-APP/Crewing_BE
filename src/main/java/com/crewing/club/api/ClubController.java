@@ -1,9 +1,7 @@
 package com.crewing.club.api;
 
-import com.crewing.club.dto.ClubCreateRequest;
-import com.crewing.club.dto.ClubInfoResponse;
-import com.crewing.club.dto.ClubListResponse;
-import com.crewing.club.dto.ClubUpdateRequest;
+import com.crewing.auth.entity.PrincipalDetails;
+import com.crewing.club.dto.*;
 import com.crewing.club.entity.Club;
 import com.crewing.club.service.ClubReadServiceImpl;
 import com.crewing.club.service.ClubServiceImpl;
@@ -13,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +23,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/club")
+@RequestMapping("/api/v1/club")
 public class ClubController {
     private final ClubServiceImpl clubServiceImpl;
     private final ClubReadServiceImpl clubReadService;
@@ -32,30 +31,32 @@ public class ClubController {
 
     @Operation(summary = "동아리 생성", description = "최초 동아리 생성, 생성자는 매니저 자동 임명")
     @PostMapping("/create")
-    public ResponseEntity<Club> create(@RequestPart(value = "content") ClubCreateRequest clubCreateRequest,
-                                       @RequestPart(required = false) MultipartFile profile,
-                                       @RequestPart(required = false) List<MultipartFile> images,
-                                       @AuthenticationPrincipal User user) throws IOException {
-        Club club = clubServiceImpl.createClub(clubCreateRequest,user,profile,images);
-        return ResponseEntity.ok().body(club);
+    public ResponseEntity<ClubCreateResponse> create(@RequestPart("content") ClubCreateRequest clubCreateRequest,
+                                                     @RequestPart(value = "profile", required = false) MultipartFile profile,
+                                                     @RequestPart(value = "images", required = false) List<MultipartFile> images,
+                                                     @AuthenticationPrincipal PrincipalDetails principalDetails) throws IOException {
+        ClubCreateResponse response = clubServiceImpl.createClub(clubCreateRequest,principalDetails.getUser(),profile,images);
+        log.info("[CLUB] create club_id={},user_id={},club_name={}",response.getClubId(),principalDetails.getUser().getId(),response.getName());
+        return ResponseEntity.ok().body(response);
     }
 
     @Operation(summary = "동아리 수정", description = "동아리 정보 수정, 매니저만 가능")
     @PatchMapping("/edit/{clubId}")
-    public ResponseEntity<Club> update(@PathVariable Long clubId,
+    public ResponseEntity<ClubCreateResponse> update(@PathVariable Long clubId,
                                        @RequestPart(value = "content") ClubUpdateRequest clubUpdateRequest,
-                                       @RequestPart(required = false) MultipartFile profile,
-                                       @RequestPart(required = false) List<MultipartFile> images,
-                                       @RequestPart(required = false) List<String> deletedImages,
-                                       @AuthenticationPrincipal User user) throws IOException {
-        Club club = clubServiceImpl.updateClub(clubId,clubUpdateRequest,user,profile,images,deletedImages);
-        return ResponseEntity.ok().body(club);
+                                       @RequestPart(value = "profile", required = false) MultipartFile profile,
+                                       @RequestPart(value = "images", required = false) List<MultipartFile> images,
+                                       @RequestPart(value = "deletedImages", required = false) List<String> deletedImages,
+                                       @AuthenticationPrincipal PrincipalDetails principalDetails) throws IOException {
+        ClubCreateResponse response = clubServiceImpl.updateClub(clubId,clubUpdateRequest,principalDetails.getUser(),profile,images,deletedImages);
+        log.info("[CLUB] update club_id={},user_id={},club_name={}",response.getClubId(),principalDetails.getUser().getId(),response.getName());
+        return ResponseEntity.ok().body(response);
     }
 
     @Operation(summary = "동아리 삭제", description = "동아리 삭제, 매니저만 가능")
     @DeleteMapping("/delete/{clubId}")
-    public ResponseEntity<String> delete(@PathVariable Long clubId, @AuthenticationPrincipal User user){
-        clubServiceImpl.deleteClub(clubId,user);
+    public ResponseEntity<String> delete(@PathVariable Long clubId, @AuthenticationPrincipal PrincipalDetails principalDetails){
+        clubServiceImpl.deleteClub(clubId,principalDetails.getUser());
         return ResponseEntity.ok().body("Delete successful!");
     }
 

@@ -6,6 +6,7 @@ import com.crewing.member.entity.Member;
 import com.crewing.review.entity.Review;
 import jakarta.persistence.*;
 import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,7 @@ public class Club extends BaseTimeEntity {
     private Status status;
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<ClubFile> clubFileList = new ArrayList<>();
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
@@ -46,4 +48,5 @@ public class Club extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
     private List<Review> reviewList = new ArrayList<>();
+
 }

@@ -1,5 +1,6 @@
 package com.crewing.review.api;
 
+import com.crewing.auth.entity.PrincipalDetails;
 import com.crewing.review.dto.ReviewCreateRequest;
 import com.crewing.review.dto.ReviewListResponse;
 import com.crewing.review.dto.ReviewResponse;
@@ -21,14 +22,14 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/review")
+@RequestMapping("/api/v1/review")
 public class ReviewController {
     private final ReviewServiceImpl reviewService;
 
     @Operation(summary = "리뷰 생성", description = "특정 동아리에 대한 리뷰 생성")
     @PostMapping("/create")
-    public ResponseEntity<ReviewResponse> create(@RequestBody ReviewCreateRequest createRequest, @AuthenticationPrincipal User user) {
-        ReviewResponse reviewResponse = reviewService.createReview(createRequest,user);
+    public ResponseEntity<ReviewResponse> create(@RequestBody ReviewCreateRequest createRequest, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        ReviewResponse reviewResponse = reviewService.createReview(createRequest,principalDetails.getUser());
         return ResponseEntity.ok().body(reviewResponse);
     }
 
@@ -41,8 +42,8 @@ public class ReviewController {
 
     @Operation(summary = "리뷰 삭제", description = "특정 동아리에 대한 리뷰 삭제, 작성자만 가능")
     @DeleteMapping("/delete/{reviewId}")
-    public ResponseEntity<String> delete(@PathVariable Long reviewId, @AuthenticationPrincipal User user) {
-        reviewService.deleteReview(reviewId,user);
+    public ResponseEntity<String> delete(@PathVariable Long reviewId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        reviewService.deleteReview(reviewId,principalDetails.getUser());
         return ResponseEntity.ok().body("Delete successful");
     }
 }

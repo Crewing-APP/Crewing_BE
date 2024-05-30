@@ -19,7 +19,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Page<Review> findAllByUser(Pageable pageable,User user);
 
     @Query("SELECT AVG(r.rate) FROM Review r, Club c WHERE r.club = :club")
-    Float findAverageRateByClubId(@Param("club") Club club);
+    Optional<Float> findAverageRateByClubId(@Param("club") Club club);
 
     List<Review> findAllByClubAndRate(Club club, int rate);
     Optional<Review> findByClubAndUser(Club club, User user);

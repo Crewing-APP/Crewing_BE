@@ -101,8 +101,8 @@ public class ReviewServiceImpl implements ReviewService{
                 .build());
 
         return ReviewListResponse.builder()
-                .reviews(reviewPages)
-                .reviewAvg(reviewRepository.findAverageRateByClubId(club))
+                .reviews(reviewPages.getContent())
+                .reviewAvg(reviewRepository.findAverageRateByClubId(club).orElse(0f))
                 .pageNum(reviewList.getNumber())
                 .pageSize(reviewList.getSize())
                 .one(reviewRepository.findAllByClubAndRate(club,1).size())

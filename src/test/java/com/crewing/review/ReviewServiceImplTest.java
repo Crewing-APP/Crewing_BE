@@ -102,7 +102,7 @@ public class ReviewServiceImplTest {
                 .review("test")
                 .build();
         ReviewResponse review = reviewService.createReview(reviewCreateRequest, user);
-        float avg = reviewRepository.findAverageRateByClubId(this.club);
+        float avg = reviewRepository.findAverageRateByClubId(this.club).get();
         Assertions.assertThat(avg).isEqualTo(5.0f);
     }
 

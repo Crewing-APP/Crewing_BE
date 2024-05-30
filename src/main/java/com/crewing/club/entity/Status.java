@@ -9,7 +9,7 @@ public enum Status {
     ACCEPT("ACCEPT"),
     HOLD("HOLD"),
     RETURN("RETURN"),
-    UNDEFINED("UNDEFINED");
+    WAIT("WAIT");
 
     private final String key;
 }
