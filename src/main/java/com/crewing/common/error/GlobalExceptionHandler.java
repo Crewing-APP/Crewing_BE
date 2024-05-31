@@ -1,5 +1,7 @@
 package com.crewing.common.error;
 
+
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -102,4 +104,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.valueOf(errorCode.getStatus()));
     }
 
+    @ExceptionHandler(value = AmazonS3Exception.class)
+    public ResponseEntity<ErrorResponse> handleAmazonS3Exception(AmazonS3Exception e, HttpServletRequest request){
+        log.error("[ERROR] : {}", e.getMessage(), e);
+
+        ErrorCode errorCode = ErrorCode.FILE_FAILED_S3_UPLOAD;
+
+        ErrorResponse errorResponse = ErrorResponse.of(errorCode, request.getRequestURI());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.valueOf(errorCode.getStatus()));
+    }
 }

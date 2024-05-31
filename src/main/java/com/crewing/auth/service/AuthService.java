@@ -93,7 +93,6 @@ public class AuthService {
         if (userRepository.existsByEmail(email)) {
             throw new RuntimeException();
         }
-
         User user = User.builder()
                 .email(email)
                 .role(Role.ADMIN)

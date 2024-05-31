@@ -30,6 +30,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
     implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
+    implementation group: 'com.mysql', name: 'mysql-connector-j', version: '8.0.33'
+    // aws
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
@@ -40,6 +43,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
+    testRuntimeOnly('com.mysql:mysql-connector-j')
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign' //feign
     implementation platform("org.springframework.cloud:spring-cloud-dependencies:2023.0.1") //feign
 }

@@ -37,5 +37,4 @@ public class AdminController {
 
         return ResponseEntity.ok().body(response);
     }
-
 }
