@@ -97,6 +97,7 @@ public class FileServiceImpl implements FileService{
         try {
             for (String fileUrl : fileUrlList) {
                 fileRepository.deleteAllByImageUrl(fileUrl);
+                log.info("delete imgUrl = {}",fileUrl);
                 String fileName = fileUrl.substring(bucketUrl.length() + 1);
                 DeleteObjectRequest request = new DeleteObjectRequest(bucket, fileName);
                 amazonS3.deleteObject(request);
