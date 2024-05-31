@@ -51,7 +51,7 @@ jobs:
           key: ${{ secrets.GCP_PRIVATE_KEY }}
           envs: GITHUB_SHA
           script: |
-             cd ./project
+             cd ./project/Crewing_BE/
              sudo docker stop crewing-server
              sudo docker rm crewing-server
              sudo docker pull ${{ secrets.DOCKER_REPO }}/crewing-server
