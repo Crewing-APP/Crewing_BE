@@ -1,8 +1,6 @@
 package com.crewing.club.service;
 
-import com.crewing.club.dto.ClubCreateRequest;
-import com.crewing.club.dto.ClubCreateResponse;
-import com.crewing.club.dto.ClubUpdateRequest;
+import com.crewing.club.dto.*;
 import com.crewing.club.entity.Club;
 import com.crewing.club.entity.Status;
 import com.crewing.club.repository.ClubRepository;
@@ -20,11 +18,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -103,6 +98,7 @@ public class ClubServiceImpl implements ClubService{
                 introduction(clubUpdateRequest.getIntroduction()).
                 application(clubUpdateRequest.getApplication()).
                 profile(profileUrl).
+                category(clubUpdateRequest.getCategory()).
                 build());
         return toClubCreateResponse(result);
     }
@@ -118,12 +114,15 @@ public class ClubServiceImpl implements ClubService{
 
     @Override
     @Transactional
-    public Club changeStatus(Long clubId, User user, Status status) {
-        Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
-        Club newClub = club.toBuilder().
-                status(status).
-                build();
-        return clubRepository.save(newClub);
+    public ClubCreateResponse changeStatus(ClubChangeStatusRequest clubChangeStatusRequest,User user) {
+        if(!user.getRole().equals(com.crewing.user.entity.Role.ADMIN)){
+            throw new ClubAccessDeniedException();
+        }
+        Club club = clubRepository.findById(clubChangeStatusRequest.getClubId()).orElseThrow(ClubNotFoundException::new);
+        Club newClub = clubRepository.save(club.toBuilder().
+                status(Status.valueOf(clubChangeStatusRequest.getStatus())).
+                build());
+        return toClubCreateResponse(newClub);
     }
 
     public ClubCreateResponse toClubCreateResponse(Club club){

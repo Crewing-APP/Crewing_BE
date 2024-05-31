@@ -88,4 +88,18 @@ public class ClubController {
         return ResponseEntity.ok().body(clubList);
     }
 
+    @Operation(summary = "수락 신청 동아리 목록 조회", description = "WAIT 상태인 동아리 목록 조회, 페이징으로 조회 가능, 관리자만 조회")
+    @GetMapping("/clubs/status")
+    public ResponseEntity<ClubListResponse> getAllWaitClub(@PageableDefault(size = 10) Pageable pageable,@RequestParam String status, @AuthenticationPrincipal PrincipalDetails principalDetails){
+        ClubListResponse clubList = clubReadServiceImpl.getAllStatusClubInfo(pageable,status,principalDetails.getUser());
+        return ResponseEntity.ok().body(clubList);
+    }
+
+    @Operation(summary = "동아리 상태 변경", description = "동아리 상태 변경(WAIT,HOLD,RETURN,ACCEPT) , 관리자만 가능")
+    @PatchMapping("/status")
+    public ResponseEntity<ClubCreateResponse> changeStatus(@RequestBody ClubChangeStatusRequest clubChangeStatusRequest, @AuthenticationPrincipal PrincipalDetails principalDetails){
+        ClubCreateResponse clubInfo = clubServiceImpl.changeStatus(clubChangeStatusRequest,principalDetails.getUser());
+        return ResponseEntity.ok().body(clubInfo);
+    }
+
 }

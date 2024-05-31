@@ -1,6 +1,7 @@
 package com.crewing.club.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -17,5 +18,6 @@ public class ClubUpdateRequest {
 
     private String application;
 
-
+    @NotNull
+    private int category;
 }

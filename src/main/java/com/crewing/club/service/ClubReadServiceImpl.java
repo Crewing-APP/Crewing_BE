@@ -6,8 +6,11 @@ import com.crewing.club.entity.Club;
 import com.crewing.club.entity.Status;
 import com.crewing.club.repository.ClubRepository;
 import com.crewing.common.error.club.ClubNotFoundException;
+import com.crewing.common.error.user.UserAccessDeniedException;
 import com.crewing.file.entity.ClubFile;
 import com.crewing.review.repository.ReviewRepository;
+import com.crewing.user.entity.Role;
+import com.crewing.user.entity.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,6 +70,19 @@ public class ClubReadServiceImpl implements ClubReadService{
         Page<ClubInfoResponse> clubInfoPages = clubPage.map(this::toClubInfoResponse);
         return getClubListResponse(clubInfoPages);
 
+    }
+
+    @Override
+    @Transactional
+    public ClubListResponse getAllStatusClubInfo(Pageable pageable,String status, User user) {
+        if(!user.getRole().equals(Role.ADMIN)){
+            throw new UserAccessDeniedException();
+        }
+        Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC,"clubId"));
+        Page<Club> clubPage = clubRepository.findAllByStatus(Status.valueOf(status), pageRequest);
+        Page<ClubInfoResponse> clubInfoPages = clubPage.map(this::toClubInfoResponse);
+
+        return getClubListResponse(clubInfoPages);
     }
 
     private static ClubListResponse getClubListResponse(Page<ClubInfoResponse> clubInfoPages) {
