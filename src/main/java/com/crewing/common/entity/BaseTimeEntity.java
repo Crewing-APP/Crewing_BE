@@ -1,5 +1,6 @@
 package com.crewing.common.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ public abstract class BaseTimeEntity {
     // 등록일, 수정일을 공용으로 맵핑하기 위한 엔티티
 
     @CreatedDate
+    @Column(updatable = false)
     private LocalDateTime createdDate; // 등록일
 
     @LastModifiedDate

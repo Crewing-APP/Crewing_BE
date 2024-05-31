@@ -36,7 +36,7 @@ public class ClubServiceImpl implements ClubService{
         // 프로필 업로드
         String profileUrl=null;
 
-        if(!profile.isEmpty())
+        if(profile!=null&&!profile.isEmpty())
             profileUrl = fileService.uploadFile(profile);
         // 동아리 생성
         Club result = clubRepository.save(Club.builder().
@@ -51,7 +51,7 @@ public class ClubServiceImpl implements ClubService{
 
         List<String> imageList;
         // 소개글 이미지들 업로드
-        if(!images.isEmpty()) {
+        if(images!=null&&!images.isEmpty()) {
             imageList = fileService.uploadMultiFile(images);
             List<ClubFile> clubFiles = fileService.createClubFile(result, imageList);
         }
@@ -75,20 +75,23 @@ public class ClubServiceImpl implements ClubService{
         Member member = memberRepository.findByClubAndUserAndRole(club,user, Role.MANAGER).orElseThrow(ClubAccessDeniedException::new);
 
         String profileUrl = club.getProfile();
-        if(!profile.isEmpty()){ //프로필 변경
+        if(profile!=null&&!profile.isEmpty()){ //프로필 변경
+            log.info("change profile");
             fileService.deleteFile(profileUrl); // 기존 프로필 삭제
             profileUrl = fileService.uploadFile(profile); // 새 프로필 업로드
         }
 
         List<String> imageList;
         // 소개글 추가된 이미지들 업로드
-        if(!images.isEmpty()) {
+        if(images!=null&&!images.isEmpty()) {
+            log.info("add image");
             imageList = fileService.uploadMultiFile(images);
             fileService.createClubFile(club, imageList);
         }
 
         //삭제된 이미지 처리
-        if(!deletedImages.isEmpty()){
+        if(deletedImages!=null && !deletedImages.isEmpty()){
+            log.info("delete image");
             fileService.deleteMultiFile(deletedImages);
         }
 
