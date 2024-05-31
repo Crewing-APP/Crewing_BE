@@ -14,6 +14,7 @@ services:
       - "3305:3306"
   redis-server:
     image: redis
+    container_name: redis-server
     command: redis-server --port 6379
     hostname: redis
     ports:
@@ -21,6 +22,7 @@ services:
     restart: always
   crewing-server:
     image: crewing-server
+    container_name: crewing-server
     build: .
     ports:
       - "8081:8080"
