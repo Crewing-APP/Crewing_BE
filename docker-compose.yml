@@ -1,6 +1,6 @@
 version: '3'
 volumes:
-        jolvre_mysql:
+        crewing_mysql:
                 external: true
 
 services:
