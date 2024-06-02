@@ -4,6 +4,7 @@ import com.crewing.auth.dto.LoginDTO.LoginRequest;
 import com.crewing.auth.dto.LoginDTO.LoginResponse;
 import com.crewing.auth.dto.LoginDTO.OauthLoginRequest;
 import com.crewing.auth.dto.SignUpDTO.OauthSignUpRequest;
+import com.crewing.auth.dto.SignUpDTO.RefreshRequest;
 import com.crewing.auth.dto.SignUpDTO.TokenResponse;
 import com.crewing.auth.entity.PrincipalDetails;
 import com.crewing.auth.service.AuthService;
@@ -57,6 +58,13 @@ public class AuthController {
                                                      @RequestBody OauthSignUpRequest request) {
         authService.signUpOauth(request, principalDetails.getId());
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "토큰 재발급", description = "refresh 토큰을 통한 토큰 재발급")
+    @PostMapping("/refresh")
+    public ResponseEntity<TokenResponse> refresh(@RequestBody RefreshRequest request) {
+        TokenResponse tokenResponse = authService.reissuedRefreshToken(request.getRefreshToken());
+        return ResponseEntity.ok().body(tokenResponse);
     }
 
 }

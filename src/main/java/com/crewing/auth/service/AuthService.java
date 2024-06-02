@@ -112,4 +112,20 @@ public class AuthService {
 
         return TokenResponse.builder().accessToken(accessToken).refreshToken(refreshToken).build();
     }
+
+    public TokenResponse reissuedRefreshToken(String refreshToken) {
+        User user = userRepository.findByRefreshToken(refreshToken).orElseThrow(
+                UserNotFoundException::new);
+        String reissuedRefreshToken = jwtService.createRefreshToken();
+        String accessToken = jwtService.createAccessToken(user.getEmail());
+
+        user.setRefreshToken(reissuedRefreshToken);
+
+        userRepository.save(user);
+
+        return TokenResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(reissuedRefreshToken)
+                .build();
+    }
 }
