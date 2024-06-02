@@ -1,13 +1,16 @@
 package com.crewing.user.service;
 
+import com.crewing.common.error.BusinessException;
+import com.crewing.common.error.ErrorCode;
 import com.crewing.common.error.user.UserNotFoundException;
-import com.crewing.common.service.S3Service;
+import com.crewing.file.service.FileService;
 import com.crewing.user.dto.UserDTO.InterestUpdateRequest;
 import com.crewing.user.dto.UserDTO.UserInfoResponse;
 import com.crewing.user.entity.Interest;
 import com.crewing.user.entity.User;
 import com.crewing.user.repository.InterestRepository;
 import com.crewing.user.repository.UserRepository;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserService {
     private final UserRepository userRepository;
     private final InterestRepository interestRepository;
-    private final S3Service s3Service;
+    private final FileService fileService;
 
     public UserInfoResponse getUserInfo(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
@@ -63,8 +66,14 @@ public class UserService {
     @Transactional
     public void updateUserProfileImage(Long userId, MultipartFile image) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        String profileImage;
+        
+        try {
+            profileImage = fileService.uploadFile(image);
+        } catch (IOException e) {
+            throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
 
-        String profileImage = s3Service.uploadImage(image);
         user.updateProfileImage(profileImage);
 
         userRepository.save(user);

@@ -14,6 +14,7 @@ services:
       MYSQL_DATABASE: crewing
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
+      TZ: Asia/Seoul
     env_file:
       - .env
     ports:
