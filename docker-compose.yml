@@ -1,11 +1,11 @@
 version: '3'
 volumes:
-        crewing_mysql:
-                external: true
+  crewing_mysql:
+    external: true
 networks:
   server-connection:
     driver: bridge
-  db-connetion:
+  db-connection:
     driver: bridge
 
 services:
