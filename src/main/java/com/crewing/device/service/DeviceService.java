@@ -3,6 +3,7 @@ package com.crewing.device.service;
 import com.crewing.common.error.device.DeviceNotFoundException;
 import com.crewing.device.dto.DeviceDTO.DeviceInfoResponse;
 import com.crewing.device.dto.DeviceDTO.DeviceRegisterRequest;
+import com.crewing.device.dto.DeviceDTO.DeviceTokensResponse;
 import com.crewing.device.dto.DeviceDTO.DeviceUpdateRequest;
 import com.crewing.device.entity.Device;
 import com.crewing.device.repository.DeviceRepository;
@@ -57,5 +58,16 @@ public class DeviceService {
         Device device = deviceRepository.findByIdAndUserId(deviceId, userId).orElseThrow(DeviceNotFoundException::new);
 
         deviceRepository.delete(device);
+    }
+
+    public DeviceTokensResponse getFcmTokensByUserIds(List<Long> userIds){
+        List<String> tokens =
+                userIds.stream().map(id -> deviceRepository.findAllByUserId(id)
+                .stream().map(Device::getFcmToken).toList()
+        ).flatMap(List::stream).toList();
+
+        return DeviceTokensResponse.builder()
+                .fcmTokens(tokens)
+                .build();
     }
 }
