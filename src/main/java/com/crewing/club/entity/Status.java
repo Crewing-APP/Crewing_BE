@@ -8,8 +8,7 @@ import lombok.RequiredArgsConstructor;
 public enum Status {
     ACCEPT("ACCEPT"),
     HOLD("HOLD"),
-    RETURN("RETURN"),
-    WAIT("WAIT");
+    RETURN("RETURN");
 
     private final String key;
 }

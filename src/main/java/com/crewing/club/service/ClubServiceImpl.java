@@ -45,7 +45,7 @@ public class ClubServiceImpl implements ClubService{
                 introduction(clubCreateRequest.getIntroduction()).
                 profile(profileUrl).
                 application(clubCreateRequest.getApplication()).
-                status(Status.WAIT).
+                status(Status.HOLD).
                 category(clubCreateRequest.getCategory()).
                 build());
 
