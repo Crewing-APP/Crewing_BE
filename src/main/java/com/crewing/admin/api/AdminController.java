@@ -36,7 +36,7 @@ public class AdminController {
     private final ClubReadService clubReadService;
     private final ClubService clubService;
 
-    @Operation(summary = "모든 유저 조회", description = "모든 유저를 조회한다")
+    @Operation(summary = "모든 유저 조회 ! ", description = "모든 유저를 조회한다")
     @GetMapping("/users")
     public ResponseEntity<UserInfoResponses> getAllUserInfo() {
         UserInfoResponses responses = adminService.getAllUserInfo();
