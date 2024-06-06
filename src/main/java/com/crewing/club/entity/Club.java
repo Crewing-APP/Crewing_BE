@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,9 @@ public class Club extends BaseTimeEntity {
 
     @Column(nullable = false)
     private Status status;
+
+    @ColumnDefault("true")
+    private boolean recruitment;
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
     @JsonIgnore

@@ -19,4 +19,6 @@ public class ClubCreateResponse {
     private String application;
     private int category;
     private Status status;
+    private boolean recruitment;
+
 }

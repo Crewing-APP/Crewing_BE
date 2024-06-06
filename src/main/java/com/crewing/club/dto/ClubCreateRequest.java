@@ -22,4 +22,5 @@ public class ClubCreateRequest {
     @NotNull
     private int category;
 
+    private boolean recruitment;
 }

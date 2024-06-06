@@ -20,4 +20,6 @@ public class ClubUpdateRequest {
 
     @NotNull
     private int category;
+
+    private boolean recruitment;
 }

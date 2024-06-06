@@ -47,6 +47,7 @@ public class ClubServiceImpl implements ClubService{
                 application(clubCreateRequest.getApplication()).
                 status(Status.HOLD).
                 category(clubCreateRequest.getCategory()).
+                recruitment(clubCreateRequest.isRecruitment()).
                 build());
 
         List<String> imageList;
@@ -102,6 +103,7 @@ public class ClubServiceImpl implements ClubService{
                 application(clubUpdateRequest.getApplication()).
                 profile(profileUrl).
                 category(clubUpdateRequest.getCategory()).
+                recruitment(clubUpdateRequest.isRecruitment()).
                 build());
         return toClubCreateResponse(result);
     }
@@ -141,6 +143,7 @@ public class ClubServiceImpl implements ClubService{
                 .category(club.getCategory())
                 .application(club.getApplication())
                 .status(club.getStatus())
+                .recruitment(club.isRecruitment())
                 .build();
     }
 

@@ -129,6 +129,7 @@ public class ClubReadServiceImpl implements ClubReadService{
                 application(club.getApplication()).
                 images(imageInfoList).
                 status(club.getStatus()).
+                recruitment(club.isRecruitment()).
                 build();
     }
 
