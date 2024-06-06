@@ -56,5 +56,5 @@ jobs:
              sudo docker rm crewing-server
              sudo docker pull ${{ secrets.DOCKER_REPO }}/crewing-server
              sudo docker image tag ${{ secrets.DOCKER_REPO }}/crewing-server:latest crewing-server:latest
-             sudo docker-compose up crewing-server -d
+             sudo docker-compose up -d crewing-server 
 
