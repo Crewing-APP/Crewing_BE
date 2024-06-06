@@ -2,7 +2,12 @@ version: '3'
 volumes:
         crewing_mysql:
                 external: true
-        
+networks:
+  server-connection:
+    driver: bridge
+  db-connetion:
+    driver: bridge
+
 services:
   nginx:
     container_name: nginx
@@ -13,6 +18,8 @@ services:
       - '443:443'
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - server-connection
     environment:
       - TZ=Asia/Seoul
     depends_on:
@@ -24,6 +31,8 @@ services:
     container_name: mysql-container
     volumes:
       - crewing_mysql:/var/lib/mysql
+    networks:
+      - db-connection
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: crewing
@@ -48,6 +57,9 @@ services:
     build: .
     ports:
       - "8081:8080"
+    networks:
+      - db-connection
+      - server-connection
     env_file:
       - .env
     depends_on:
