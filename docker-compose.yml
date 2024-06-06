@@ -29,6 +29,7 @@ services:
   mysql-server:
     image: mysql:latest
     container_name: mysql-container
+    restart: always
     volumes:
       - crewing_mysql:/var/lib/mysql
     networks:
