@@ -67,7 +67,7 @@ public class UserService {
     public void updateUserProfileImage(Long userId, MultipartFile image) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         String profileImage;
-        
+
         try {
             profileImage = fileService.uploadFile(image);
         } catch (IOException e) {
@@ -84,5 +84,9 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
         userRepository.delete(user);
+    }
+
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     }
 }

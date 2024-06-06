@@ -16,19 +16,22 @@ public enum ErrorCode {
     USER_NOT_FOUND("U02", "User is not Found.", HttpStatus.BAD_REQUEST.value()),
     //Club
     CLUB_NOT_FOUND("CL01", "Club is not Found.", HttpStatus.NOT_FOUND.value()),
-    CLUB_ACCESS_DENIED("CL02","No permission to club",HttpStatus.FORBIDDEN.value()),
+    CLUB_ACCESS_DENIED("CL02", "No permission to club", HttpStatus.FORBIDDEN.value()),
     //Review
     REVIEW_NOT_FOUND("R01", "Review is not Found.", HttpStatus.NOT_FOUND.value()),
-    REVIEW_ACCESS_DENIED("R02","No permission to review",HttpStatus.FORBIDDEN.value()),
-    REVIEW_ALREADY_EXISTS("R03","A review already exists for this club",HttpStatus.BAD_REQUEST.value()),
+    REVIEW_ACCESS_DENIED("R02", "No permission to review", HttpStatus.FORBIDDEN.value()),
+    REVIEW_ALREADY_EXISTS("R03", "A review already exists for this club", HttpStatus.BAD_REQUEST.value()),
     //File
-    FILE_FAILED_S3_UPLOAD("F01","File upload to S3 failed",HttpStatus.INTERNAL_SERVER_ERROR.value()),
+    FILE_FAILED_S3_UPLOAD("F01", "File upload to S3 failed", HttpStatus.INTERNAL_SERVER_ERROR.value()),
     //Member
-    MEMBER_ACCESS_DENIED("M01","No permission to member",HttpStatus.FORBIDDEN.value()),
-    MEMBER_NOT_FOUND("M02","Member is not Found.", HttpStatus.NOT_FOUND.value()),
-    MEMBER_FAILED_DELETE_MANAGER("M03","Manager cannot be deleted. There must be at least one manager.",HttpStatus.BAD_REQUEST.value()),
-    MEMBER_ALREADY_EXISTS("M04","Member already exists.",HttpStatus.BAD_REQUEST.value()),
-    MEMBER_FAILED_ASSIGN_MANAGER("M05","Member is already manager.",HttpStatus.BAD_REQUEST.value());
+    MEMBER_ACCESS_DENIED("M01", "No permission to member", HttpStatus.FORBIDDEN.value()),
+    MEMBER_NOT_FOUND("M02", "Member is not Found.", HttpStatus.NOT_FOUND.value()),
+    MEMBER_FAILED_DELETE_MANAGER("M03", "Manager cannot be deleted. There must be at least one manager.",
+            HttpStatus.BAD_REQUEST.value()),
+    MEMBER_ALREADY_EXISTS("M04", "Member already exists.", HttpStatus.BAD_REQUEST.value()),
+    MEMBER_FAILED_ASSIGN_MANAGER("M05", "Member is already manager.", HttpStatus.BAD_REQUEST.value()),
+    //Device
+    DEVICE_NOT_FOUND_EXCEPTION("D01", "Device is not Found.", HttpStatus.NOT_FOUND.value());
 
     private final String code;
     private final String message;
