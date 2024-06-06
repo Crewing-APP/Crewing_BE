@@ -4,6 +4,7 @@ import com.crewing.common.entity.BaseTimeEntity;
 import com.crewing.file.entity.ClubFile;
 import com.crewing.member.entity.Member;
 import com.crewing.review.entity.Review;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;
