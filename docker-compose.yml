@@ -12,7 +12,6 @@ services:
   nginx:
     container_name: nginx
     image: nginx
-    restart: always
     ports:
       - '80:80'
       - '443:443'
@@ -29,7 +28,6 @@ services:
   mysql-server:
     image: mysql:latest
     container_name: mysql-container
-    restart: always
     volumes:
       - crewing_mysql:/var/lib/mysql
     networks:
@@ -51,7 +49,6 @@ services:
     hostname: redis
     ports:
       - "6378:6379"
-    restart: always
   crewing-server:
     image: crewing-server
     container_name: crewing-server
