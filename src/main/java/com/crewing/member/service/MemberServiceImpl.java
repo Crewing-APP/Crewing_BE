@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -49,6 +50,42 @@ public class MemberServiceImpl implements MemberService{
                 .build());
 
         return member.toMemberInfoResponse();
+    }
+
+    @Override
+    @Transactional
+    public MemberInfoResponse createMemberFromApplicant(Club club, User applicant) {
+        // 이미 멤버일 경우
+        if(memberRepository.findByClubAndUser(club,applicant).isPresent()){
+            throw new MemberAlreadyExistsException();
+        }
+        Member member = memberRepository.save(Member.builder()
+                .club(club)
+                .user(applicant)
+                .role(Role.MEMBER)
+                .build());
+
+        return member.toMemberInfoResponse();
+    }
+
+    @Override
+    @Transactional
+    public void createMembers(List<MemberCreateRequest> memberCreateRequests, User manager) {
+        List<Member> members = new ArrayList<>();
+        for(MemberCreateRequest memberCreateRequest : memberCreateRequests){
+            Club club = checking(memberCreateRequest.getClubId(),manager);
+            // user 조회
+            User user = userRepository.findById(memberCreateRequest.getUserId()).orElseThrow(UserNotFoundException::new);
+            // 이미 멤버일 경우
+            if(memberRepository.findByClubAndUser(club,user).isPresent()) throw new MemberAlreadyExistsException();
+            Member member = Member.builder()
+                    .club(club)
+                    .user(user)
+                    .role(Role.MEMBER)
+                    .build();
+            members.add(member);
+        }
+        memberRepository.saveAll(members);
     }
 
     @Override
