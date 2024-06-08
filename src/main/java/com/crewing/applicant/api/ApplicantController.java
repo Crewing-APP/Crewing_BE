@@ -70,4 +70,11 @@ public class ApplicantController {
         MemberInfoResponse response =  applicantService.registerApplicants(request,principalDetails.getUser());
         return ResponseEntity.ok().body(response);
     }
+
+    @Operation(summary = "내가 지원한 동아리 목록", description = "로그인한 사용자의 지원한 동아리 목록, 페이징 x")
+    @GetMapping("/applicants/my")
+    public ResponseEntity<List<MyApplicantResponse>> getMyAllApplicantClub(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        List<MyApplicantResponse> response =  applicantService.getAllMyApplicantClubInfo(principalDetails.getUser());
+        return ResponseEntity.ok().body(response);
+    }
 }

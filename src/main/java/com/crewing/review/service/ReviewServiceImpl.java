@@ -8,6 +8,7 @@ import com.crewing.common.error.club.ClubNotFoundException;
 import com.crewing.common.error.review.ReviewAccessDeniedException;
 import com.crewing.common.error.review.ReviewAlreadyExistsException;
 import com.crewing.common.error.review.ReviewNotFoundException;
+import com.crewing.member.repository.MemberRepository;
 import com.crewing.review.dto.ReviewCreateRequest;
 import com.crewing.review.dto.ReviewListResponse;
 import com.crewing.review.dto.ReviewResponse;
@@ -36,11 +37,14 @@ import java.util.Optional;
 public class ReviewServiceImpl implements ReviewService{
     private final ReviewRepository reviewRepository;
     private final ClubRepository clubRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     @Transactional
     public ReviewResponse createReview(ReviewCreateRequest createRequest, User user) {
         Club club = clubRepository.findById(createRequest.getClubId()).orElseThrow(ClubNotFoundException::new);
+        // 동아리 회원이 아니면 예외처리
+        memberRepository.findByClubAndUser(club,user).orElseThrow(ReviewAccessDeniedException::new);
         Optional<Review> check = reviewRepository.findByClubAndUser(club,user);
         if(check.isPresent()){ // 이미 동아리에 대한 리뷰를 썼다면 더 이상 쓰지 못함.
             throw new ReviewAlreadyExistsException();

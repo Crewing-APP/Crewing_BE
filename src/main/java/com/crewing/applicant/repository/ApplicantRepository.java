@@ -20,4 +20,5 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
     Optional<Applicant> findByUserAndClubAndStatus(User user, Club club,Status status);
     List<Applicant> findAllByApplicantIdIn(List<Long> applicantIds);
     void deleteByApplicantIdIn(List<Long> applicantIds);
+    List<Applicant> findAllByUser(User user);
 }

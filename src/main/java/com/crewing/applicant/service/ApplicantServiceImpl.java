@@ -4,6 +4,7 @@ import com.crewing.applicant.dto.*;
 import com.crewing.applicant.entity.Applicant;
 import com.crewing.applicant.entity.Status;
 import com.crewing.applicant.repository.ApplicantRepository;
+import com.crewing.club.dto.ClubListResponse;
 import com.crewing.club.entity.Club;
 import com.crewing.club.repository.ClubRepository;
 import com.crewing.common.error.applicant.ApplicantAlreadyExistsException;
@@ -109,6 +110,21 @@ public class ApplicantServiceImpl implements ApplicantService {
         // 지원자에서 삭제
         applicantRepository.delete(applicant);
         return memberInfoResponse;
+    }
+
+    @Override
+    @Transactional
+    public List<MyApplicantResponse> getAllMyApplicantClubInfo(User user) {
+        List<Applicant> applicantList = applicantRepository.findAllByUser(user);
+        List<MyApplicantResponse> myApplicantResponseList = new ArrayList<>();
+        for(Applicant applicant : applicantList) {
+            myApplicantResponseList.add(MyApplicantResponse.builder()
+                            .clubId(applicant.getClub().getClubId())
+                            .name(applicant.getClub().getName())
+                            .profile(applicant.getClub().getProfile())
+                            .build());
+        }
+        return myApplicantResponseList;
     }
 
     public ApplicantCreateResponse getApplicantCreateResponse(Applicant applicant) {
