@@ -53,9 +53,9 @@ public class AdminController {
     }
 
 
-    @Operation(summary = "수락 신청 동아리 목록 조회", description = "WAIT 상태인 동아리 목록 조회, 페이징으로 조회 가능, 관리자만 조회")
+    @Operation(summary = "수락 신청 동아리 목록 조회", description = "HOLD 상태인 동아리 목록 조회, 페이징으로 조회 가능, 관리자만 조회")
     @GetMapping("/clubs")
-    public ResponseEntity<ClubListResponse> getAllWaitClub(@PageableDefault(size = 10) Pageable pageable,
+    public ResponseEntity<ClubListResponse> getAllHOLDClub(@PageableDefault(size = 10) Pageable pageable,
                                                            @RequestParam String status,
                                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
         ClubListResponse clubList = clubReadService.getAllStatusClubInfo(pageable, status,
@@ -63,7 +63,7 @@ public class AdminController {
         return ResponseEntity.ok().body(clubList);
     }
 
-    @Operation(summary = "동아리 상태 변경", description = "동아리 상태 변경(WAIT,HOLD,RETURN,ACCEPT) , 관리자만 가능")
+    @Operation(summary = "동아리 상태 변경", description = "동아리 상태 변경(HOLD,RETURN,ACCEPT) , 관리자만 가능")
     @PatchMapping("/clubs")
     public ResponseEntity<ClubCreateResponse> changeStatus(@RequestBody ClubChangeStatusRequest clubChangeStatusRequest,
                                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {

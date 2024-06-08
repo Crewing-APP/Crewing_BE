@@ -30,6 +30,10 @@ public enum ErrorCode {
             HttpStatus.BAD_REQUEST.value()),
     MEMBER_ALREADY_EXISTS("M04", "Member already exists.", HttpStatus.BAD_REQUEST.value()),
     MEMBER_FAILED_ASSIGN_MANAGER("M05", "Member is already manager.", HttpStatus.BAD_REQUEST.value()),
+    //Applicant
+    APPLICANT_NOT_FOUND("AP01", "Applicant is not Found.", HttpStatus.NOT_FOUND.value()),
+    APPLICANT_ACCESS_DENIED("AP02", "No permission to applicant", HttpStatus.FORBIDDEN.value()),
+    APPLICANT_ALREADY_EXISTS("AP03", "Applicant already exists.", HttpStatus.BAD_REQUEST.value()),
     //Device
     DEVICE_NOT_FOUND_EXCEPTION("D01", "Device is not Found.", HttpStatus.NOT_FOUND.value());
 

@@ -1,4 +1,4 @@
-package com.crewing.club.entity;
+package com.crewing.applicant.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -6,9 +6,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum Status {
-    ACCEPT("ACCEPT"),
-    HOLD("HOLD"),
-    RETURN("RETURN");
+    WAIT("WAIT"),
+    DOC("DOC"),
+    INTERVIEW("INTERVIEW");
 
     private final String key;
 }

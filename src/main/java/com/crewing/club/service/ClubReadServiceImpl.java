@@ -8,9 +8,13 @@ import com.crewing.club.repository.ClubRepository;
 import com.crewing.common.error.club.ClubNotFoundException;
 import com.crewing.common.error.user.UserAccessDeniedException;
 import com.crewing.file.entity.ClubFile;
+import com.crewing.member.entity.Member;
+import com.crewing.member.repository.MemberRepository;
 import com.crewing.review.repository.ReviewRepository;
+import com.crewing.user.entity.Interest;
 import com.crewing.user.entity.Role;
 import com.crewing.user.entity.User;
+import com.crewing.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +34,7 @@ import java.util.stream.Collectors;
 public class ClubReadServiceImpl implements ClubReadService{
     private final ClubRepository clubRepository;
     private final ReviewRepository reviewRepository;
+    private final MemberRepository memberRepository;
     // 동아리 상세 정보 조회
     @Override
     @Transactional
@@ -85,6 +90,21 @@ public class ClubReadServiceImpl implements ClubReadService{
         return getClubListResponse(clubInfoPages);
     }
 
+    @Override
+    @Transactional
+    public ClubListResponse getAllMyClubInfo(Pageable pageable, User user) {
+        List<Member> memberList = memberRepository.findAllByUser(user);
+        List<Long> clubIds = new ArrayList<>();
+        for(Member member : memberList){
+            clubIds.add(member.getClub().getClubId());
+        }
+        Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC,"clubId"));
+        Page<Club> clubPage = clubRepository.findAllByClubIdIn(clubIds, pageRequest);
+        Page<ClubInfoResponse> clubInfoPages = clubPage.map(this::toClubInfoResponse);
+
+        return getClubListResponse(clubInfoPages);
+    }
+
     private static ClubListResponse getClubListResponse(Page<ClubInfoResponse> clubInfoPages) {
         return ClubListResponse.builder()
                 .pageNum(clubInfoPages.getNumber())
@@ -109,6 +129,7 @@ public class ClubReadServiceImpl implements ClubReadService{
                 application(club.getApplication()).
                 images(imageInfoList).
                 status(club.getStatus()).
+                recruitment(club.isRecruitment()).
                 build();
     }
 

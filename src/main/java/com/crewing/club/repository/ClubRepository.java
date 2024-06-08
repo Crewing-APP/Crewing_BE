@@ -7,9 +7,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ClubRepository extends JpaRepository<Club,Long> {
     Page<Club> findAllByStatus(Status status, Pageable pageable);
     Page<Club> findAllByCategoryAndStatus(int category, Status status,Pageable pageable);
     Page<Club> findAllByNameContainingAndStatus(String search, Status status, Pageable pageable);
+    Page<Club> findAllByCategoryInAndStatus(List<Integer> category, Status status, Pageable pageable);
+    Page<Club> findAllByClubIdIn(List<Long> clubIds, Pageable pageable);
 }

@@ -89,6 +89,13 @@ public class ClubController {
         return ResponseEntity.ok().body(clubInfo);
     }
 
+    @Operation(summary = "나의 동아리 목록 조회", description = "나의 활동중인 동아리 목록 조회, 페이징으로 조회 가능")
+    @GetMapping("/my")
+    public ResponseEntity<ClubListResponse> getAllMyClub(@PageableDefault(size = 10) Pageable pageable, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        ClubListResponse clubList = clubReadServiceImpl.getAllMyClubInfo(pageable, principalDetails.getUser());
+        return ResponseEntity.ok().body(clubList);
+    }
+
     @Operation(summary = "동아리 목록 조회", description = "동아리 목록 조회, 페이징으로 조회 가능")
     @GetMapping("/clubs")
     public ResponseEntity<ClubListResponse> getAllClub(@PageableDefault(size = 10) Pageable pageable) {
@@ -112,7 +119,7 @@ public class ClubController {
         return ResponseEntity.ok().body(clubList);
     }
 
-    @Operation(summary = "수락 신청 동아리 목록 조회", description = "WAIT 상태인 동아리 목록 조회, 페이징으로 조회 가능, 관리자만 조회")
+    @Operation(summary = "상태별 동아리 목록 조회", description = "상태별 동아리 목록 조회, 페이징으로 조회 가능, 관리자만 조회")
     @GetMapping("/clubs/status")
     @Parameter(name = "status", description = "동아리 상태", required = true)
     public ResponseEntity<ClubListResponse> getAllWaitClub(@PageableDefault(size = 10) Pageable pageable,@RequestParam String status, @AuthenticationPrincipal PrincipalDetails principalDetails){
