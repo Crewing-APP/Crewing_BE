@@ -24,12 +24,12 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @RestController
 @Slf4j
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1/users")
 public class UserController {
     private final UserService userService;
 
     @Operation(summary = "유저 정보 조회", description = "로그인 유저의 정보를 조회합니다")
-    @GetMapping
+    @GetMapping("/me")
     public ResponseEntity<UserInfoResponse> getUserInfo(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         UserInfoResponse userInfo = userService.getUserInfo(principalDetails.getId());
 
@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @Operation(summary = "유저 관심사 수정", description = "로그인 유저의 관심사를 수정합니다")
-    @PatchMapping("/interest")
+    @PatchMapping("/me/interest")
     public ResponseEntity<?> updateInterest(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                             @RequestBody InterestUpdateRequest request) {
         userService.updateInterest(principalDetails.getId(), request);
@@ -46,7 +46,7 @@ public class UserController {
     }
 
     @Operation(summary = "유저 닉네임 수정", description = "로그인 유저의 닉네임을 수정합니다")
-    @PatchMapping("/{nickname}")
+    @PatchMapping("/me/{nickname}")
     public ResponseEntity<?> updateUserNickname(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                 @PathVariable String nickname) {
         userService.updateUserNickname(principalDetails.getId(), nickname);
@@ -55,7 +55,7 @@ public class UserController {
     }
 
     @Operation(summary = "유저 프로필 사진 수정", description = "로그인 유저의 프로필 사진을 수정합니다")
-    @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(path = "/me",consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateUserProfileImage(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                     @RequestBody MultipartFile image) {
 
@@ -65,7 +65,7 @@ public class UserController {
     }
 
     @Operation(summary = "유저 삭제", description = "로그인 유저를 삭제합니다")
-    @DeleteMapping
+    @DeleteMapping("/me")
     public ResponseEntity<?> deleteUser(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         userService.deleteUser(principalDetails.getId());
 
