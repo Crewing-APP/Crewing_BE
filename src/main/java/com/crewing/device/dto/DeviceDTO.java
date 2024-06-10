@@ -51,9 +51,10 @@ public class DeviceDTO {
 
     @Getter
     @AllArgsConstructor
-    @NoArgsConstructor
     @Builder
     public static class DeviceTokensResponse {
-        private List<String> fcmToken;
+        private List<String> fcmTokens;
     }
+
+
 }
