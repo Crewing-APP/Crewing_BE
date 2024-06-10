@@ -56,6 +56,6 @@ jobs:
              sudo docker rm crewing-server
              sudo docker pull ${{ secrets.DOCKER_REPO }}/crewing-server
              sudo docker image tag ${{ secrets.DOCKER_REPO }}/crewing-server:latest crewing-server:latest
-             docker rmi $(docker images -q --filter "dangling=true")
+             sudo docker rmi $(sudo docker images -q --filter "dangling=true")
              sudo docker-compose up -d crewing-server 
 
