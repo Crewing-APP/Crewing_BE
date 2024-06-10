@@ -29,9 +29,7 @@ public class AuthService {
     private final OauthApi oauthApi;
     private final PasswordEncoder passwordEncoder;
 
-    public LoginResponse loginOauth(String oauthAccessToken, String social) {
-        SocialType socialType = SocialType.valueOf(social);
-
+    public LoginResponse loginOauth(String oauthAccessToken, SocialType socialType) {
         OAuthAttributes attributes = OAuthAttributes.of(socialType,
                 oauthApi.getOauthUserInfo(oauthAccessToken, socialType));
 

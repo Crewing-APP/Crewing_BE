@@ -8,6 +8,7 @@ import com.crewing.auth.dto.SignUpDTO.RefreshRequest;
 import com.crewing.auth.dto.SignUpDTO.TokenResponse;
 import com.crewing.auth.entity.PrincipalDetails;
 import com.crewing.auth.service.AuthService;
+import com.crewing.user.entity.SocialType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +47,7 @@ public class AuthController {
     @Operation(summary = "로그인", description = "Oauth Token을 통한 로그인")
     @PostMapping("/oauth/login/{socialType}")
     public ResponseEntity<LoginResponse> loginOauth(@RequestBody OauthLoginRequest request,
-                                                    @PathVariable String socialType) {
+                                                    @PathVariable SocialType socialType) {
         LoginResponse response = authService.loginOauth(request.getOauthAccessToken(), socialType);
 
         return ResponseEntity.ok().body(response);
