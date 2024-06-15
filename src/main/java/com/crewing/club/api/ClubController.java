@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,7 +44,7 @@ public class ClubController {
     private final ClubReadServiceImpl clubReadServiceImpl;
 
     @Operation(summary = "동아리 생성", description = "최초 동아리 생성, 생성자는 매니저 자동 임명")
-    @PostMapping("/create")
+    @PostMapping(value = "/create",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ClubCreateResponse> create(@RequestPart("content") ClubCreateRequest clubCreateRequest,
                                                      @RequestPart(value = "profile", required = false) MultipartFile profile,
                                                      @RequestPart(value = "images", required = false) List<MultipartFile> images,
@@ -57,7 +58,7 @@ public class ClubController {
     }
 
     @Operation(summary = "동아리 수정", description = "동아리 정보 수정, 매니저만 가능")
-    @PatchMapping("/edit/{clubId}")
+    @PatchMapping(value = "/edit/{clubId}",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Parameter(name = "clubId", description = "동아리 아이디")
     public ResponseEntity<ClubCreateResponse> update(@PathVariable Long clubId,
                                                      @RequestPart(value = "content") ClubUpdateRequest clubUpdateRequest,
