@@ -125,7 +125,7 @@ public class ClubReadServiceImpl implements ClubReadService{
                 application(club.getApplication()).
                 images(imageInfoList).
                 status(club.getStatus()).
-                isRecruit(club.isRecruit()).
+                isRecruit(club.getIsRecruit()).
                 recruitStartDate(club.getRecruitStartDate()).
                 recruitEndDate(club.getRecruitEndDate()).
                 build();

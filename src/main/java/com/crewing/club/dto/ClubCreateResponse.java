@@ -20,7 +20,7 @@ public class ClubCreateResponse {
     private String application;
     private int category;
     private Status status;
-    private boolean isRecruit;
+    private Boolean isRecruit;
     private String recruitStartDate;
     private String recruitEndDate;
 }

@@ -24,7 +24,7 @@ public class ClubUpdateRequest {
     private int category;
 
     @NotNull
-    private boolean isRecruit;
+    private Boolean isRecruit;
 
     private String recruitStartDate;
 
