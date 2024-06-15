@@ -47,7 +47,9 @@ public class ClubServiceImpl implements ClubService{
                 application(clubCreateRequest.getApplication()).
                 status(Status.HOLD).
                 category(clubCreateRequest.getCategory()).
-                recruitment(clubCreateRequest.isRecruitment()).
+                isRecruit(clubCreateRequest.isRecruit()).
+                recruitStartDate(clubCreateRequest.getRecruitStartDate()).
+                recruitEndDate(clubCreateRequest.getRecruitEndDate()).
                 build());
 
         List<String> imageList;
@@ -103,7 +105,9 @@ public class ClubServiceImpl implements ClubService{
                 application(clubUpdateRequest.getApplication()).
                 profile(profileUrl).
                 category(clubUpdateRequest.getCategory()).
-                recruitment(clubUpdateRequest.isRecruitment()).
+                isRecruit(clubUpdateRequest.isRecruit()).
+                recruitStartDate(clubUpdateRequest.getRecruitStartDate()).
+                recruitEndDate(clubUpdateRequest.getRecruitEndDate()).
                 build());
         return toClubCreateResponse(result);
     }
@@ -143,7 +147,9 @@ public class ClubServiceImpl implements ClubService{
                 .category(club.getCategory())
                 .application(club.getApplication())
                 .status(club.getStatus())
-                .recruitment(club.isRecruitment())
+                .isRecruit(club.isRecruit())
+                .recruitStartDate(club.getRecruitStartDate())
+                .recruitEndDate(club.getRecruitEndDate())
                 .build();
     }
 
