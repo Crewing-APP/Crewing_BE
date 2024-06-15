@@ -43,7 +43,7 @@ public class Club extends BaseTimeEntity {
     private Status status;
 
     @ColumnDefault("false")
-    private boolean isRecruit;
+    private Boolean isRecruit;
 
     private String recruitStartDate;
 

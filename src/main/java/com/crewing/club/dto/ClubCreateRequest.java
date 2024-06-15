@@ -26,9 +26,13 @@ public class ClubCreateRequest {
     private int category;
 
     @NotNull
-    private boolean recruit;
+    private Boolean isRecruit;
 
     private String recruitStartDate;
 
     private String recruitEndDate;
+
+    public boolean getIsRecruit(){
+        return this.isRecruit;
+    }
 }
