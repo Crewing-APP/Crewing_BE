@@ -4,6 +4,7 @@ import com.crewing.club.entity.Status;
 import com.crewing.file.entity.ClubFile;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -20,5 +21,7 @@ public class ClubInfoResponse {
     private String application;
     private int category;
     private Status status;
-    private boolean recruitment;
+    private boolean isRecruit;
+    private String recruitStartDate;
+    private String recruitEndDate;
 }

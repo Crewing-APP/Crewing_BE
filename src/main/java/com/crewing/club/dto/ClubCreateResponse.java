@@ -5,6 +5,7 @@ import com.crewing.file.entity.ClubFile;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -19,6 +20,7 @@ public class ClubCreateResponse {
     private String application;
     private int category;
     private Status status;
-    private boolean recruitment;
-
+    private boolean isRecruit;
+    private String recruitStartDate;
+    private String recruitEndDate;
 }

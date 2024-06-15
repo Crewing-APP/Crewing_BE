@@ -11,10 +11,8 @@ import com.crewing.file.entity.ClubFile;
 import com.crewing.member.entity.Member;
 import com.crewing.member.repository.MemberRepository;
 import com.crewing.review.repository.ReviewRepository;
-import com.crewing.user.entity.Interest;
 import com.crewing.user.entity.Role;
 import com.crewing.user.entity.User;
-import com.crewing.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -74,7 +71,6 @@ public class ClubReadServiceImpl implements ClubReadService{
         Page<Club> clubPage = clubRepository.findAllByNameContainingAndStatus(search, Status.ACCEPT,pageRequest);
         Page<ClubInfoResponse> clubInfoPages = clubPage.map(this::toClubInfoResponse);
         return getClubListResponse(clubInfoPages);
-
     }
 
     @Override
@@ -129,7 +125,9 @@ public class ClubReadServiceImpl implements ClubReadService{
                 application(club.getApplication()).
                 images(imageInfoList).
                 status(club.getStatus()).
-                recruitment(club.isRecruitment()).
+                isRecruit(club.isRecruit()).
+                recruitStartDate(club.getRecruitStartDate()).
+                recruitEndDate(club.getRecruitEndDate()).
                 build();
     }
 

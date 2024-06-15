@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 public class ClubUpdateRequest {
@@ -21,5 +23,10 @@ public class ClubUpdateRequest {
     @NotNull
     private int category;
 
-    private boolean recruitment;
+    @NotNull
+    private boolean isRecruit;
+
+    private String recruitStartDate;
+
+    private String recruitEndDate;
 }
