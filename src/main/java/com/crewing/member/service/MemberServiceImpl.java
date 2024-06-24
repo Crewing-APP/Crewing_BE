@@ -93,6 +93,9 @@ public class MemberServiceImpl implements MemberService{
     public void deleteMember(Long memberId, User manager) {
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         memberRepository.findByClubAndUserAndRole(member.getClub(),manager,Role.MANAGER).orElseThrow(MemberAccessDeniedException::new);
+        if(member.getRole().equals(Role.MANAGER)){
+            throw new MemberAccessDeniedException();
+        }
         memberRepository.deleteById(memberId);
     }
 
@@ -117,7 +120,6 @@ public class MemberServiceImpl implements MemberService{
         if(memberRepository.findAllByRole(Role.MANAGER).size() <= 1){
             throw new MemberFailedDeleteManagerException();
         }
-
         return memberRepository.save(member.toBuilder().role(Role.MEMBER).build()).toMemberInfoResponse();
     }
 
