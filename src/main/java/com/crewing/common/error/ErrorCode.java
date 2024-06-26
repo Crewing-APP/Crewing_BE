@@ -35,7 +35,9 @@ public enum ErrorCode {
     APPLICANT_ACCESS_DENIED("AP02", "No permission to applicant", HttpStatus.FORBIDDEN.value()),
     APPLICANT_ALREADY_EXISTS("AP03", "Applicant already exists.", HttpStatus.BAD_REQUEST.value()),
     //Device
-    DEVICE_NOT_FOUND_EXCEPTION("D01", "Device is not Found.", HttpStatus.NOT_FOUND.value());
+    DEVICE_NOT_FOUND_EXCEPTION("D01", "Device is not Found.", HttpStatus.NOT_FOUND.value()),
+    // Notification
+    NOTIFICATION_NOT_FOUND("N01", "Notification is not Found.", HttpStatus.NOT_FOUND.value());
 
     private final String code;
     private final String message;
