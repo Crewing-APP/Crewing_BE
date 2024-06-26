@@ -135,7 +135,7 @@ public class MemberServiceImpl implements MemberService{
         return MemberListResponse.builder()
                 .pageNum(memberPage.getNumber())
                 .pageSize(memberPage.getSize())
-                .totalCnt(memberPage.getTotalPages())
+                .totalCnt(memberPage.getTotalElements())
                 .members(responsePage.getContent())
                 .build();
     }

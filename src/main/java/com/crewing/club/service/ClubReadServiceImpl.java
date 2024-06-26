@@ -105,7 +105,7 @@ public class ClubReadServiceImpl implements ClubReadService{
         return ClubListResponse.builder()
                 .pageNum(clubInfoPages.getNumber())
                 .pageSize(clubInfoPages.getSize())
-                .totalCnt(clubInfoPages.getTotalPages())
+                .totalCnt(clubInfoPages.getTotalElements())
                 .clubs(clubInfoPages.getContent())
                 .build();
     }

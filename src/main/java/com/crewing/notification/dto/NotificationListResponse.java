@@ -1,4 +1,4 @@
-package com.crewing.applicant.dto;
+package com.crewing.notification.dto;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -7,9 +7,9 @@ import java.util.List;
 
 @Getter
 @Builder
-public class ApplicantListResponse {
+public class NotificationListResponse {
     private int pageNum;
     private int pageSize;
     private Long totalCnt;
-    private List<ApplicantCreateResponse> applicants;
+    private List<NotificationApplyResponse> notifications;
 }

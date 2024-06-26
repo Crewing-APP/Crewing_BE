@@ -11,6 +11,6 @@ import java.util.List;
 public class ClubListResponse {
     private int pageNum;
     private int pageSize;
-    private int totalCnt;
+    private Long totalCnt;
     private List<ClubInfoResponse> clubs;
 }

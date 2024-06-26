@@ -4,7 +4,6 @@ import com.crewing.applicant.dto.*;
 import com.crewing.applicant.entity.Applicant;
 import com.crewing.applicant.entity.Status;
 import com.crewing.applicant.repository.ApplicantRepository;
-import com.crewing.club.dto.ClubListResponse;
 import com.crewing.club.entity.Club;
 import com.crewing.club.repository.ClubRepository;
 import com.crewing.common.error.applicant.ApplicantAlreadyExistsException;
@@ -12,7 +11,10 @@ import com.crewing.common.error.applicant.ApplicantNotFoundException;
 import com.crewing.common.error.club.ClubNotFoundException;
 import com.crewing.member.dto.MemberInfoResponse;
 import com.crewing.member.service.MemberServiceImpl;
+import com.crewing.notification.entity.NotificationType;
+import com.crewing.notification.service.SSEService;
 import com.crewing.user.entity.User;
+import com.crewing.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +34,8 @@ public class ApplicantServiceImpl implements ApplicantService {
     private final ApplicantRepository applicantRepository;
     private final ClubRepository clubRepository;
     private final MemberServiceImpl memberService;
+    private final SSEService SSEService;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
@@ -60,8 +64,11 @@ public class ApplicantServiceImpl implements ApplicantService {
             newApplicantList.add(applicant.toBuilder().status(Status.valueOf(request.getStatus())).build());
         }
         List<Applicant> result = applicantRepository.saveAll(newApplicantList);
+        List<Applicant> applicants = applicantRepository.findAllByApplicantIdIn(request.getChangeList());
         // 알림 기능
-        String message = request.getMessage();
+        for(Applicant receiver: applicants){
+            SSEService.send(receiver.getUser(), NotificationType.APPLY,request.getMessage(),receiver.getClub());
+        }
         return result.stream().map(this::getApplicantCreateResponse).toList();
     }
 
@@ -95,7 +102,10 @@ public class ApplicantServiceImpl implements ApplicantService {
         applicantRepository.deleteByApplicantIdIn(applicantsDeleteRequest.getDeleteList());
 
         // 알림 기능
-        String message = applicantsDeleteRequest.getMessage();
+        List<Applicant> applicants = applicantRepository.findAllByApplicantIdIn(applicantsDeleteRequest.getDeleteList());
+        for(Applicant receiver: applicants){
+            SSEService.send(receiver.getUser(), NotificationType.APPLY,applicantsDeleteRequest.getMessage(),receiver.getClub());
+        }
     }
 
     @Override
@@ -148,7 +158,7 @@ public class ApplicantServiceImpl implements ApplicantService {
         return ApplicantListResponse.builder()
                 .pageNum(page.getNumber())
                 .pageSize(page.getSize())
-                .totalCnt(page.getTotalPages())
+                .totalCnt(page.getTotalElements())
                 .applicants(createResponseList)
                 .build();
     }
