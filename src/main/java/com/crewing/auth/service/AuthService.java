@@ -1,6 +1,7 @@
 package com.crewing.auth.service;
 
 import com.crewing.auth.dto.LoginDTO.LoginResponse;
+import com.crewing.auth.dto.SignUpDTO.BasicSignUpRequest;
 import com.crewing.auth.dto.SignUpDTO.OauthSignUpRequest;
 import com.crewing.auth.dto.SignUpDTO.TokenResponse;
 import com.crewing.auth.jwt.service.JwtService;
@@ -70,7 +71,7 @@ public class AuthService {
         return userRepository.save(createdUser);
     }
 
-    public void signUpOauth(OauthSignUpRequest request, Long userId) {
+    public TokenResponse signUpOauth(OauthSignUpRequest request, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
         List<Interest> interests = new ArrayList<>();
@@ -84,7 +85,41 @@ public class AuthService {
 
         user.signUpOauth(request.getBirth(), request.getGender(), request.getName(), interests);
 
+        TokenResponse token = getToken(user.getEmail());
+        user.setRefreshToken(token.getRefreshToken());
+
         userRepository.save(user);
+
+        return token;
+    }
+
+    public TokenResponse signUpBasic(BasicSignUpRequest request){
+        User user = User.builder()
+                .email(request.getEmail())
+                .name(request.getName())
+                .birth(request.getBirth())
+                .nickname(request.getNickname())
+                .gender(request.getGender())
+                .role(Role.USER)
+                .build();
+
+        List<Interest> interests = new ArrayList<>();
+        request.getInterests().forEach(
+                interest -> {
+                    Interest save = Interest.builder().interest(interest).build();
+                    interests.add(save);
+                }
+        );
+        interestRepository.saveAll(interests);
+
+        user.updateInterests(interests);
+
+        TokenResponse token = getToken(user.getEmail());
+        user.updateRefreshToken(token.getRefreshToken());
+
+        userRepository.save(user);
+
+        return token;
     }
 
     public TokenResponse getDevToken(String email) {
@@ -109,6 +144,16 @@ public class AuthService {
         jwtService.updateRefreshToken(email, refreshToken);
 
         return TokenResponse.builder().accessToken(accessToken).refreshToken(refreshToken).build();
+    }
+
+    public TokenResponse getToken(String email){
+        String accessToken = jwtService.createAccessToken(email);
+        String refreshToken = jwtService.createRefreshToken();
+
+        return TokenResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
     public TokenResponse reissuedRefreshToken(String refreshToken) {

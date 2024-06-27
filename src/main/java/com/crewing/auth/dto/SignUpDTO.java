@@ -15,6 +15,18 @@ public class SignUpDTO {
     @Getter
     @AllArgsConstructor
     @Builder
+    public static class BasicSignUpRequest {
+        private String birth;
+        private String gender;
+        private String name;
+        private String nickname;
+        private List<String> interests;
+        private String email;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @Builder
     public static class OauthSignUpRequest {
         private String birth;
         private String gender;
