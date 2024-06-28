@@ -1,4 +1,4 @@
-package com.crewing.auth.oauth.service;
+package com.crewing.auth.oauth.deprecated.service.service;
 
 import com.crewing.common.error.ErrorCode;
 import com.crewing.common.error.ErrorResponse;

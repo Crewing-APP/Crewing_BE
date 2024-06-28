@@ -14,6 +14,10 @@ public enum ErrorCode {
     //User
     USER_ACCESS_DENIED("U01", "User Access is Denied.", HttpStatus.UNAUTHORIZED.value()),
     USER_NOT_FOUND("U02", "User is not Found.", HttpStatus.BAD_REQUEST.value()),
+    //Auth
+    NOT_VERIFIED_EMAIL("A01", "Mail is not Verified", HttpStatus.BAD_REQUEST.value()),
+    AUTH_CODE_NOT_FOUND("A02", "AuthCode is not Found", HttpStatus.BAD_REQUEST.value()),
+    INVALID_AUTH_CODE("A03", "AuthCode is Invalid", HttpStatus.BAD_REQUEST.value()),
     //Club
     CLUB_NOT_FOUND("CL01", "Club is not Found.", HttpStatus.NOT_FOUND.value()),
     CLUB_ACCESS_DENIED("CL02", "No permission to club", HttpStatus.FORBIDDEN.value()),

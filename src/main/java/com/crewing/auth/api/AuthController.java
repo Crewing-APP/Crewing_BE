@@ -1,8 +1,9 @@
 package com.crewing.auth.api;
 
 import com.crewing.auth.dto.LoginDTO.LoginRequest;
-import com.crewing.auth.dto.LoginDTO.LoginResponse;
 import com.crewing.auth.dto.LoginDTO.OauthLoginRequest;
+import com.crewing.auth.dto.LoginDTO.OauthLoginResponse;
+import com.crewing.auth.dto.SignUpDTO.BasicSignUpRequest;
 import com.crewing.auth.dto.SignUpDTO.OauthSignUpRequest;
 import com.crewing.auth.dto.SignUpDTO.RefreshRequest;
 import com.crewing.auth.dto.SignUpDTO.TokenResponse;
@@ -44,21 +45,13 @@ public class AuthController {
         return ResponseEntity.ok().body(authService.getDevToken(email));
     }
 
-    @Operation(summary = "로그인", description = "Oauth Token을 통한 로그인")
+    @Operation(summary = "Oauth 로그인", description = "Oauth Token을 통한 로그인")
     @PostMapping("/oauth/login/{socialType}")
-    public ResponseEntity<LoginResponse> loginOauth(@RequestBody OauthLoginRequest request,
-                                                    @PathVariable SocialType socialType) {
-        LoginResponse response = authService.loginOauth(request.getOauthAccessToken(), socialType);
+    public ResponseEntity<OauthLoginResponse> loginOauth(@RequestBody OauthLoginRequest request,
+                                                         @PathVariable SocialType socialType) {
+        OauthLoginResponse response = authService.loginOauth(request.getOauthAccessToken(), socialType);
 
         return ResponseEntity.ok().body(response);
-    }
-
-    @Operation(summary = "추가 회원가입", description = "추가정보가 필요한 유저 회원가입")
-    @PostMapping("/oauth/signUp")
-    public ResponseEntity<TokenResponse> signUpOauth(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                     @RequestBody OauthSignUpRequest request) {
-        authService.signUpOauth(request, principalDetails.getId());
-        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "토큰 재발급", description = "refresh 토큰을 통한 토큰 재발급")

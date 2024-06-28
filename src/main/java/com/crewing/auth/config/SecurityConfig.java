@@ -1,16 +1,16 @@
 package com.crewing.auth.config;
 
-import com.crewing.auth.exception.CustomAccessDeniedHandler;
-import com.crewing.auth.exception.CustomAuthenticationEntryPoint;
+import com.crewing.auth.handler.CustomAccessDeniedHandler;
+import com.crewing.auth.handler.CustomAuthenticationEntryPoint;
 import com.crewing.auth.jwt.filter.CustomJsonUsernamePasswordAuthenticationFilter;
 import com.crewing.auth.jwt.filter.JwtAuthenticationProcessingFilter;
 import com.crewing.auth.jwt.service.JwtService;
 import com.crewing.auth.jwt.service.LoginFailureHandler;
 import com.crewing.auth.jwt.service.LoginService;
 import com.crewing.auth.jwt.service.LoginSuccessHandler;
-import com.crewing.auth.oauth.service.CustomOAuth2UserService;
-import com.crewing.auth.oauth.service.OAuth2LoginFailureHandler;
-import com.crewing.auth.oauth.service.OAuth2LoginSuccessHandler;
+import com.crewing.auth.oauth.deprecated.service.service.CustomOAuth2UserService;
+import com.crewing.auth.oauth.deprecated.service.service.OAuth2LoginFailureHandler;
+import com.crewing.auth.oauth.deprecated.service.service.OAuth2LoginSuccessHandler;
 import com.crewing.user.entity.Role;
 import com.crewing.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,7 +58,7 @@ public class SecurityConfig {
                                     "/swagger-resources/**", "/swagger-ui/**", "/v3/api-docs/**")
                             .permitAll();  // 기본 페이지, css, image, js 하위 폴더에 있는 자료들은 모두 접근 가능, h2-console에 접근 가능
                     request.requestMatchers("api/v1/admin/**").hasRole(Role.ADMIN.getKey());
-                    request.requestMatchers("/api/v1/auth/**").permitAll();
+                    request.requestMatchers("/api/v1/auth/**","/api/v1/singUp/**").permitAll();
                     request.anyRequest().authenticated(); // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
                 })
 

@@ -1,7 +1,7 @@
-package com.crewing.auth.oauth.service;
+package com.crewing.auth.oauth.deprecated.service.service;
 
-import com.crewing.auth.oauth.entity.CustomOAuth2User;
-import com.crewing.auth.oauth.entity.OAuthAttributes;
+import com.crewing.auth.oauth.deprecated.entity.CustomOAuth2User;
+import com.crewing.auth.oauth.deprecated.entity.OAuthAttributes;
 import com.crewing.user.entity.SocialType;
 import com.crewing.user.entity.User;
 import com.crewing.user.repository.UserRepository;

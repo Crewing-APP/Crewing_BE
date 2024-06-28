@@ -1,5 +1,4 @@
-package com.crewing.auth.service;
-
+package com.crewing.auth.oauth.deprecated.entity;
 
 import java.util.Map;
 
@@ -10,7 +9,7 @@ public class GoogleOAuth2UserInfo extends OAuth2UserInfo {
 
     @Override
     public String getId() {
-        return (String) attributes.get("id");
+        return (String) attributes.get("sub");
     }
 
     @Override

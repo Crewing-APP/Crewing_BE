@@ -1,5 +1,4 @@
-package com.crewing.auth.service;
-
+package com.crewing.auth.oauth.deprecated.entity;
 
 import java.util.Map;
 
@@ -18,13 +17,13 @@ public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
         Map<String, Object> account = (Map<String, Object>) attributes.get("kakao_account");
 
         if (account == null) {
-            return null;
+            return "KAKAO" + getId();
         }
 
         Map<String, Object> profile = (Map<String, Object>) account.get("profile");
 
         if (profile == null) {
-            return null;
+            return "KAKAO" + getId();
         }
 
         return (String) profile.get("nickname");
