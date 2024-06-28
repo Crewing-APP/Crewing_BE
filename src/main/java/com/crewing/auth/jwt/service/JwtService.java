@@ -10,6 +10,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.crewing.auth.dto.SignUpDTO.TokenResponse;
 import com.crewing.common.error.user.UserNotFoundException;
 import com.crewing.user.entity.Role;
+import com.crewing.user.entity.User;
 import com.crewing.user.repository.UserRepository;
 import com.nimbusds.common.contenttype.ContentType;
 import jakarta.servlet.http.HttpServletRequest;
@@ -210,4 +211,29 @@ public class JwtService {
         }
     }
 
+    public TokenResponse getToken(String email){
+        String accessToken = this.createAccessToken(email);
+        String refreshToken = this.createRefreshToken();
+
+        return TokenResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+    public TokenResponse reissuedRefreshToken(String refreshToken) {
+        User user = userRepository.findByRefreshToken(refreshToken).orElseThrow(
+                UserNotFoundException::new);
+        String reissuedRefreshToken = this.createRefreshToken();
+        String accessToken = this.createAccessToken(user.getEmail());
+
+        user.setRefreshToken(reissuedRefreshToken);
+
+        userRepository.save(user);
+
+        return TokenResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(reissuedRefreshToken)
+                .build();
+    }
 }

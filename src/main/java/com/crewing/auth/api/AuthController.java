@@ -54,21 +54,6 @@ public class AuthController {
         return ResponseEntity.ok().body(response);
     }
 
-    @Operation(summary = "추가 회원가입", description = "추가정보가 필요한 유저 회원가입")
-    @PostMapping("/oauth/signUp")
-    public ResponseEntity<TokenResponse> signUpOauth(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                     @RequestBody OauthSignUpRequest request) {
-        TokenResponse response = authService.signUpOauth(request, principalDetails.getId());
-        return ResponseEntity.ok(response);
-    }
-
-    @Operation(summary = "기본 회원가입", description = "기본 회원가입")
-    @PostMapping("/signUp")
-    public ResponseEntity<TokenResponse> signUpBasic(@RequestBody BasicSignUpRequest request) {
-        TokenResponse response = authService.signUpBasic(request);
-        return ResponseEntity.ok(response);
-    }
-
     @Operation(summary = "토큰 재발급", description = "refresh 토큰을 통한 토큰 재발급")
     @PostMapping("/refresh")
     public ResponseEntity<TokenResponse> refresh(@RequestBody RefreshRequest request) {
