@@ -12,6 +12,8 @@ import com.crewing.file.service.FileServiceImpl;
 import com.crewing.member.entity.Member;
 import com.crewing.member.entity.Role;
 import com.crewing.member.repository.MemberRepository;
+import com.crewing.notification.entity.NotificationType;
+import com.crewing.notification.service.SSEService;
 import com.crewing.user.entity.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,7 @@ public class ClubServiceImpl implements ClubService{
     private final MemberRepository memberRepository;
     private final ClubFileRepository clubFileRepository;
     private final FileServiceImpl fileService;
+    private final SSEService sseService;
 
     @Override
     @Transactional
@@ -123,14 +126,20 @@ public class ClubServiceImpl implements ClubService{
 
     @Override
     @Transactional
-    public ClubCreateResponse changeStatus(ClubChangeStatusRequest clubChangeStatusRequest,User user) {
+    public ClubCreateResponse changeStatus(ClubChangeStatusRequest request,User user) {
         if(!user.getRole().equals(com.crewing.user.entity.Role.ADMIN)){
             throw new ClubAccessDeniedException();
         }
-        Club club = clubRepository.findById(clubChangeStatusRequest.getClubId()).orElseThrow(ClubNotFoundException::new);
+        Club club = clubRepository.findById(request.getClubId()).orElseThrow(ClubNotFoundException::new);
+        List<Member> managerList = memberRepository.findAllByClubAndRole(club,Role.MANAGER);
         Club newClub = clubRepository.save(club.toBuilder().
-                status(Status.valueOf(clubChangeStatusRequest.getStatus())).
+                status(Status.valueOf(request.getStatus())).
                 build());
+        String message = setMessage(Status.valueOf(request.getStatus()));
+        // 알림 기능
+        for(Member manager : managerList) {
+            sseService.send(manager.getUser(), NotificationType.APPLY, message, request.getContent(), club);
+        }
         return toClubCreateResponse(newClub);
     }
 
@@ -151,6 +160,18 @@ public class ClubServiceImpl implements ClubService{
                 .recruitStartDate(club.getRecruitStartDate())
                 .recruitEndDate(club.getRecruitEndDate())
                 .build();
+    }
+
+    public String setMessage(Status status){
+        if(status.equals(Status.ACCEPT)){
+            return "연합동아리 등록이 승인되었습니다.";
+        }
+        else if(status.equals(Status.RETURN)){
+            return "연합동아리 등록이 반려되었습니다.";
+        }
+        else{
+            return "연합동아리 등록이 보류되었습니다.";
+        }
     }
 
 }

@@ -2,7 +2,7 @@ package com.crewing.notification.entity;
 
 import com.crewing.club.entity.Club;
 import com.crewing.common.entity.BaseTimeEntity;
-import com.crewing.notification.dto.NotificationApplyResponse;
+import com.crewing.notification.dto.NotificationResponse;
 import com.crewing.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,7 +19,12 @@ public class Notification extends BaseTimeEntity {
     private Long id;
 
     @Embedded
-    private NotificationMessage message;
+    private NotificationMessage message; // 목록 메세지
+
+    @Embedded
+    private NotificationTitle title; // 제목
+
+    private String content; // 자세한 내용
 
     @Enumerated(EnumType.STRING)
     private NotificationType type;
@@ -39,10 +44,10 @@ public class Notification extends BaseTimeEntity {
         return this.isCheck;
     }
 
-    public NotificationApplyResponse toNotificationApplyResponse() {
-        return NotificationApplyResponse.builder()
+    public NotificationResponse toNotificationResponse() {
+        return NotificationResponse.builder()
                 .notificationId(this.getId())
-                .clubInfo(NotificationApplyResponse.ClubInfo.builder()
+                .clubInfo(NotificationResponse.ClubInfo.builder()
                         .clubId(this.club.getClubId())
                         .name(this.club.getName())
                         .profile(this.club.getProfile())
@@ -50,6 +55,8 @@ public class Notification extends BaseTimeEntity {
                 .createdDate(this.getCreatedDate().toString())
                 .isCheck(this.getCheck())
                 .message(this.getMessage().getMessage())
+                .content(this.getContent())
+                .title(this.getTitle().getTitle())
                 .build();
     }
 }

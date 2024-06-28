@@ -3,10 +3,8 @@ package com.crewing.notification.api;
 import com.crewing.auth.entity.PrincipalDetails;
 import com.crewing.club.entity.Club;
 import com.crewing.club.repository.ClubRepository;
-import com.crewing.notification.dto.NotificationApplyResponse;
 import com.crewing.notification.dto.NotificationListResponse;
 import com.crewing.notification.entity.NotificationType;
-import com.crewing.notification.service.NotificationService;
 import com.crewing.notification.service.NotificationServiceImpl;
 import com.crewing.notification.service.SSEService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,8 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
-import java.util.List;
 
 @Tag(name = "notification", description = "알림 API")
 @RequiredArgsConstructor
@@ -63,6 +59,6 @@ public class NotificationController {
     @GetMapping("/test")
     public void notificationTest(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         Club club = clubRepository.findById(18L).get();
-        SSEService.send(principalDetails.getUser(), NotificationType.APPLY,"알림 테스트입니당",club);
+        SSEService.send(principalDetails.getUser(), NotificationType.APPLY,"알림 테스트입니당","알림 테스트입니당",club);
     }
 }

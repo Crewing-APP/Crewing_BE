@@ -67,7 +67,7 @@ public class ApplicantServiceImpl implements ApplicantService {
         List<Applicant> applicants = applicantRepository.findAllByApplicantIdIn(request.getChangeList());
         // 알림 기능
         for(Applicant receiver: applicants){
-            SSEService.send(receiver.getUser(), NotificationType.APPLY,request.getMessage(),receiver.getClub());
+            SSEService.send(receiver.getUser(), NotificationType.APPLY,setMessage(club),request.getContent(),receiver.getClub());
         }
         return result.stream().map(this::getApplicantCreateResponse).toList();
     }
@@ -104,7 +104,7 @@ public class ApplicantServiceImpl implements ApplicantService {
         // 알림 기능
         List<Applicant> applicants = applicantRepository.findAllByApplicantIdIn(applicantsDeleteRequest.getDeleteList());
         for(Applicant receiver: applicants){
-            SSEService.send(receiver.getUser(), NotificationType.APPLY,applicantsDeleteRequest.getMessage(),receiver.getClub());
+            SSEService.send(receiver.getUser(), NotificationType.APPLY,setMessage(club),applicantsDeleteRequest.getContent(),receiver.getClub());
         }
     }
 
@@ -163,4 +163,7 @@ public class ApplicantServiceImpl implements ApplicantService {
                 .build();
     }
 
+    public String setMessage(Club club){
+        return "연합동아리 "+club.getName()+"의 지원 결과가 발표되었습니다.";
+    }
 }

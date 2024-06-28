@@ -12,4 +12,5 @@ public class ClubChangeStatusRequest {
     private Long clubId;
     @NotBlank
     private String status;
+    private String content;
 }

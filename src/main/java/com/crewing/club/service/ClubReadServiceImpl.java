@@ -101,6 +101,11 @@ public class ClubReadServiceImpl implements ClubReadService{
         return getClubListResponse(clubInfoPages);
     }
 
+    @Override
+    public ClubListResponse getAllRecommendedClubInfo(Pageable pageable, User user) {
+        return null;
+    }
+
     private static ClubListResponse getClubListResponse(Page<ClubInfoResponse> clubInfoPages) {
         return ClubListResponse.builder()
                 .pageNum(clubInfoPages.getNumber())
