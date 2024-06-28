@@ -1,6 +1,6 @@
 package com.crewing.auth.service;
 
-import com.crewing.auth.dto.LoginDTO.LoginResponse;
+import com.crewing.auth.dto.LoginDTO.OauthLoginResponse;
 import com.crewing.auth.dto.SignUpDTO.BasicSignUpRequest;
 import com.crewing.auth.dto.SignUpDTO.OauthSignUpRequest;
 import com.crewing.auth.dto.SignUpDTO.TokenResponse;
@@ -30,7 +30,7 @@ public class AuthService {
     private final OauthApi oauthApi;
     private final PasswordEncoder passwordEncoder;
 
-    public LoginResponse loginOauth(String oauthAccessToken, SocialType socialType) {
+    public OauthLoginResponse loginOauth(String oauthAccessToken, SocialType socialType) {
         OAuthAttributes attributes = OAuthAttributes.of(socialType,
                 oauthApi.getOauthUserInfo(oauthAccessToken, socialType));
 
@@ -44,13 +44,13 @@ public class AuthService {
                 .build();
 
         if (user.getRole().equals(Role.GUEST)) {
-            return LoginResponse.builder()
+            return OauthLoginResponse.builder()
                     .tokenResponse(tokenResponse)
                     .needSignUp(true)
                     .build();
         }
 
-        return LoginResponse.builder()
+        return OauthLoginResponse.builder()
                 .tokenResponse(tokenResponse)
                 .build();
     }

@@ -3,7 +3,6 @@ package com.crewing.mail.service;
 
 import com.crewing.auth.jwt.service.JwtService;
 import com.crewing.common.util.RedisUtil;
-import com.crewing.mail.EmailDTO.SignUpEmailVerifyResponse;
 import com.crewing.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,8 +1,8 @@
 package com.crewing.auth.api;
 
 import com.crewing.auth.dto.LoginDTO.LoginRequest;
-import com.crewing.auth.dto.LoginDTO.LoginResponse;
 import com.crewing.auth.dto.LoginDTO.OauthLoginRequest;
+import com.crewing.auth.dto.LoginDTO.OauthLoginResponse;
 import com.crewing.auth.dto.SignUpDTO.BasicSignUpRequest;
 import com.crewing.auth.dto.SignUpDTO.OauthSignUpRequest;
 import com.crewing.auth.dto.SignUpDTO.RefreshRequest;
@@ -45,11 +45,11 @@ public class AuthController {
         return ResponseEntity.ok().body(authService.getDevToken(email));
     }
 
-    @Operation(summary = "로그인", description = "Oauth Token을 통한 로그인")
+    @Operation(summary = "Oauth 로그인", description = "Oauth Token을 통한 로그인")
     @PostMapping("/oauth/login/{socialType}")
-    public ResponseEntity<LoginResponse> loginOauth(@RequestBody OauthLoginRequest request,
-                                                    @PathVariable SocialType socialType) {
-        LoginResponse response = authService.loginOauth(request.getOauthAccessToken(), socialType);
+    public ResponseEntity<OauthLoginResponse> loginOauth(@RequestBody OauthLoginRequest request,
+                                                         @PathVariable SocialType socialType) {
+        OauthLoginResponse response = authService.loginOauth(request.getOauthAccessToken(), socialType);
 
         return ResponseEntity.ok().body(response);
     }
@@ -60,6 +60,5 @@ public class AuthController {
         TokenResponse tokenResponse = authService.reissuedRefreshToken(request.getRefreshToken());
         return ResponseEntity.ok().body(tokenResponse);
     }
-
 
 }
