@@ -1,6 +1,10 @@
 package com.crewing.mail.service;
 
+import com.crewing.common.error.auth.AuthCodeNotFoundException;
+import com.crewing.common.error.auth.InvalidAuthCodeException;
 import com.crewing.common.util.RedisUtil;
+import com.crewing.mail.dto.EmailDTO.EmailVerifyRequest;
+import com.crewing.user.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.util.Random;
@@ -13,9 +17,12 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class MailService {
+    private static final String REDIS_KEY = "EMAIL_VERIFY:";
+
     private final JavaMailSender mailSender;
     private int authNumber;
     private final RedisUtil redisUtil;
+    private final UserRepository userRepository;
 
     //임의의 6자리 양수를 반환합니다.
     private void makeRandomNumber() {
@@ -62,6 +69,21 @@ public class MailService {
             // 이러한 경우 MessagingException이 발생
             e.printStackTrace();//e.printStackTrace()는 예외를 기본 오류 스트림에 출력하는 메서드
         }
-        redisUtil.setDataExpire(toMail, Integer.toString(authNumber), 60 * 5L);
+        redisUtil.setDataExpire(REDIS_KEY+toMail, Integer.toString(authNumber), 60 * 5L);
+    }
+
+    public boolean verifySignUpEmail(EmailVerifyRequest request){
+        String redisKey = REDIS_KEY + request.getEmail();
+        String authCode = redisUtil.getData(redisKey);
+
+        if(authCode == null){
+            throw new AuthCodeNotFoundException();
+        } else if (!authCode.equals(request.getAuthNum())) {
+            throw new InvalidAuthCodeException();
+        }
+
+        redisUtil.deleteData(redisKey);
+
+        return true;
     }
 }

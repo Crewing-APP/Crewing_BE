@@ -1,4 +1,4 @@
-package com.crewing.auth.oauth.entity;
+package com.crewing.auth.oauth.deprecated.entity;
 
 import com.crewing.user.entity.Role;
 import com.crewing.user.entity.User;

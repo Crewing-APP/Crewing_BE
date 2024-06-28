@@ -4,6 +4,7 @@ import com.crewing.auth.dto.SignUpDTO.BasicSignUpRequest;
 import com.crewing.auth.dto.SignUpDTO.OauthSignUpRequest;
 import com.crewing.auth.dto.SignUpDTO.TokenResponse;
 import com.crewing.auth.jwt.service.JwtService;
+import com.crewing.common.error.auth.NotVerifiedEmailException;
 import com.crewing.common.error.user.UserNotFoundException;
 import com.crewing.user.entity.Interest;
 import com.crewing.user.entity.Role;
@@ -24,7 +25,9 @@ public class SignUpService {
     private final InterestRepository interestRepository;
     private final JwtService jwtService;
 
-
+    /**
+     * Oauth 추가 회원가입
+     */
     public TokenResponse signUpOauth(OauthSignUpRequest request, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
@@ -47,7 +50,13 @@ public class SignUpService {
         return token;
     }
 
+    /**
+     * 기본 회원가입
+     */
     public TokenResponse signUpBasic(BasicSignUpRequest request){
+        if(!request.isVerified()){
+            throw new NotVerifiedEmailException();
+        }
         User user = User.builder()
                 .email(request.getEmail())
                 .name(request.getName())

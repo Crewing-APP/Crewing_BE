@@ -1,4 +1,4 @@
-package com.crewing.auth.exception;
+package com.crewing.auth.handler;
 
 import com.crewing.common.error.ErrorCode;
 import com.crewing.common.error.ErrorResponse;

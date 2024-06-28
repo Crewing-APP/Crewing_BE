@@ -1,7 +1,7 @@
-package com.crewing.auth.oauth.service;
+package com.crewing.auth.oauth.deprecated.service.service;
 
 import com.crewing.auth.jwt.service.JwtService;
-import com.crewing.auth.oauth.entity.CustomOAuth2User;
+import com.crewing.auth.oauth.deprecated.entity.CustomOAuth2User;
 import com.crewing.user.entity.Role;
 import com.crewing.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;

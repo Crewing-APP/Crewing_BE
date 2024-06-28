@@ -1,5 +1,6 @@
 package com.crewing.auth.oauth.entity;
 
+
 import java.util.Map;
 
 public class GoogleOAuth2UserInfo extends OAuth2UserInfo {
@@ -9,7 +10,7 @@ public class GoogleOAuth2UserInfo extends OAuth2UserInfo {
 
     @Override
     public String getId() {
-        return (String) attributes.get("sub");
+        return (String) attributes.get("id");
     }
 
     @Override
