@@ -48,6 +48,9 @@ dependencies {
     testRuntimeOnly('com.mysql:mysql-connector-j')
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign' //feign
     implementation platform("org.springframework.cloud:spring-cloud-dependencies:2023.0.1") //feign
+
+    implementation 'org.springframework.boot:spring-boot-starter-mail' //Mail
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis' //Redis
 }
 
 tasks.named('test') {
