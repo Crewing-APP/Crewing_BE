@@ -11,5 +11,5 @@ public class NotificationListResponse {
     private int pageNum;
     private int pageSize;
     private Long totalCnt;
-    private List<NotificationApplyResponse> notifications;
+    private List<NotificationResponse> notifications;
 }

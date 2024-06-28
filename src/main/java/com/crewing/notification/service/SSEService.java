@@ -1,9 +1,10 @@
 package com.crewing.notification.service;
 
 import com.crewing.club.entity.Club;
-import com.crewing.notification.dto.NotificationApplyResponse;
+import com.crewing.notification.dto.NotificationResponse;
 import com.crewing.notification.entity.Notification;
 import com.crewing.notification.entity.NotificationMessage;
+import com.crewing.notification.entity.NotificationTitle;
 import com.crewing.notification.entity.NotificationType;
 import com.crewing.notification.repository.EmitterRepository;
 import com.crewing.notification.repository.NotificationRepository;
@@ -55,7 +56,8 @@ public class SSEService {
         return sseEmitter;
     }
 
-    public void send(User receiver, NotificationType notificationType, String message, Club club) {
+    public void send(User receiver, NotificationType notificationType, String message, String content, Club club) {
+
         Notification notification = notificationRepository.save(
                 Notification.builder()
                         .type(notificationType)
@@ -63,6 +65,8 @@ public class SSEService {
                         .isCheck(false)
                         .club(club)
                         .message(new NotificationMessage(message))
+                        .content(content)
+                        .title(new NotificationTitle(setTitle(notificationType,club)))
                         .build()
         );
         String userId = String.valueOf(receiver.getId());
@@ -72,7 +76,7 @@ public class SSEService {
                 (key,emitter)->{
                     log.info("key, notificationId : {}, {}", key, notification.getId());
                     emitterRepository.saveEventCache(key,notification);
-                    NotificationApplyResponse response = notification.toNotificationApplyResponse();
+                    NotificationResponse response = notification.toNotificationResponse();
                     ObjectMapper objectMapper = new ObjectMapper();
                     String jsonData = null;
                     try {
@@ -93,6 +97,15 @@ public class SSEService {
         } catch (IOException e) {
             emitterRepository.deleteById(emitterId);
             throw new RuntimeException("SSE Connection Failed : 알림 전송 실패");
+        }
+    }
+
+    public String setTitle(NotificationType notificationType,Club club){
+        if(notificationType.equals(NotificationType.APPLY)){
+            return club.getName()+" "+notificationType.getKey();
+        }
+        else{
+            return notificationType.getKey();
         }
     }
 }

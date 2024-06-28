@@ -15,5 +15,5 @@ public class ApplicantsDeleteRequest {
     private List<Long> deleteList;
 
     @NotBlank
-    private String message;
+    private String content;
 }

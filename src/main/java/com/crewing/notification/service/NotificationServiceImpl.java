@@ -1,12 +1,9 @@
 package com.crewing.notification.service;
 
-import com.crewing.common.error.BusinessException;
-import com.crewing.common.error.ErrorCode;
 import com.crewing.common.error.notification.NotificationNotFoundException;
-import com.crewing.notification.dto.NotificationApplyResponse;
+import com.crewing.notification.dto.NotificationResponse;
 import com.crewing.notification.dto.NotificationListResponse;
 import com.crewing.notification.entity.Notification;
-import com.crewing.notification.repository.EmitterRepository;
 import com.crewing.notification.repository.NotificationRepository;
 import com.crewing.user.entity.User;
 import jakarta.transaction.Transactional;
@@ -18,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,7 +28,7 @@ public class NotificationServiceImpl implements NotificationService{
     public NotificationListResponse getAllNotificationInfo(User user, Pageable pageable) {
         Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC,"id"));
         Page<Notification> notifications = notificationRepository.findAllByReceiver(user,pageRequest);
-        List<NotificationApplyResponse> responseList = notifications.map(Notification::toNotificationApplyResponse).stream().toList();
+        List<NotificationResponse> responseList = notifications.map(Notification::toNotificationResponse).stream().toList();
 
         return NotificationListResponse.builder()
                 .pageNum(notifications.getNumber())

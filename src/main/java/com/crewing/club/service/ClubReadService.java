@@ -15,4 +15,5 @@ public interface ClubReadService {
     ClubListResponse getAllSearchClubInfo(Pageable pageable,String search);
     ClubListResponse getAllStatusClubInfo(Pageable pageable, String status,User user);
     ClubListResponse getAllMyClubInfo(Pageable pageable, User user);
+    ClubListResponse getAllRecommendedClubInfo(Pageable pageable, User user);
 }

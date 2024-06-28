@@ -18,5 +18,5 @@ public class ApplicantsChangeStatusRequest {
     String status;
 
     @NotBlank
-    private String message;
+    private String content;
 }
