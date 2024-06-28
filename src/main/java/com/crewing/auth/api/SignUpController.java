@@ -32,7 +32,7 @@ public class SignUpController {
     private final MailService mailService;
 
     @Operation(summary = "추가 회원가입", description = "추가정보가 필요한 유저 회원가입")
-    @PostMapping("/oauth/signUp")
+    @PostMapping("/oauth")
     public ResponseEntity<TokenResponse> signUpOauth(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                      @RequestBody OauthSignUpRequest request) {
         TokenResponse response = signUpService.signUpOauth(request, principalDetails.getId());
@@ -40,7 +40,7 @@ public class SignUpController {
     }
 
     @Operation(summary = "기본 회원가입", description = "기본 회원가입을 요청합니다")
-    @PostMapping("/signUp")
+    @PostMapping
     public ResponseEntity<TokenResponse> signUpBasic(@RequestBody BasicSignUpRequest request) {
         TokenResponse response = signUpService.signUpBasic(request);
         return ResponseEntity.ok(response);
