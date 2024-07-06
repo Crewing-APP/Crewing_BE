@@ -12,5 +12,5 @@ public class ClubListResponse {
     private int pageNum;
     private int pageSize;
     private Long totalCnt;
-    private List<ClubInfoResponse> clubs;
+    private List<ClubListInfoResponse> clubs;
 }

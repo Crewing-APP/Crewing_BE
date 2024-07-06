@@ -5,6 +5,7 @@ import com.crewing.review.dto.ReviewCreateRequest;
 import com.crewing.review.dto.ReviewListResponse;
 import com.crewing.review.dto.ReviewResponse;
 import com.crewing.review.entity.Review;
+import com.crewing.review.service.ReviewService;
 import com.crewing.review.service.ReviewServiceImpl;
 import com.crewing.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,7 +29,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/review")
 public class ReviewController {
-    private final ReviewServiceImpl reviewService;
+    private final ReviewService reviewService;
 
     @Operation(summary = "리뷰 생성", description = "특정 동아리에 대한 리뷰 생성")
     @PostMapping("/create")

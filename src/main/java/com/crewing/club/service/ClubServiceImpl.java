@@ -51,8 +51,12 @@ public class ClubServiceImpl implements ClubService{
                 status(Status.HOLD).
                 category(clubCreateRequest.getCategory()).
                 isRecruit(clubCreateRequest.getIsRecruit()).
-                recruitStartDate(clubCreateRequest.getRecruitStartDate()).
-                recruitEndDate(clubCreateRequest.getRecruitEndDate()).
+                isOnlyStudent(clubCreateRequest.getIsOnlyStudent()).
+                docDeadLine(clubCreateRequest.getDocDeadLine()).
+                docResultDate(clubCreateRequest.getDocResultDate()).
+                interviewStartDate(clubCreateRequest.getInterviewStartDate()).
+                interviewEndDate(clubCreateRequest.getInterviewEndDate()).
+                finalResultDate(clubCreateRequest.getFinalResultDate()).
                 build());
 
         List<String> imageList;
@@ -109,8 +113,12 @@ public class ClubServiceImpl implements ClubService{
                 profile(profileUrl).
                 category(clubUpdateRequest.getCategory()).
                 isRecruit(clubUpdateRequest.getIsRecruit()).
-                recruitStartDate(clubUpdateRequest.getRecruitStartDate()).
-                recruitEndDate(clubUpdateRequest.getRecruitEndDate()).
+                isOnlyStudent(clubUpdateRequest.getIsOnlyStudent()).
+                docDeadLine(clubUpdateRequest.getDocDeadLine()).
+                docResultDate(clubUpdateRequest.getDocResultDate()).
+                interviewStartDate(clubUpdateRequest.getInterviewStartDate()).
+                interviewEndDate(clubUpdateRequest.getInterviewEndDate()).
+                finalResultDate(clubUpdateRequest.getFinalResultDate()).
                 build());
         return toClubCreateResponse(result);
     }
@@ -157,8 +165,12 @@ public class ClubServiceImpl implements ClubService{
                 .application(club.getApplication())
                 .status(club.getStatus())
                 .isRecruit(club.getIsRecruit())
-                .recruitStartDate(club.getRecruitStartDate())
-                .recruitEndDate(club.getRecruitEndDate())
+                .isOnlyStudent(club.getIsOnlyStudent())
+                .docDeadLine(club.getDocDeadLine())
+                .docResultDate(club.getDocResultDate())
+                .interviewStartDate(club.getInterviewStartDate())
+                .interviewEndDate(club.getInterviewEndDate())
+                .finalResultDate(club.getFinalResultDate())
                 .build();
     }
 

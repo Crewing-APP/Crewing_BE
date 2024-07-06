@@ -4,6 +4,7 @@ import com.crewing.auth.entity.PrincipalDetails;
 import com.crewing.member.dto.MemberCreateRequest;
 import com.crewing.member.dto.MemberInfoResponse;
 import com.crewing.member.dto.MemberListResponse;
+import com.crewing.member.service.MemberService;
 import com.crewing.member.service.MemberServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/member")
 public class MemberController {
-    private final MemberServiceImpl memberService;
+    private final MemberService memberService;
 
     @Operation(summary = "동아리 회원 생성",description = "회원 임명, 동아리 매니저만 가능")
     @PostMapping("/create")

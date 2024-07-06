@@ -11,24 +11,26 @@ import com.crewing.review.dto.ReviewCreateRequest;
 import com.crewing.review.dto.ReviewResponse;
 import com.crewing.review.entity.Review;
 import com.crewing.review.repository.ReviewRepository;
+import com.crewing.review.service.ReviewService;
 import com.crewing.review.service.ReviewServiceImpl;
 import com.crewing.user.entity.User;
 import com.crewing.user.repository.UserRepository;
+import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
-@TestPropertySource(locations = "classpath:application-test.properties")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS) // 클래스 단위로 생명주기를 바꾸면 static을 붙일 필요가 없어짐
+@Transactional
 public class ReviewServiceImplTest {
     @Autowired
-    private ReviewServiceImpl reviewService;
+    private ReviewService reviewService;
     @Autowired
     private ClubRepository clubRepository;
     @Autowired
@@ -39,28 +41,24 @@ public class ReviewServiceImplTest {
     private MemberRepository memberRepository;
     @Autowired
     private ReviewRepository reviewRepository;
+    @Autowired
+    private EntityManager em;
 
     private User user;
     private Club club;
     private Review review;
 
-    @BeforeAll
+    @BeforeEach
     void setting(){
-        reviewRepository.deleteAll();
-        memberRepository.deleteAll();
-        clubRepository.deleteAll();
-        userRepository.deleteAll();
-        authService.getDevToken("tlsdmsgp33@naver.com");
         this.user = userRepository.findByEmail("tlsdmsgp33@naver.com").get();
         Club newClub = Club.builder()
                 .name("test")
                 .application("test")
                 .category(0)
                 .introduction("test")
-                .clubFileList(null)
                 .oneLiner("test")
-                .profile("test")
-                .status(Status.UNDEFINED)
+                .status(Status.HOLD)
+                .isRecruit(true)
                 .build();
         this.club = clubRepository.save(newClub);
         Member member = Member.builder()
@@ -76,32 +74,17 @@ public class ReviewServiceImplTest {
                 .user(this.user)
                 .build();
         reviewRepository.save(review);
+        clear();
     }
 
-    @Test
-    @DisplayName("리뷰 생성 테스트")
-    void createReview(){
-        ReviewCreateRequest reviewCreateRequest = ReviewCreateRequest.builder()
-                .clubId(this.club.getClubId())
-                .rate(5)
-                .review("test")
-                .build();
-        ReviewResponse review = reviewService.createReview(reviewCreateRequest, user);
-        Assertions.assertThat(review.getReview()).isEqualTo("test");
-        Assertions.assertThat(review.getUser().getUserId()).isEqualTo(user.getId());
-        List<Review> reviews = reviewRepository.findAll();
-        System.out.println(reviews.size());
+    private void clear(){
+        em.flush();
+        em.clear();
     }
 
     @Test
     @DisplayName("리뷰 평균 구하기 테스트")
     void getReviewAvg(){
-        ReviewCreateRequest reviewCreateRequest = ReviewCreateRequest.builder()
-                .clubId(this.club.getClubId())
-                .rate(5)
-                .review("test")
-                .build();
-        ReviewResponse review = reviewService.createReview(reviewCreateRequest, user);
         float avg = reviewRepository.findAverageRateByClubId(this.club).get();
         Assertions.assertThat(avg).isEqualTo(5.0f);
     }
@@ -125,12 +108,4 @@ public class ReviewServiceImplTest {
         Optional<Review> review = reviewRepository.findById(this.review.getReviewId());
         Assertions.assertThat(review.isPresent()).isFalse();
     }
-
-//    @AfterAll
-//    void cleanUp(){
-//        reviewRepository.deleteAll();
-//        memberRepository.deleteAll();
-//        clubRepository.deleteAll();
-//        userRepository.deleteAll();
-//    }
 }

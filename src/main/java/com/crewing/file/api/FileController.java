@@ -1,5 +1,6 @@
 package com.crewing.file.api;
 
+import com.crewing.file.service.FileService;
 import com.crewing.file.service.FileServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RequiredArgsConstructor
 public class FileController {
-    private final FileServiceImpl fileService;
+    private final FileService fileService;
 
     @DeleteMapping("/delete")
     public String deleteFile(@RequestParam String imgUrl){

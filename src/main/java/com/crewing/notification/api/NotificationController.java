@@ -5,6 +5,7 @@ import com.crewing.club.entity.Club;
 import com.crewing.club.repository.ClubRepository;
 import com.crewing.notification.dto.NotificationListResponse;
 import com.crewing.notification.entity.NotificationType;
+import com.crewing.notification.service.NotificationService;
 import com.crewing.notification.service.NotificationServiceImpl;
 import com.crewing.notification.service.SSEService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,7 +25,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RequestMapping("/api/v1/notification")
 public class NotificationController {
     private final SSEService SSEService;
-    private final NotificationServiceImpl notificationServiceImpl;
+    private final NotificationService notificationServiceImpl;
     private final ClubRepository clubRepository;
     // Last-Event-ID는 sse 연결이 끊어졌을 때 클라이언트가 받은 마지막 메세지. 항상 존재 x
     @Operation(summary = "sse세션연결",description = "알림을 계속 받으려면 sse세션 연결을 먼저 실행해야함")
