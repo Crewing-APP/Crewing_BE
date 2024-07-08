@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,35 +17,35 @@ public class SignUpDTO {
     @AllArgsConstructor
     @Builder
     public static class BasicSignUpRequest {
-        @Schema(description = "생년 월일" , example = "2000-05-04")
+        @Schema(description = "생년 월일", example = "2000-05-04")
         private String birth;
-        @Schema(description = "성별" , example = "남자")
+        @Schema(description = "성별", example = "남자")
         private String gender;
-        @Schema(description = "이름" , example = "고수")
+        @Schema(description = "이름", example = "고수")
         private String name;
-        @Schema(description = "닉네임" , example = "반달곰수")
+        @Schema(description = "닉네임", example = "반달곰수")
         private String nickname;
-        @Schema(description = "관심항목" , example = "[\"개발\",\"축구\"]")
+        @Schema(description = "관심항목", example = "[\"개발\",\"축구\"]")
         private List<String> interests;
-        @Schema(description = "이메일" , example = "gosu@gosu.com")
+        @Schema(description = "이메일", example = "gosu@gosu.com")
         private String email;
-        @Schema(description = "이메일 인증 여부" , example = "true")
-        private boolean isVerified;
+        @Schema(description = "이메일 인증 여부", example = "true")
+        private boolean verified;
     }
 
     @Getter
     @AllArgsConstructor
     @Builder
     public static class OauthSignUpRequest {
-        @Schema(description = "생년 월일" , example = "2000-05-04")
+        @Schema(description = "생년 월일", example = "2000-05-04")
         private String birth;
-        @Schema(description = "성별" , example = "남자")
+        @Schema(description = "성별", example = "남자")
         private String gender;
-        @Schema(description = "이름" , example = "고수")
+        @Schema(description = "이름", example = "고수")
         private String name;
-        @Schema(description = "닉네임" , example = "반달곰수")
+        @Schema(description = "닉네임", example = "반달곰수")
         private String nickname;
-        @Schema(description = "관심항목" , example = "[\"개발\",\"축구\"]")
+        @Schema(description = "관심항목", example = "[\"개발\",\"축구\"]")
         private List<String> interests;
     }
 
@@ -56,9 +55,9 @@ public class SignUpDTO {
     @Builder
     public static class TokenResponse {
 
-        @Schema(description = "인증용 토큰" , example = "eyj....")
+        @Schema(description = "인증용 토큰", example = "eyj....")
         private String accessToken;
-        @Schema(description = "재발급용 토큰" , example = "eyj....")
+        @Schema(description = "재발급용 토큰", example = "eyj....")
         private String refreshToken;
 
         @JsonIgnore
@@ -75,7 +74,7 @@ public class SignUpDTO {
     @Builder
     @Jacksonized
     public static class RefreshRequest {
-        @Schema(description = "재발급용 토큰" , example = "eyj....")
+        @Schema(description = "재발급용 토큰", example = "eyj....")
         private String refreshToken;
     }
 

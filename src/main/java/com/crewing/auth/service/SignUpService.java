@@ -53,8 +53,9 @@ public class SignUpService {
     /**
      * 기본 회원가입
      */
-    public TokenResponse signUpBasic(BasicSignUpRequest request){
-        if(!request.isVerified()){
+    public TokenResponse signUpBasic(BasicSignUpRequest request) {
+        log.info("asd {}", request.isVerified());
+        if (!request.isVerified()) {
             throw new NotVerifiedEmailException();
         }
         User user = User.builder()
