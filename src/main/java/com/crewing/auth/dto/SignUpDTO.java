@@ -1,5 +1,6 @@
 package com.crewing.auth.dto;
 
+import com.crewing.user.entity.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,6 +60,8 @@ public class SignUpDTO {
         private String accessToken;
         @Schema(description = "재발급용 토큰", example = "eyj....")
         private String refreshToken;
+        @Schema(description = "유저 권한" , example = "ADMIN")
+        private Role role;
 
         @JsonIgnore
         private final ObjectMapper objectMapper = new ObjectMapper();
