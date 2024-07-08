@@ -68,6 +68,9 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Interest> interests = new ArrayList<>();
 
+    //학생 인증
+    @Column
+    private boolean isStudent = false;
     @Builder
     public User(String email, String password, String nickname, String profileImage, Role role, SocialType socialType,
                 String socialId, String refreshToken, String birth, String gender, String name) {
@@ -125,6 +128,10 @@ public class User extends BaseTimeEntity {
 
     public void updateProfileImage(String profileImage) {
         this.profileImage = profileImage;
+    }
+
+    public void verifyStudent(){
+        this.isStudent = true;
     }
 
 }

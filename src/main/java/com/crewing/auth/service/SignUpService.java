@@ -42,7 +42,7 @@ public class SignUpService {
 
         user.signUpOauth(request.getBirth(), request.getGender(), request.getName(), interests);
 
-        TokenResponse token = jwtService.getToken(user.getEmail());
+        TokenResponse token = jwtService.getToken(user.getEmail(),user.getRole());
         user.setRefreshToken(token.getRefreshToken());
 
         userRepository.save(user);
@@ -53,8 +53,9 @@ public class SignUpService {
     /**
      * 기본 회원가입
      */
-    public TokenResponse signUpBasic(BasicSignUpRequest request){
-        if(!request.isVerified()){
+    public TokenResponse signUpBasic(BasicSignUpRequest request) {
+        log.info("asd {}", request.isVerified());
+        if (!request.isVerified()) {
             throw new NotVerifiedEmailException();
         }
         User user = User.builder()
@@ -77,7 +78,7 @@ public class SignUpService {
 
         user.updateInterests(interests);
 
-        TokenResponse token = jwtService.getToken(user.getEmail());
+        TokenResponse token = jwtService.getToken(user.getEmail(),user.getRole());
         user.updateRefreshToken(token.getRefreshToken());
 
         userRepository.save(user);

@@ -41,7 +41,12 @@ public enum ErrorCode {
     //Device
     DEVICE_NOT_FOUND_EXCEPTION("D01", "Device is not Found.", HttpStatus.NOT_FOUND.value()),
     // Notification
-    NOTIFICATION_NOT_FOUND("N01", "Notification is not Found.", HttpStatus.NOT_FOUND.value());
+    NOTIFICATION_NOT_FOUND("N01", "Notification is not Found.", HttpStatus.NOT_FOUND.value()),
+    //External
+    NOT_SUPPORTED_UNIVERSITY("E01","University is Not Supported" , HttpStatus.BAD_REQUEST.value()),
+    STUDENT_INVALID_AUTH_CODE_EXCEPTION("E02","Invalid Student Auth Code" , HttpStatus.BAD_REQUEST.value()),
+    STUDENT_AUTH_CODE_NOT_FOUND("E03","Student Auth Code is Not Found" , HttpStatus.NOT_FOUND.value()),
+    DUPLICATED_EMAIL_EXCEPTION("E04","Email is Duplicated" , HttpStatus.CONFLICT.value());
 
     private final String code;
     private final String message;

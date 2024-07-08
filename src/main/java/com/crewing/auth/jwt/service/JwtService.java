@@ -111,6 +111,7 @@ public class JwtService {
                     TokenResponse.builder()
                             .accessToken(accessToken)
                             .refreshToken(refreshToken)
+                            .role(role)
                             .build()
                             .convertToJson()
             );
@@ -211,13 +212,14 @@ public class JwtService {
         }
     }
 
-    public TokenResponse getToken(String email){
+    public TokenResponse getToken(String email,Role role){
         String accessToken = this.createAccessToken(email);
         String refreshToken = this.createRefreshToken();
 
         return TokenResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .role(role)
                 .build();
     }
 
