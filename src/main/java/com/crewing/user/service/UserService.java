@@ -3,6 +3,7 @@ package com.crewing.user.service;
 import com.crewing.common.error.BusinessException;
 import com.crewing.common.error.ErrorCode;
 import com.crewing.common.error.user.UserNotFoundException;
+import com.crewing.external.StudentVerifyApi.StudentVerifyApiClient;
 import com.crewing.file.service.FileService;
 import com.crewing.user.dto.UserDTO.InterestUpdateRequest;
 import com.crewing.user.dto.UserDTO.UserInfoResponse;
@@ -24,13 +25,16 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserService {
+//    @Value("${student.verify.apiKey}")
+//    private String apiKey;
+
     private final UserRepository userRepository;
     private final InterestRepository interestRepository;
     private final FileService fileService;
+    private final StudentVerifyApiClient studentVerifyApiClient;
 
     public UserInfoResponse getUserInfo(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-
         return UserInfoResponse.toDTO(user);
     }
 
@@ -82,11 +86,25 @@ public class UserService {
     @Transactional
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-
         userRepository.delete(user);
     }
 
     public User getUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     }
+
+//    public void createStudentEmailVerification(StudentCreateVerificationRequest request) {
+//        studentVerifyApiClient.createStudentVerification(apiKey, request);
+//    }
+//
+//    public void verifyEmail(Long userId, StudentVerifyRequest request) {
+//        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+//
+//        studentVerifyApiClient.verifyEmail(apiKey, request);
+//
+//        user.verifyStudent();
+//
+//        userRepository.save(user);
+//    }
+
 }

@@ -55,7 +55,7 @@ public class UserController {
     }
 
     @Operation(summary = "유저 프로필 사진 수정", description = "로그인 유저의 프로필 사진을 수정합니다")
-    @PatchMapping(path = "/me",consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(path = "/me", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateUserProfileImage(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                     @RequestBody MultipartFile image) {
 
@@ -72,9 +72,24 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/test")
-    public void test(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        log.info("user = {}", principalDetails.getUser().getRole());
-    }
+//    @Operation(summary = "유저 학생 인증 메일 발송", description = "학생 인증 메일을 발송합니다")
+//    @PostMapping("/me/verification/email")
+//    public ResponseEntity<Void> createStudentVerification(
+//            @RequestBody StudentCreateVerificationRequest request) {
+//        log.info(request.getEmail());
+//        userService.createStudentEmailVerification(request);
+//
+//        return ResponseEntity.ok().build();
+//    }
+//
+//    @Operation(summary = "유저 학생 인증 메일 검증", description = "학생 인증 메일을 검증하고 , 학생을 인증합니다.")
+//    @PostMapping("/me/verification")
+//    public ResponseEntity<Void> verifyEmail(@AuthenticationPrincipal PrincipalDetails principalDetails,
+//                                            @RequestBody StudentVerifyRequest request) {
+//        log.info(request.getEmail());
+//        userService.verifyEmail(principalDetails.getId(), request);
+//
+//        return ResponseEntity.ok().build();
+//    }
 
 }
