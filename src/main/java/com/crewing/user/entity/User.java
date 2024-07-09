@@ -32,13 +32,13 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_id")
     private Long id;
 
-    @Column
+    @Column(unique = true)
     private String email;
 
     @Column
     private String password;
 
-    @Column
+    @Column(unique = true)
     private String nickname;
 
     @Column
@@ -70,7 +70,8 @@ public class User extends BaseTimeEntity {
 
     //학생 인증
     @Column
-    private boolean isStudent = false;
+    private boolean student = false;
+
     @Builder
     public User(String email, String password, String nickname, String profileImage, Role role, SocialType socialType,
                 String socialId, String refreshToken, String birth, String gender, String name) {
@@ -130,8 +131,8 @@ public class User extends BaseTimeEntity {
         this.profileImage = profileImage;
     }
 
-    public void verifyStudent(){
-        this.isStudent = true;
+    public void verifyStudent() {
+        this.student = true;
     }
 
 }

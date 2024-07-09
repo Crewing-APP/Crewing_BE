@@ -42,7 +42,7 @@ public class SignUpService {
 
         user.signUpOauth(request.getBirth(), request.getGender(), request.getName(), interests);
 
-        TokenResponse token = jwtService.getToken(user.getEmail(),user.getRole());
+        TokenResponse token = jwtService.getToken(user.getEmail(), user.getRole());
         user.setRefreshToken(token.getRefreshToken());
 
         userRepository.save(user);
@@ -78,11 +78,15 @@ public class SignUpService {
 
         user.updateInterests(interests);
 
-        TokenResponse token = jwtService.getToken(user.getEmail(),user.getRole());
+        TokenResponse token = jwtService.getToken(user.getEmail(), user.getRole());
         user.updateRefreshToken(token.getRefreshToken());
 
         userRepository.save(user);
 
         return token;
+    }
+
+    public boolean checkDuplicateEmail(String email) {
+        return userRepository.findByEmail(email).isPresent();
     }
 }

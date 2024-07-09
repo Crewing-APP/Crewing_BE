@@ -1,11 +1,11 @@
 package com.crewing.auth.api;
 
 import com.crewing.auth.dto.SignUpDTO.BasicSignUpRequest;
+import com.crewing.auth.dto.SignUpDTO.EmailDuplicateCheckResponse;
 import com.crewing.auth.dto.SignUpDTO.OauthSignUpRequest;
 import com.crewing.auth.dto.SignUpDTO.TokenResponse;
 import com.crewing.auth.entity.PrincipalDetails;
 import com.crewing.auth.service.SignUpService;
-import com.crewing.mail.dto.EmailDTO.EmailSendResponse;
 import com.crewing.mail.dto.EmailDTO.EmailVerifyRequest;
 import com.crewing.mail.dto.EmailDTO.SignUpEmailVerifyResponse;
 import com.crewing.mail.service.MailService;
@@ -64,5 +64,18 @@ public class SignUpController {
                         .verifyResult(response)
                         .build()
         );
+    }
+
+    @Operation(summary = "이메일 중복 체크", description = "이메일 중복을 체크합니다")
+    @GetMapping("/verification/duplicate/{email}")
+    public ResponseEntity<EmailDuplicateCheckResponse> checkDuplicatedEmail(@PathVariable String email) {
+        boolean duplicated = signUpService.checkDuplicateEmail(email);
+
+        EmailDuplicateCheckResponse response = EmailDuplicateCheckResponse.builder()
+                .email(email)
+                .duplicate(duplicated)
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 }

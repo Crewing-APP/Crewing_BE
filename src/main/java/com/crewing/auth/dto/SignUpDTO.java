@@ -60,7 +60,7 @@ public class SignUpDTO {
         private String accessToken;
         @Schema(description = "재발급용 토큰", example = "eyj....")
         private String refreshToken;
-        @Schema(description = "유저 권한" , example = "ADMIN")
+        @Schema(description = "유저 권한", example = "ADMIN")
         private Role role;
 
         @JsonIgnore
@@ -79,6 +79,17 @@ public class SignUpDTO {
     public static class RefreshRequest {
         @Schema(description = "재발급용 토큰", example = "eyj....")
         private String refreshToken;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    public static class EmailDuplicateCheckResponse {
+        @Schema(description = "이메일", example = "gomsu@gomsu.gomsu")
+        private String email;
+
+        @Schema(description = "중복여부 true -> 중복", example = "true")
+        private boolean duplicate;
     }
 
 }
