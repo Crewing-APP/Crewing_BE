@@ -13,6 +13,7 @@ import com.crewing.common.util.PaginationUtils;
 import com.crewing.file.entity.ClubFile;
 import com.crewing.member.entity.Member;
 import com.crewing.member.repository.MemberRepository;
+import com.crewing.review.entity.Review;
 import com.crewing.review.repository.ReviewRepository;
 import com.crewing.user.entity.Interest;
 import com.crewing.user.entity.Role;
@@ -94,9 +95,15 @@ public class ClubReadServiceImpl implements ClubReadService{
     // 검색어를 통한 동아리 정보 조회
     @Override
     @Transactional
-    public ClubListResponse getAllSearchClubInfo(Pageable pageable,String search) {
+    public ClubListResponse getAllSearchClubInfo(Pageable pageable,String search, int category) {
+        String keyword = search.replaceAll("\\s", "");
+        Page<Club> clubPage = null;
         Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC,"clubId"));
-        Page<Club> clubPage = clubRepository.findAllByNameContainingAndStatus(search, Status.ACCEPT,pageRequest);
+        if(category==-1)
+            clubPage = clubRepository.findAllByKeywordAndStatus(keyword,Status.ACCEPT,pageRequest);
+        else {
+            clubPage = clubRepository.findAllByKeywordAndStatusAndCategory(keyword, Status.ACCEPT, pageRequest, category);
+        }
         Page<ClubListInfoResponse> clubInfoPages = clubPage.map(this::toClubListInfoResponse);
         return getClubListResponse(clubInfoPages);
     }
@@ -131,15 +138,27 @@ public class ClubReadServiceImpl implements ClubReadService{
 
     @Override
     @Transactional
-    public ClubListResponse getAllRecommendedClubInfo(Pageable pageable,User user) {
+    public ClubListResponse getAllRecommendedClubInfo(Pageable pageable, String search, User user) {
         User loginedUser = userRepository.findById(user.getId()).get();
         List<Interest> interestList = loginedUser.getInterests();
-        log.info("interestList size = {}", interestList.size());
         List<Integer> categories = new ArrayList<>();
         for(Interest interest : interestList){
             categories.add(setCategory(interest.getInterest()));
         }
-        List<ClubListInfoResponse> clubList = clubRepository.findAllClubsWithAverageRating(categories,Status.ACCEPT,user.getBirth());
+
+        List<ClubListInfoResponse> clubList = null;
+        if(search == null || search.isEmpty()){ // 전체 목록 조회
+            clubList = clubRepository.findAllClubsWithAverageRating(categories,Status.ACCEPT,user.getBirth());
+        }
+        else{
+            String keyword = search.replaceAll("\\s", "");
+            clubList = clubRepository.findAllClubsWithAverageRatingByKeyword(categories,Status.ACCEPT,user.getBirth(),keyword);
+        }
+        for(ClubListInfoResponse clubInfo : clubList){
+            Club club = clubRepository.findById(clubInfo.getClubId()).get();
+            List<Review> reviewList = club.getReviewList();
+            clubInfo.setLatestReview(reviewList.isEmpty() ? null : reviewList.get(reviewList.size()-1).getReview());
+        }
         Page<ClubListInfoResponse> clubsPage = PaginationUtils.listToPage(clubList, pageable);
         return getClubListResponse(clubsPage);
     }
@@ -154,12 +173,14 @@ public class ClubReadServiceImpl implements ClubReadService{
     }
 
     private ClubListInfoResponse toClubListInfoResponse(Club club) {
+        List<Review> reviewList = club.getReviewList();
         return ClubListInfoResponse.builder().
                 name(club.getName()).
                 clubId(club.getClubId()).
                 oneLiner(club.getOneLiner()).
                 reviewAvg(reviewRepository.findAverageRateByClubId(club).orElse(0f)).
-                reviewNum(club.getReviewList().size()).
+                reviewNum(reviewList.size()).
+                latestReview(reviewList.isEmpty() ? null : reviewList.get(reviewList.size()-1).getReview()).
                 profile(club.getProfile()).
                 category(club.getCategory()).
                 status(club.getStatus()).

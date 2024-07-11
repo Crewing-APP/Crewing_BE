@@ -16,7 +16,6 @@ import java.util.Optional;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     Page<Review> findAllByClub(Pageable pageable, Club club);
-    Page<Review> findAllByUser(Pageable pageable,User user);
 
     @Query("SELECT AVG(r.rate) FROM Review r, Club c WHERE r.club = :club")
     Optional<Float> findAverageRateByClubId(@Param("club") Club club);

@@ -12,6 +12,7 @@ public class ClubListInfoResponse {
     private String oneLiner;
     private Float reviewAvg;
     private int reviewNum;
+    private String latestReview;
     private String profile;
     private int category;
     private Status status;
@@ -23,15 +24,20 @@ public class ClubListInfoResponse {
     private String interviewEndDate; // 면접 종료일
     private String finalResultDate; // 최종 발표일
 
+    public void setLatestReview(String latestReview) {
+        this.latestReview = latestReview;
+    }
+
     // for club repository jpql
-    public ClubListInfoResponse(Long clubId, String name,String oneLiner,Double reviewAvg, Long reviewNum
-    , String profile, int category, Status status, Boolean isRecruit, Boolean isOnlyStudent, String docDeadLine,
+    public ClubListInfoResponse(Long clubId, String name,String oneLiner,Double reviewAvg, Long reviewNum, String latestReview,
+                                String profile, int category, Status status, Boolean isRecruit, Boolean isOnlyStudent, String docDeadLine,
                                 String docResultDate, String interviewStartDate, String interviewEndDate, String finalResultDate) {
         this.clubId = clubId;
         this.name = name;
         this.oneLiner = oneLiner;
         this.reviewAvg = reviewAvg != null ? reviewAvg.floatValue() : 0;
         this.reviewNum = reviewNum != null ? reviewNum.intValue() : 0;
+        this.latestReview = latestReview;
         this.profile = profile;
         this.category = category;
         this.status = status;
