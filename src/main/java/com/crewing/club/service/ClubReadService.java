@@ -12,7 +12,7 @@ public interface ClubReadService {
     ClubInfoResponse getClubInfo(Long clubId);
     ClubListResponse getAllClubInfo(Pageable pageable);
     ClubListResponse getAllFilterClubInfo(Pageable pageable,int category);
-    ClubListResponse getAllSearchClubInfo(Pageable pageable,String search);
+    ClubListResponse getAllSearchClubInfo(Pageable pageable,String search, int category);
     ClubListResponse getAllStatusClubInfo(Pageable pageable, String status,User user);
     ClubListResponse getAllMyClubInfo(Pageable pageable, User user);
     ClubListResponse getAllRecommendedClubInfo(Pageable pageable, User user);

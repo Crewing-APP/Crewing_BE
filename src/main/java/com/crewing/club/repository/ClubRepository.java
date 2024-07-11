@@ -30,6 +30,9 @@ public interface ClubRepository extends JpaRepository<Club,Long> {
 
     Page<Club> findAllByStatus(Status status, Pageable pageable);
     Page<Club> findAllByCategoryAndStatus(int category, Status status,Pageable pageable);
-    Page<Club> findAllByNameContainingAndStatus(String search, Status status, Pageable pageable);
+
+    @Query("SELECT c FROM Club c WHERE REPLACE(c.name, ' ', '') LIKE %:keyword% AND c.status = :status AND c.category = :category")
+    Page<Club> findAllByKeywordAndStatusAndCategory(@Param("keyword") String keyword, @Param("status") Status status, Pageable pageable,@Param("category") int category);
+
     Page<Club> findAllByClubIdIn(List<Long> clubIds, Pageable pageable);
 }

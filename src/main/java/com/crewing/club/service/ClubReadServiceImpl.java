@@ -94,9 +94,10 @@ public class ClubReadServiceImpl implements ClubReadService{
     // 검색어를 통한 동아리 정보 조회
     @Override
     @Transactional
-    public ClubListResponse getAllSearchClubInfo(Pageable pageable,String search) {
+    public ClubListResponse getAllSearchClubInfo(Pageable pageable,String search, int category) {
+        String keyword = search.replaceAll("\\s", "");
         Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC,"clubId"));
-        Page<Club> clubPage = clubRepository.findAllByNameContainingAndStatus(search, Status.ACCEPT,pageRequest);
+        Page<Club> clubPage = clubRepository.findAllByKeywordAndStatusAndCategory(keyword, Status.ACCEPT,pageRequest,category);
         Page<ClubListInfoResponse> clubInfoPages = clubPage.map(this::toClubListInfoResponse);
         return getClubListResponse(clubInfoPages);
     }

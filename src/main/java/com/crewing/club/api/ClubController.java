@@ -121,8 +121,8 @@ public class ClubController {
     @Operation(summary = "검색어별 동아리 목록 조회", description = "제목 검색으로 동아리 목록 조회, 페이징으로 조회 가능")
     @GetMapping("/clubs/search")
     @Parameter(name = "search", description = "검색어", required = true)
-    public ResponseEntity<ClubListResponse> getAllClubBySearch(@PageableDefault(size = 10) Pageable pageable, @RequestParam String search){
-        ClubListResponse clubList = clubReadService.getAllSearchClubInfo(pageable,search);
+    public ResponseEntity<ClubListResponse> getAllClubBySearch(@PageableDefault(size = 10) Pageable pageable, @RequestParam String search, @RequestParam int category){
+        ClubListResponse clubList = clubReadService.getAllSearchClubInfo(pageable,search,category);
         return ResponseEntity.ok().body(clubList);
     }
 
