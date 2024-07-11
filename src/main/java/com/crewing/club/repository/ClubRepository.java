@@ -27,7 +27,7 @@ public interface ClubRepository extends JpaRepository<Club,Long> {
 
     /** 추천 동아리 전체 조회 */
     @Query(value = "select "+
-            "new com.crewing.club.dto.ClubListInfoResponse(c.clubId,c.name,c.oneLiner,AVG(r.rate),COUNT(r),c.profile," +
+            "new com.crewing.club.dto.ClubListInfoResponse(c.clubId,c.name,c.oneLiner,AVG(r.rate),COUNT(r),'', c.profile," +
             "c.category,c.status,c.isRecruit,c.isOnlyStudent,c.docDeadLine,c.docResultDate,c.interviewStartDate," +
             "c.interviewEndDate,c.finalResultDate) "+
             "FROM Club c LEFT JOIN c.reviewList r LEFT JOIN c.memberList m LEFT JOIN m.user u " +
@@ -42,7 +42,7 @@ public interface ClubRepository extends JpaRepository<Club,Long> {
 
     /** 추천 동아리 검색어 조회 */
     @Query(value = "select "+
-            "new com.crewing.club.dto.ClubListInfoResponse(c.clubId,c.name,c.oneLiner,AVG(r.rate),COUNT(r),c.profile," +
+            "new com.crewing.club.dto.ClubListInfoResponse(c.clubId,c.name,c.oneLiner,AVG(r.rate),COUNT(r),'',c.profile," +
             "c.category,c.status,c.isRecruit,c.isOnlyStudent,c.docDeadLine,c.docResultDate,c.interviewStartDate," +
             "c.interviewEndDate,c.finalResultDate) "+
             "FROM Club c LEFT JOIN c.reviewList r LEFT JOIN c.memberList m LEFT JOIN m.user u " +

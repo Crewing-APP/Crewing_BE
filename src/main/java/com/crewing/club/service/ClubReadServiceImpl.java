@@ -13,6 +13,7 @@ import com.crewing.common.util.PaginationUtils;
 import com.crewing.file.entity.ClubFile;
 import com.crewing.member.entity.Member;
 import com.crewing.member.repository.MemberRepository;
+import com.crewing.review.entity.Review;
 import com.crewing.review.repository.ReviewRepository;
 import com.crewing.user.entity.Interest;
 import com.crewing.user.entity.Role;
@@ -153,6 +154,11 @@ public class ClubReadServiceImpl implements ClubReadService{
             String keyword = search.replaceAll("\\s", "");
             clubList = clubRepository.findAllClubsWithAverageRatingByKeyword(categories,Status.ACCEPT,user.getBirth(),keyword);
         }
+        for(ClubListInfoResponse clubInfo : clubList){
+            Club club = clubRepository.findById(clubInfo.getClubId()).get();
+            List<Review> reviewList = club.getReviewList();
+            clubInfo.setLatestReview(reviewList.isEmpty() ? null : reviewList.get(reviewList.size()-1).getReview());
+        }
         Page<ClubListInfoResponse> clubsPage = PaginationUtils.listToPage(clubList, pageable);
         return getClubListResponse(clubsPage);
     }
@@ -167,12 +173,14 @@ public class ClubReadServiceImpl implements ClubReadService{
     }
 
     private ClubListInfoResponse toClubListInfoResponse(Club club) {
+        List<Review> reviewList = club.getReviewList();
         return ClubListInfoResponse.builder().
                 name(club.getName()).
                 clubId(club.getClubId()).
                 oneLiner(club.getOneLiner()).
                 reviewAvg(reviewRepository.findAverageRateByClubId(club).orElse(0f)).
-                reviewNum(club.getReviewList().size()).
+                reviewNum(reviewList.size()).
+                latestReview(reviewList.isEmpty() ? null : reviewList.get(reviewList.size()-1).getReview()).
                 profile(club.getProfile()).
                 category(club.getCategory()).
                 status(club.getStatus()).
