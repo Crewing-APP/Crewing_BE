@@ -96,8 +96,13 @@ public class ClubReadServiceImpl implements ClubReadService{
     @Transactional
     public ClubListResponse getAllSearchClubInfo(Pageable pageable,String search, int category) {
         String keyword = search.replaceAll("\\s", "");
+        Page<Club> clubPage = null;
         Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC,"clubId"));
-        Page<Club> clubPage = clubRepository.findAllByKeywordAndStatusAndCategory(keyword, Status.ACCEPT,pageRequest,category);
+        if(category==-1)
+            clubPage = clubRepository.findAllByKeywordAndStatus(keyword,Status.ACCEPT,pageRequest);
+        else {
+            clubPage = clubRepository.findAllByKeywordAndStatusAndCategory(keyword, Status.ACCEPT, pageRequest, category);
+        }
         Page<ClubListInfoResponse> clubInfoPages = clubPage.map(this::toClubListInfoResponse);
         return getClubListResponse(clubInfoPages);
     }
@@ -132,15 +137,22 @@ public class ClubReadServiceImpl implements ClubReadService{
 
     @Override
     @Transactional
-    public ClubListResponse getAllRecommendedClubInfo(Pageable pageable,User user) {
+    public ClubListResponse getAllRecommendedClubInfo(Pageable pageable, String search, User user) {
         User loginedUser = userRepository.findById(user.getId()).get();
         List<Interest> interestList = loginedUser.getInterests();
-        log.info("interestList size = {}", interestList.size());
         List<Integer> categories = new ArrayList<>();
         for(Interest interest : interestList){
             categories.add(setCategory(interest.getInterest()));
         }
-        List<ClubListInfoResponse> clubList = clubRepository.findAllClubsWithAverageRating(categories,Status.ACCEPT,user.getBirth());
+
+        List<ClubListInfoResponse> clubList = null;
+        if(search == null || search.isEmpty()){ // 전체 목록 조회
+            clubList = clubRepository.findAllClubsWithAverageRating(categories,Status.ACCEPT,user.getBirth());
+        }
+        else{
+            String keyword = search.replaceAll("\\s", "");
+            clubList = clubRepository.findAllClubsWithAverageRatingByKeyword(categories,Status.ACCEPT,user.getBirth(),keyword);
+        }
         Page<ClubListInfoResponse> clubsPage = PaginationUtils.listToPage(clubList, pageable);
         return getClubListResponse(clubsPage);
     }

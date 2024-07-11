@@ -14,6 +14,18 @@ import java.util.List;
 
 @Repository
 public interface ClubRepository extends JpaRepository<Club,Long> {
+    Page<Club> findAllByStatus(Status status, Pageable pageable);
+    Page<Club> findAllByCategoryAndStatus(int category, Status status,Pageable pageable);
+
+    @Query("SELECT c FROM Club c WHERE REPLACE(c.name, ' ', '') LIKE %:keyword% AND c.status = :status AND c.category = :category")
+    Page<Club> findAllByKeywordAndStatusAndCategory(@Param("keyword") String keyword, @Param("status") Status status, Pageable pageable,@Param("category") int category);
+
+    @Query("SELECT c FROM Club c WHERE REPLACE(c.name, ' ', '') LIKE %:keyword% AND c.status = :status")
+    Page<Club> findAllByKeywordAndStatus(@Param("keyword") String keyword, @Param("status") Status status, Pageable pageable);
+
+    Page<Club> findAllByClubIdIn(List<Long> clubIds, Pageable pageable);
+
+    /** 추천 동아리 전체 조회 */
     @Query(value = "select "+
             "new com.crewing.club.dto.ClubListInfoResponse(c.clubId,c.name,c.oneLiner,AVG(r.rate),COUNT(r),c.profile," +
             "c.category,c.status,c.isRecruit,c.isOnlyStudent,c.docDeadLine,c.docResultDate,c.interviewStartDate," +
@@ -28,11 +40,19 @@ public interface ClubRepository extends JpaRepository<Club,Long> {
                                                              @Param("clubStatus")Status clubStatus,
                                                              @Param("birth") String birth);
 
-    Page<Club> findAllByStatus(Status status, Pageable pageable);
-    Page<Club> findAllByCategoryAndStatus(int category, Status status,Pageable pageable);
-
-    @Query("SELECT c FROM Club c WHERE REPLACE(c.name, ' ', '') LIKE %:keyword% AND c.status = :status AND c.category = :category")
-    Page<Club> findAllByKeywordAndStatusAndCategory(@Param("keyword") String keyword, @Param("status") Status status, Pageable pageable,@Param("category") int category);
-
-    Page<Club> findAllByClubIdIn(List<Long> clubIds, Pageable pageable);
+    /** 추천 동아리 검색어 조회 */
+    @Query(value = "select "+
+            "new com.crewing.club.dto.ClubListInfoResponse(c.clubId,c.name,c.oneLiner,AVG(r.rate),COUNT(r),c.profile," +
+            "c.category,c.status,c.isRecruit,c.isOnlyStudent,c.docDeadLine,c.docResultDate,c.interviewStartDate," +
+            "c.interviewEndDate,c.finalResultDate) "+
+            "FROM Club c LEFT JOIN c.reviewList r LEFT JOIN c.memberList m LEFT JOIN m.user u " +
+            "WHERE c.isRecruit = true AND c.status = :clubStatus AND c.category IN :categories AND REPLACE(c.name, ' ', '') LIKE %:keyword%  " +
+            "GROUP BY c.clubId "+
+            "ORDER BY AVG(r.rate) DESC, " +
+            "SUM(CASE WHEN u.birth = :birth THEN 1 ELSE 0 END) DESC, " +
+            "SUM(CASE WHEN u.gender = '여자' THEN 1 ELSE 0 END) DESC")
+    List<ClubListInfoResponse> findAllClubsWithAverageRatingByKeyword(@Param("categories") List<Integer> categories,
+                                                                      @Param("clubStatus")Status clubStatus,
+                                                                      @Param("birth") String birth,
+                                                                      @Param("keyword") String keyword);
 }

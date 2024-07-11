@@ -96,10 +96,10 @@ public class ClubController {
         return ResponseEntity.ok().body(clubList);
     }
 
-    @Operation(summary = "추천 동아리 목록 조회", description = "추천 동아리 목록 조회, 페이징으로 조회 가능")
+    @Operation(summary = "추천 동아리 목록 조회", description = "추천 동아리 목록 조회, search가 비어있을 경우 전체 목록 조회, 페이징으로 조회 가능")
     @GetMapping("/clubs/recommend")
-    public ResponseEntity<ClubListResponse> getAllRecommendClub(@PageableDefault(size = 10) Pageable pageable, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        ClubListResponse clubList = clubReadService.getAllRecommendedClubInfo(pageable,principalDetails.getUser());
+    public ResponseEntity<ClubListResponse> getAllRecommendClub(@PageableDefault(size = 10) Pageable pageable, @RequestParam String search, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        ClubListResponse clubList = clubReadService.getAllRecommendedClubInfo(pageable, search, principalDetails.getUser());
         return ResponseEntity.ok().body(clubList);
     }
 
@@ -118,7 +118,7 @@ public class ClubController {
         return ResponseEntity.ok().body(clubList);
     }
 
-    @Operation(summary = "검색어별 동아리 목록 조회", description = "제목 검색으로 동아리 목록 조회, 페이징으로 조회 가능")
+    @Operation(summary = "검색어별 동아리 목록 조회", description = "제목 검색으로 동아리 목록 조회, category 값이 -1일 경우 전체 동아리에서 조회, 페이징으로 조회 가능")
     @GetMapping("/clubs/search")
     @Parameter(name = "search", description = "검색어", required = true)
     public ResponseEntity<ClubListResponse> getAllClubBySearch(@PageableDefault(size = 10) Pageable pageable, @RequestParam String search, @RequestParam int category){

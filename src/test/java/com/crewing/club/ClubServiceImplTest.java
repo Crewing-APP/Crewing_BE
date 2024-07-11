@@ -143,7 +143,7 @@ public class ClubServiceImplTest {
     @DisplayName("추천 동아리 리스트 테스트")
     void getAllRecommendedClubInfo(){
         Pageable pageable = PageRequest.of(0, 10);
-        ClubListResponse clubListResponse = clubReadService.getAllRecommendedClubInfo(pageable,user);
+        ClubListResponse clubListResponse = clubReadService.getAllRecommendedClubInfo(pageable, "",user);
         List<ClubListInfoResponse> clubLists = clubListResponse.getClubs();
 
         assertThat(clubLists.get(0).getName()).isEqualTo("test1");
