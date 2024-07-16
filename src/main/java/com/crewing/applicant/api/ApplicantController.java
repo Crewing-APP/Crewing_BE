@@ -3,6 +3,7 @@ package com.crewing.applicant.api;
 import com.crewing.applicant.dto.*;
 import com.crewing.applicant.service.ApplicantServiceImpl;
 import com.crewing.auth.entity.PrincipalDetails;
+import com.crewing.club.dto.ClubListInfoResponse;
 import com.crewing.member.dto.MemberInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -75,8 +76,8 @@ public class ApplicantController {
 
     @Operation(summary = "내가 지원한 동아리 목록", description = "로그인한 사용자의 지원한 동아리 목록, 페이징 x")
     @GetMapping("/applicants/my")
-    public ResponseEntity<List<MyApplicantResponse>> getMyAllApplicantClub(@AuthenticationPrincipal PrincipalDetails principalDetails){
-        List<MyApplicantResponse> response =  applicantService.getAllMyApplicantClubInfo(principalDetails.getUser());
+    public ResponseEntity<List<ClubListInfoResponse>> getMyAllApplicantClub(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        List<ClubListInfoResponse> response =  applicantService.getAllMyApplicantClubInfo(principalDetails.getUser());
         return ResponseEntity.ok().body(response);
     }
 }

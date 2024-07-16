@@ -1,7 +1,11 @@
 package com.crewing.club.dto;
 
+import com.crewing.club.entity.Club;
 import com.crewing.club.entity.Status;
+import com.crewing.review.entity.Review;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Builder
@@ -48,5 +52,28 @@ public class ClubListInfoResponse {
         this.interviewStartDate = interviewStartDate;
         this.interviewEndDate = interviewEndDate;
         this.finalResultDate = finalResultDate;
+    }
+
+    public static ClubListInfoResponse toClubListInfoResponse(Club club, Float reviewAvg) {
+        List<Review> reviewList = club.getReviewList();
+        return ClubListInfoResponse.builder().
+                name(club.getName()).
+                clubId(club.getClubId()).
+                oneLiner(club.getOneLiner()).
+                reviewAvg(reviewAvg).
+                reviewNum(reviewList.size()).
+                latestReview(reviewList.isEmpty() ? null : reviewList.get(reviewList.size()-1).getReview()).
+                profile(club.getProfile()).
+                category(club.getCategory()).
+                status(club.getStatus()).
+                isRecruit(club.getIsRecruit()).
+                isOnlyStudent(club.getIsOnlyStudent()).
+                docDeadLine(club.getDocDeadLine()).
+                docResultDate(club.getDocResultDate()).
+                interviewStartDate(club.getInterviewStartDate()).
+                interviewEndDate(club.getInterviewEndDate()).
+                finalResultDate(club.getFinalResultDate()).
+                build();
+
     }
 }

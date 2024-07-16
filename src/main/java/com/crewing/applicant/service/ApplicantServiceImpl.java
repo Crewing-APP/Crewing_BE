@@ -4,6 +4,8 @@ import com.crewing.applicant.dto.*;
 import com.crewing.applicant.entity.Applicant;
 import com.crewing.applicant.entity.Status;
 import com.crewing.applicant.repository.ApplicantRepository;
+import com.crewing.club.dto.ClubListInfoResponse;
+import com.crewing.club.dto.ClubListResponse;
 import com.crewing.club.entity.Club;
 import com.crewing.club.repository.ClubRepository;
 import com.crewing.common.error.applicant.ApplicantAlreadyExistsException;
@@ -13,6 +15,7 @@ import com.crewing.member.dto.MemberInfoResponse;
 import com.crewing.member.service.MemberServiceImpl;
 import com.crewing.notification.entity.NotificationType;
 import com.crewing.notification.service.SSEService;
+import com.crewing.review.repository.ReviewRepository;
 import com.crewing.user.entity.User;
 import com.crewing.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -35,7 +38,7 @@ public class ApplicantServiceImpl implements ApplicantService {
     private final ClubRepository clubRepository;
     private final MemberServiceImpl memberService;
     private final SSEService SSEService;
-    private final UserRepository userRepository;
+    private final ReviewRepository reviewRepository;
 
     @Override
     @Transactional
@@ -124,17 +127,10 @@ public class ApplicantServiceImpl implements ApplicantService {
 
     @Override
     @Transactional
-    public List<MyApplicantResponse> getAllMyApplicantClubInfo(User user) {
+    public List<ClubListInfoResponse> getAllMyApplicantClubInfo(User user) {
         List<Applicant> applicantList = applicantRepository.findAllByUser(user);
-        List<MyApplicantResponse> myApplicantResponseList = new ArrayList<>();
-        for(Applicant applicant : applicantList) {
-            myApplicantResponseList.add(MyApplicantResponse.builder()
-                            .clubId(applicant.getClub().getClubId())
-                            .name(applicant.getClub().getName())
-                            .profile(applicant.getClub().getProfile())
-                            .build());
-        }
-        return myApplicantResponseList;
+        return applicantList.stream().map(applicant ->
+                ClubListInfoResponse.toClubListInfoResponse(applicant.getClub(),reviewRepository.findAverageRateByClubId(applicant.getClub()).orElse(0f))).toList();
     }
 
     public ApplicantCreateResponse getApplicantCreateResponse(Applicant applicant) {

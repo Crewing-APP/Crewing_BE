@@ -76,7 +76,8 @@ public class ClubReadServiceImpl implements ClubReadService{
     public ClubListResponse getAllClubInfo(Pageable pageable) {
         Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC,"clubId"));
         Page<Club> clubPage = clubRepository.findAllByStatus(Status.ACCEPT,pageRequest);
-        Page<ClubListInfoResponse> clubInfoPages = clubPage.map(this::toClubListInfoResponse);
+        Page<ClubListInfoResponse> clubInfoPages = clubPage.map(club ->
+                ClubListInfoResponse.toClubListInfoResponse(club,reviewRepository.findAverageRateByClubId(club).orElse(0f)));
 
         return getClubListResponse(clubInfoPages);
     }
@@ -87,7 +88,8 @@ public class ClubReadServiceImpl implements ClubReadService{
     public ClubListResponse getAllFilterClubInfo(Pageable pageable,int category) {
         Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC,"clubId"));
         Page<Club> clubPage = clubRepository.findAllByCategoryAndStatus(category, Status.ACCEPT, pageRequest);
-        Page<ClubListInfoResponse> clubInfoPages = clubPage.map(this::toClubListInfoResponse);
+        Page<ClubListInfoResponse> clubInfoPages = clubPage.map(club ->
+                ClubListInfoResponse.toClubListInfoResponse(club,reviewRepository.findAverageRateByClubId(club).orElse(0f)));
 
         return getClubListResponse(clubInfoPages);
     }
@@ -97,14 +99,13 @@ public class ClubReadServiceImpl implements ClubReadService{
     @Transactional
     public ClubListResponse getAllSearchClubInfo(Pageable pageable,String search, int category) {
         String keyword = search.replaceAll("\\s", "");
-        Page<Club> clubPage = null;
         Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC,"clubId"));
-        if(category==-1)
-            clubPage = clubRepository.findAllByKeywordAndStatus(keyword,Status.ACCEPT,pageRequest);
-        else {
-            clubPage = clubRepository.findAllByKeywordAndStatusAndCategory(keyword, Status.ACCEPT, pageRequest, category);
-        }
-        Page<ClubListInfoResponse> clubInfoPages = clubPage.map(this::toClubListInfoResponse);
+
+        Page<Club> clubPage = category == -1 ? clubRepository.findAllByKeywordAndStatus(keyword,Status.ACCEPT,pageRequest)
+                : clubRepository.findAllByKeywordAndStatusAndCategory(keyword, Status.ACCEPT, pageRequest, category);
+
+        Page<ClubListInfoResponse> clubInfoPages = clubPage.map(club ->
+                ClubListInfoResponse.toClubListInfoResponse(club,reviewRepository.findAverageRateByClubId(club).orElse(0f)));
         return getClubListResponse(clubInfoPages);
     }
 
@@ -116,7 +117,8 @@ public class ClubReadServiceImpl implements ClubReadService{
         }
         Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC,"clubId"));
         Page<Club> clubPage = clubRepository.findAllByStatus(Status.valueOf(status), pageRequest);
-        Page<ClubListInfoResponse> clubInfoPages = clubPage.map(this::toClubListInfoResponse);
+        Page<ClubListInfoResponse> clubInfoPages = clubPage.map(club ->
+                ClubListInfoResponse.toClubListInfoResponse(club,reviewRepository.findAverageRateByClubId(club).orElse(0f)));
 
         return getClubListResponse(clubInfoPages);
     }
@@ -126,12 +128,12 @@ public class ClubReadServiceImpl implements ClubReadService{
     public ClubListResponse getAllMyClubInfo(Pageable pageable, User user) {
         List<Member> memberList = memberRepository.findAllByUser(user);
         List<Long> clubIds = new ArrayList<>();
-        for(Member member : memberList){
-            clubIds.add(member.getClub().getClubId());
-        }
+        memberList.forEach(member->clubIds.add(member.getClub().getClubId()));
+
         Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC,"clubId"));
         Page<Club> clubPage = clubRepository.findAllByClubIdIn(clubIds, pageRequest);
-        Page<ClubListInfoResponse> clubInfoPages = clubPage.map(this::toClubListInfoResponse);
+        Page<ClubListInfoResponse> clubInfoPages = clubPage.map(club ->
+                ClubListInfoResponse.toClubListInfoResponse(club,reviewRepository.findAverageRateByClubId(club).orElse(0f)));
 
         return getClubListResponse(clubInfoPages);
     }
@@ -170,29 +172,6 @@ public class ClubReadServiceImpl implements ClubReadService{
                 .totalCnt(clubInfoPages.getTotalElements())
                 .clubs(clubInfoPages.getContent())
                 .build();
-    }
-
-    private ClubListInfoResponse toClubListInfoResponse(Club club) {
-        List<Review> reviewList = club.getReviewList();
-        return ClubListInfoResponse.builder().
-                name(club.getName()).
-                clubId(club.getClubId()).
-                oneLiner(club.getOneLiner()).
-                reviewAvg(reviewRepository.findAverageRateByClubId(club).orElse(0f)).
-                reviewNum(reviewList.size()).
-                latestReview(reviewList.isEmpty() ? null : reviewList.get(reviewList.size()-1).getReview()).
-                profile(club.getProfile()).
-                category(club.getCategory()).
-                status(club.getStatus()).
-                isRecruit(club.getIsRecruit()).
-                isOnlyStudent(club.getIsOnlyStudent()).
-                docDeadLine(club.getDocDeadLine()).
-                docResultDate(club.getDocResultDate()).
-                interviewStartDate(club.getInterviewStartDate()).
-                interviewEndDate(club.getInterviewEndDate()).
-                finalResultDate(club.getFinalResultDate()).
-                build();
-
     }
 
     private int setCategory(String interest){
