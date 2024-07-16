@@ -5,11 +5,13 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
@@ -38,7 +40,7 @@ public class User extends BaseTimeEntity {
     @Column
     private String password;
 
-    @Column(unique = true)
+    @Column
     private String nickname;
 
     @Column
@@ -65,12 +67,15 @@ public class User extends BaseTimeEntity {
     @Column
     private String name;
 
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    @OneToMany(mappedBy = "user", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Interest> interests = new ArrayList<>();
 
     //학생 인증
     @Column
     private boolean student = false;
+
+    @Column
+    private LocalDate deleteAt;
 
     @Builder
     public User(String email, String password, String nickname, String profileImage, Role role, SocialType socialType,
@@ -133,6 +138,10 @@ public class User extends BaseTimeEntity {
 
     public void verifyStudent() {
         this.student = true;
+    }
+
+    public void delete() {
+        this.deleteAt = LocalDate.now();
     }
 
 }

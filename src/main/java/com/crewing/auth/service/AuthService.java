@@ -85,8 +85,8 @@ public class AuthService {
         User user = User.builder()
                 .email(email)
                 .role(Role.ADMIN)
-                .nickname("dev")
-                .name("dev")
+                .nickname("de1v")
+                .name("dev1")
                 .password("1234")
                 .birth("dev")
                 .build();

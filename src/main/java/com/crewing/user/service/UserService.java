@@ -86,7 +86,8 @@ public class UserService {
     @Transactional
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        userRepository.delete(user);
+        user.delete();
+        userRepository.save(user);
     }
 
     public User getUserById(Long userId) {
