@@ -18,6 +18,7 @@ public enum ErrorCode {
     NOT_VERIFIED_EMAIL("A01", "Mail is not Verified", HttpStatus.BAD_REQUEST.value()),
     AUTH_CODE_NOT_FOUND("A02", "AuthCode is not Found", HttpStatus.BAD_REQUEST.value()),
     INVALID_AUTH_CODE("A03", "AuthCode is Invalid", HttpStatus.BAD_REQUEST.value()),
+    INVALID_TOKEN("A04", "Token is Invalid", HttpStatus.BAD_REQUEST.value()),
     //Club
     CLUB_NOT_FOUND("CL01", "Club is not Found.", HttpStatus.NOT_FOUND.value()),
     CLUB_ACCESS_DENIED("CL02", "No permission to club", HttpStatus.FORBIDDEN.value()),
@@ -43,10 +44,10 @@ public enum ErrorCode {
     // Notification
     NOTIFICATION_NOT_FOUND("N01", "Notification is not Found.", HttpStatus.NOT_FOUND.value()),
     //External
-    NOT_SUPPORTED_UNIVERSITY("E01","University is Not Supported" , HttpStatus.BAD_REQUEST.value()),
-    STUDENT_INVALID_AUTH_CODE_EXCEPTION("E02","Invalid Student Auth Code" , HttpStatus.BAD_REQUEST.value()),
-    STUDENT_AUTH_CODE_NOT_FOUND("E03","Student Auth Code is Not Found" , HttpStatus.NOT_FOUND.value()),
-    DUPLICATED_EMAIL_EXCEPTION("E04","Email is Duplicated" , HttpStatus.CONFLICT.value());
+    NOT_SUPPORTED_UNIVERSITY("E01", "University is Not Supported", HttpStatus.BAD_REQUEST.value()),
+    STUDENT_INVALID_AUTH_CODE_EXCEPTION("E02", "Invalid Student Auth Code", HttpStatus.BAD_REQUEST.value()),
+    STUDENT_AUTH_CODE_NOT_FOUND("E03", "Student Auth Code is Not Found", HttpStatus.NOT_FOUND.value()),
+    DUPLICATED_EMAIL_EXCEPTION("E04", "Email is Duplicated", HttpStatus.CONFLICT.value());
 
     private final String code;
     private final String message;

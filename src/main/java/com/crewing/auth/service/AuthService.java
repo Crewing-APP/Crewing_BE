@@ -4,6 +4,7 @@ import com.crewing.auth.dto.LoginDTO.OauthLoginResponse;
 import com.crewing.auth.dto.SignUpDTO.TokenResponse;
 import com.crewing.auth.jwt.service.JwtService;
 import com.crewing.auth.oauth.entity.OAuthAttributes;
+import com.crewing.common.error.auth.InvalidTokenException;
 import com.crewing.common.error.user.UserNotFoundException;
 import com.crewing.external.OauthApi;
 import com.crewing.user.entity.Role;
@@ -85,8 +86,8 @@ public class AuthService {
         User user = User.builder()
                 .email(email)
                 .role(Role.ADMIN)
-                .nickname("dev")
-                .name("dev")
+                .nickname("de1v")
+                .name("dev1")
                 .password("1234")
                 .birth("dev")
                 .build();
@@ -106,6 +107,10 @@ public class AuthService {
      * 리프레쉬 토큰을 통한 토큰 재발급
      */
     public TokenResponse reissuedRefreshToken(String refreshToken) {
+        if (!jwtService.isTokenValid(refreshToken)) {
+            throw new InvalidTokenException();
+        }
+
         User user = userRepository.findByRefreshToken(refreshToken).orElseThrow(
                 UserNotFoundException::new);
         String reissuedRefreshToken = jwtService.createRefreshToken();

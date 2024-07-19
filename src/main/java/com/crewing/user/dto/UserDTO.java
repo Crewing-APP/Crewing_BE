@@ -3,7 +3,7 @@ package com.crewing.user.dto;
 import com.crewing.user.entity.Role;
 import com.crewing.user.entity.SocialType;
 import com.crewing.user.entity.User;
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,13 +29,13 @@ public class UserDTO {
         private String birth;
         private String gender;
         private String name;
-
+        private LocalDate deleteAt;
         private List<InterestInfo> interests;
 
         public static UserInfoResponse toDTO(User user) {
             return new UserInfoResponse(user.getId(), user.getEmail(), user.getPassword(), user.getNickname(),
                     user.getProfileImage(), user.getRole(), user.getSocialType(), user.getSocialId(), user.getBirth(),
-                    user.getGender(), user.getName(),
+                    user.getGender(), user.getName(), user.getDeleteAt(),
                     user.getInterests().stream()
                             .map(data -> InterestInfo.builder().interest(data.getInterest()).build())
                             .toList()
@@ -51,10 +51,7 @@ public class UserDTO {
         private List<UserInfoResponse> responses;
 
         public static UserInfoResponses toDTO(List<User> users) {
-            List<UserInfoResponse> responses = new ArrayList<>();
-
-            users.forEach(user -> responses.add(UserInfoResponse.toDTO(user)));
-
+            List<UserInfoResponse> responses = users.stream().map(UserInfoResponse::toDTO).toList();
             return new UserInfoResponses(responses);
         }
     }
