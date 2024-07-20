@@ -66,7 +66,6 @@ public class UserServiceTest {
     /**
      * Update User Profile Image Test
      */
-
     @Test
     @DisplayName("Update User Profile Image Success Test")
     void updateUserProfileImageSuccessTest() throws IOException {
