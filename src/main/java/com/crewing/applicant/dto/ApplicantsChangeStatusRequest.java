@@ -15,7 +15,7 @@ public class ApplicantsChangeStatusRequest {
     private List<Long> changeList;
 
     @NotBlank
-    String status;
+    private String status;
 
     @NotBlank
     private String content;

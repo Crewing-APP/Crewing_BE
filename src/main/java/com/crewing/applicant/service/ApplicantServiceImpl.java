@@ -91,8 +91,7 @@ public class ApplicantServiceImpl implements ApplicantService {
     public ApplicantListResponse getAllStatusApplicantInfo(Pageable pageable, Long clubId, String status, User user) {
         // 운영진 여부 확인
         Club club = memberService.checking(clubId,user);
-        Sort sort = Sort.by(Sort.Order.asc("status").with(Sort.NullHandling.NULLS_LAST));
-        Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort.and(Sort.by(Sort.Direction.DESC,"applicantId")));
+        Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.DESC,"applicantId");
         Page<Applicant> applicantPage = applicantRepository.findAllByClubAndStatus(club,Status.valueOf(status),pageRequest);
         return toApplicantListResponse(applicantPage,applicantPage.getContent());
     }

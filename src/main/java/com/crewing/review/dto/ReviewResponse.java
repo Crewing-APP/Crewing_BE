@@ -1,5 +1,6 @@
 package com.crewing.review.dto;
 
+import com.crewing.review.entity.Review;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -20,5 +21,22 @@ public class ReviewResponse {
     public static class UserInfo{
         private Long userId;
         private String nickname;
+    }
+
+    public static ReviewResponse toReviewResponse(Review review) {
+        ReviewResponse.UserInfo userInfo = ReviewResponse.UserInfo.builder()
+                .userId(review.getUser().getId())
+                .nickname(review.getUser().getNickname())
+                .build();
+
+        return ReviewResponse.builder()
+                .clubId(review.getClub().getClubId())
+                .reviewId(review.getReviewId())
+                .review(review.getReview())
+                .rate(review.getRate())
+                .createdDate(review.getCreatedDate())
+                .lastModifiedDate(review.getLastModifiedDate())
+                .user(userInfo)
+                .build();
     }
 }
