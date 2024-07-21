@@ -4,6 +4,7 @@ import com.crewing.auth.entity.PrincipalDetails;
 import com.crewing.review.dto.ReviewCreateRequest;
 import com.crewing.review.dto.ReviewListResponse;
 import com.crewing.review.dto.ReviewResponse;
+import com.crewing.review.dto.ReviewUpdateRequest;
 import com.crewing.review.entity.Review;
 import com.crewing.review.service.ReviewService;
 import com.crewing.review.service.ReviewServiceImpl;
@@ -52,5 +53,13 @@ public class ReviewController {
     public ResponseEntity<String> delete(@PathVariable Long reviewId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         reviewService.deleteReview(reviewId,principalDetails.getUser());
         return ResponseEntity.ok().body("Delete successful");
+    }
+
+    @Operation(summary = "리뷰 수정", description = "리뷰 수정, 작성자만 가능")
+    @PatchMapping("/{reviewId}")
+    @Parameter(name = "reviewId", description = "리뷰 아이디", required = true)
+    public ResponseEntity<ReviewResponse> update(@PathVariable Long reviewId, @RequestBody ReviewUpdateRequest updateRequest, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        ReviewResponse response = reviewService.updateReview(updateRequest,reviewId,principalDetails.getUser());
+        return ResponseEntity.ok().body(response);
     }
 }

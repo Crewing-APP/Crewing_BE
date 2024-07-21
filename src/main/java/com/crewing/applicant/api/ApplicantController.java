@@ -1,7 +1,7 @@
 package com.crewing.applicant.api;
 
 import com.crewing.applicant.dto.*;
-import com.crewing.applicant.service.ApplicantServiceImpl;
+import com.crewing.applicant.service.ApplicantService;
 import com.crewing.auth.entity.PrincipalDetails;
 import com.crewing.club.dto.ClubListInfoResponse;
 import com.crewing.member.dto.MemberInfoResponse;
@@ -25,7 +25,7 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/api/v1/applicant")
 public class ApplicantController {
-    private final ApplicantServiceImpl applicantService;
+    private final ApplicantService applicantService;
 
     @Operation(summary = "동아리 지원", description = "서류 제출 후 사용자가 지원 확인")
     @PostMapping("/create")
@@ -34,14 +34,14 @@ public class ApplicantController {
         return ResponseEntity.ok().body(response);
     }
 
-    @Operation(summary = "동아리 지원자 상태 변경", description = "동아리 운영진만 가능, WAIT(서류 제출 지원자), DOC(서류 합격), INTERVIEW(면접 합격)")
+    @Operation(summary = "동아리 지원자 상태 변경", description = "동아리 운영진만 가능, WAIT(서류 제출 지원자), DOC(서류 합격), INTERVIEW(면접 합격), DOC_FAIL(서류 불합격), FINAL_FAIL(최종 불합격)")
     @PatchMapping("/status")
     public ResponseEntity<List<ApplicantCreateResponse>> changeApplicantStatus(@RequestBody ApplicantsChangeStatusRequest statusRequest, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         List<ApplicantCreateResponse> response= applicantService.changeApplicantStatus(statusRequest,principalDetails.getUser());
         return ResponseEntity.ok().body(response);
     }
 
-    @Operation(summary = "동아리 지원자 목록 조회", description = "동아리 운영진만 가능, 페이징 조회(기본값 : 10개씩)")
+    @Operation(summary = "동아리 지원자 목록 조회", description = "동아리 운영진만 가능, WAIT - DOC - INTERVIEW - DOC_FAIL - FINAL_FAIL 순으로 페이징 조회(기본값 : 10개씩)")
     @Parameter(name = "clubId", description = "동아리 아이디",required = true)
     @GetMapping("/applicants/{clubId}")
     public ResponseEntity<ApplicantListResponse> getAllApplicants(@PageableDefault(size = 10) Pageable pageable, @PathVariable Long clubId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
@@ -49,10 +49,10 @@ public class ApplicantController {
         return ResponseEntity.ok().body(response);
     }
 
-    @Operation(summary = "동아리 지원자 상태별 목록 조회", description = "동아리 운영진만 가능, WAIT - DOC - INTERVIEW 순으로 페이징 조회(기본값 : 10개씩)")
+    @Operation(summary = "동아리 지원자 상태별 목록 조회", description = "동아리 운영진만 가능, 페이징 조회(기본값 : 10개씩)")
     @Parameters({
             @Parameter(name = "clubId", description = "동아리 아이디", required = true),
-            @Parameter(name = "status", description = "동아리 상태 : WAIT(서류 제출 지원자),DOC(서류 합격),INTERVIEW(면접 합격)", required = true)
+            @Parameter(name = "status", description = "지원자 상태 : WAIT(서류 제출 지원자),DOC(서류 합격),INTERVIEW(면접 합격),DOC_FAIL(서류 불합격),FINAL_FAIL(최종 불합격)", required = true)
     })
     @GetMapping("/applicants/status/{clubId}")
     public ResponseEntity<ApplicantListResponse> getAllStatusApplicants(@PageableDefault(size = 10) Pageable pageable, @PathVariable Long clubId, @RequestParam String status, @AuthenticationPrincipal PrincipalDetails principalDetails) {
@@ -60,7 +60,7 @@ public class ApplicantController {
         return ResponseEntity.ok().body(response);
     }
 
-    @Operation(summary = "동아리 지원자들 탈락 처리", description = "동아리 운영진만 가능, 서류 탈락 혹은 면접 탈락 시 지원자에서 삭제 처리")
+    @Operation(summary = "동아리 지원자들 삭제 처리", description = "동아리 운영진만 가능, 지원자에서 삭제 처리")
     @PostMapping("/delete")
     public ResponseEntity<String> deleteApplicants(@RequestBody ApplicantsDeleteRequest request, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         applicantService.deleteApplicants(request,principalDetails.getUser());

@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 public enum Status {
     WAIT("WAIT"),
     DOC("DOC"),
-    INTERVIEW("INTERVIEW");
+    INTERVIEW("INTERVIEW"),
+    DOC_FAIL("DOC_FAIL"),
+    FINAL_FAIL("FINAL_FAIL");
 
     private final String key;
 }

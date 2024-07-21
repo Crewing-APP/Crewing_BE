@@ -12,6 +12,7 @@ import com.crewing.member.repository.MemberRepository;
 import com.crewing.review.dto.ReviewCreateRequest;
 import com.crewing.review.dto.ReviewListResponse;
 import com.crewing.review.dto.ReviewResponse;
+import com.crewing.review.dto.ReviewUpdateRequest;
 import com.crewing.review.entity.Review;
 import com.crewing.review.repository.ReviewRepository;
 import com.crewing.user.entity.User;
@@ -56,20 +57,7 @@ public class ReviewServiceImpl implements ReviewService{
                 .club(club)
                 .rate(createRequest.getRate())
                 .build());
-        ReviewResponse.UserInfo userInfo = ReviewResponse.UserInfo.builder()
-                .userId(review.getUser().getId())
-                .nickname(review.getUser().getNickname())
-                .build();
-
-        return ReviewResponse.builder()
-                .clubId(review.getClub().getClubId())
-                .reviewId(review.getReviewId())
-                .review(review.getReview())
-                .rate(review.getRate())
-                .createdDate(review.getCreatedDate())
-                .lastModifiedDate(review.getLastModifiedDate())
-                .user(userInfo)
-                .build();
+        return ReviewResponse.toReviewResponse(review);
     }
 
     @Override
@@ -82,6 +70,20 @@ public class ReviewServiceImpl implements ReviewService{
         else{
             reviewRepository.delete(review);
         }
+    }
+
+    @Override
+    @Transactional
+    public ReviewResponse updateReview(ReviewUpdateRequest request, Long reviewId, User user) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
+        if(review.getUser().getId() != user.getId()) {
+            throw new ReviewAccessDeniedException();
+        }
+        Review updatedReview = reviewRepository.save(review.toBuilder()
+                        .review(request.getReview())
+                        .rate(request.getRate())
+                        .build());
+        return ReviewResponse.toReviewResponse(updatedReview);
     }
 
     @Override

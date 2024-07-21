@@ -26,5 +26,6 @@ public class Applicant extends BaseTimeEntity {
     private Club club;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Status status;
 }
