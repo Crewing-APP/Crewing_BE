@@ -2,6 +2,7 @@ package com.crewing.auth.dto;
 
 import com.crewing.auth.dto.SignUpDTO.TokenResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,12 +10,16 @@ import lombok.NoArgsConstructor;
 
 public class LoginDTO {
 
+    /**
+     * Request
+     */
+
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
     public static class OauthLoginRequest {
-        @Schema(description = "Oauth 인증용 토큰" , example = "eyj....")
+        @Schema(description = "Oauth 인증용 토큰", example = "eyj....")
         private String oauthAccessToken;
     }
 
@@ -22,11 +27,16 @@ public class LoginDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class LoginRequest {
-        @Schema(description = "이메일" , example = "gosu@gosu.com")
+        @Schema(description = "이메일", example = "gosu@gosu.com")
+        @Email
         private String email;
-        @Schema(description = "비밀번호" , example = "gosugosu")
+        @Schema(description = "비밀번호", example = "gosugosu")
         private String password;
     }
+
+    /**
+     * Response
+     */
 
     @Getter
     @NoArgsConstructor
@@ -34,7 +44,8 @@ public class LoginDTO {
     @Builder
     public static class OauthLoginResponse {
         private TokenResponse tokenResponse;
-        @Schema(description = "Oauth 회원가입 필요여뷰" , example = "true")
+
+        @Schema(description = "Oauth 회원가입 필요여뷰", example = "true")
         private boolean needSignUp;
     }
 }
