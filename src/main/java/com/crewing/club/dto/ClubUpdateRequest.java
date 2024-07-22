@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Builder
@@ -26,4 +28,11 @@ public class ClubUpdateRequest {
     private String interviewStartDate; // 면접 시작일
     private String interviewEndDate; // 면접 종료일
     private String finalResultDate; // 최종 발표일
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class DeletedImages{
+        private List<String> deletedImages = new ArrayList<>();
+    }
 }

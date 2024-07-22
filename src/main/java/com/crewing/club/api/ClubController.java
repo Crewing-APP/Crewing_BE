@@ -1,5 +1,7 @@
 package com.crewing.club.api;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.crewing.auth.entity.PrincipalDetails;
 import com.crewing.club.dto.ClubChangeStatusRequest;
 import com.crewing.club.dto.ClubCreateRequest;
@@ -9,6 +11,7 @@ import com.crewing.club.dto.ClubListResponse;
 import com.crewing.club.dto.ClubUpdateRequest;
 import com.crewing.club.service.ClubReadService;
 import com.crewing.club.service.ClubService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import java.io.IOException;
 import java.util.List;
@@ -33,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+
 @Tag(name = "club", description = "동아리 API")
 @Slf4j
 @RequiredArgsConstructor
@@ -41,6 +45,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ClubController {
     private final ClubService clubService;
     private final ClubReadService clubReadService;
+    private final ObjectMapper objectMapper;
 
     @Operation(summary = "동아리 생성", description = "최초 동아리 생성, 생성자는 매니저 자동 임명")
     @PostMapping(value = "/create",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -57,17 +62,17 @@ public class ClubController {
     }
 
     @Operation(summary = "동아리 수정", description = "동아리 정보 수정, 매니저만 가능")
-    @PatchMapping(value = "/edit/{clubId}",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PatchMapping(value = "/edit/{clubId}",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,MediaType.APPLICATION_JSON_VALUE})
     @Parameter(name = "clubId", description = "동아리 아이디")
     public ResponseEntity<ClubCreateResponse> update(@PathVariable Long clubId,
                                                      @RequestPart(value = "content") ClubUpdateRequest clubUpdateRequest,
                                                      @RequestPart(value = "profile", required = false) MultipartFile profile,
                                                      @RequestPart(value = "images", required = false) List<MultipartFile> images,
-                                                     @RequestPart(value = "deletedImages", required = false) List<String> deletedImages,
+                                                     @RequestPart(value = "deletedImages", required = false) ClubUpdateRequest.DeletedImages deletedImages,
                                                      @AuthenticationPrincipal PrincipalDetails principalDetails)
             throws IOException {
         ClubCreateResponse response = clubService.updateClub(clubId, clubUpdateRequest, principalDetails.getUser(),
-                profile, images, deletedImages);
+                profile, images, deletedImages.getDeletedImages());
         log.info("[CLUB] update club_id={},user_id={},club_name={}", response.getClubId(),
                 principalDetails.getUser().getId(), response.getName());
         return ResponseEntity.ok().body(response);
