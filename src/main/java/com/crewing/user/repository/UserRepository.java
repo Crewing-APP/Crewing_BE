@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -27,5 +28,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllByDeleteAtBeforeTime(LocalDate time);
 
     boolean existsByEmail(String email);
+
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("DELETE User u WHERE u.deleteAt < :time")
+    void deleteAllByDeleteAtBeforeTime(LocalDate time);
 
 }
