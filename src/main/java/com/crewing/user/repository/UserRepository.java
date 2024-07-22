@@ -2,6 +2,8 @@ package com.crewing.user.repository;
 
 import com.crewing.user.entity.SocialType;
 import com.crewing.user.entity.User;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,6 +22,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u from User u where u.socialType = :socialType and u.socialId = :socialId and u.deleteAt is null")
     Optional<User> findBySocialTypeAndSocialId(SocialType socialType, String socialId);
+
+    @Query("SELECT u FROM User u WHERE u.deleteAt < :time")
+    List<User> findAllByDeleteAtBeforeTime(LocalDate time);
 
     boolean existsByEmail(String email);
 
