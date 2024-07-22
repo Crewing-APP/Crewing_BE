@@ -101,7 +101,6 @@ public class SignUpDTO {
         public String convertToJson() throws JsonProcessingException {
             return objectMapper.writeValueAsString(this);
         }
-
     }
 
     @Getter
