@@ -39,7 +39,7 @@ public class ApplicantController {
         ApplicantCreateResponse response = applicantService.createApplicantByManager(request,principalDetails.getUser());
         return ResponseEntity.ok().body(response);
     }
-    @Operation(summary = "동아리 지원자 상태 변경", description = "동아리 운영진만 가능, WAIT(서류 제출 지원자), DOC(서류 합격), INTERVIEW(면접 합격), DOC_FAIL(서류 불합격), FINAL_FAIL(최종 불합격)")
+    @Operation(summary = "동아리 지원자 상태 변경", description = "동아리 운영진만 가능, WAIT(서류 제출 지원자), DOC(서류 합격), INTERVIEW(최종 합격), DOC_FAIL(서류 불합격), FINAL_FAIL(최종 불합격)")
     @PatchMapping("/status")
     public ResponseEntity<List<ApplicantCreateResponse>> changeApplicantStatus(@RequestBody ApplicantsChangeStatusRequest statusRequest, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         List<ApplicantCreateResponse> response= applicantService.changeApplicantStatus(statusRequest,principalDetails.getUser());
