@@ -101,11 +101,11 @@ public class SSEService {
     }
 
     public String setTitle(NotificationType notificationType,Club club){
-        if(notificationType.equals(NotificationType.APPLY)){
+        if(notificationType.equals(NotificationType.DOC_RESULT))
             return club.getName()+" "+notificationType.getKey();
-        }
-        else{
+        else if(notificationType.equals(NotificationType.FINAL_RESULT_FAIL)||notificationType.equals(NotificationType.FINAL_RESULT_PASS))
+            return club.getName()+" 최종 발표";
+        else
             return notificationType.getKey();
-        }
     }
 }

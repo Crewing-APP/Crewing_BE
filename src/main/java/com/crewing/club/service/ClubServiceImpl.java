@@ -138,15 +138,22 @@ public class ClubServiceImpl implements ClubService{
         if(!user.getRole().equals(com.crewing.user.entity.Role.ADMIN)){
             throw new ClubAccessDeniedException();
         }
+        Status status = Status.valueOf(request.getStatus());
         Club club = clubRepository.findById(request.getClubId()).orElseThrow(ClubNotFoundException::new);
         List<Member> managerList = memberRepository.findAllByClubAndRole(club,Role.MANAGER);
         Club newClub = clubRepository.save(club.toBuilder().
-                status(Status.valueOf(request.getStatus())).
+                status(status).
                 build());
         String message = setMessage(Status.valueOf(request.getStatus()));
         // 알림 기능
-        for(Member manager : managerList) {
-            sseService.send(manager.getUser(), NotificationType.APPLY, message, request.getContent(), club);
+        NotificationType notificationType = null;
+        if(status.equals(Status.ACCEPT)) notificationType = NotificationType.CLUB_ACCEPT;
+        else if(status.equals(Status.RETURN)) notificationType = NotificationType.CLUB_RETURN;
+
+        if(notificationType!=null) {
+            for (Member manager : managerList) {
+                sseService.send(manager.getUser(),notificationType, message, request.getContent(), club);
+            }
         }
         return toClubCreateResponse(newClub);
     }

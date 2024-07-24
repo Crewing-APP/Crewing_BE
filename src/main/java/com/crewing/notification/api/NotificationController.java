@@ -55,11 +55,4 @@ public class NotificationController {
         notificationServiceImpl.deleteNotification(notificationId);
         return ResponseEntity.ok().body("Delete Successful");
     }
-
-
-    @GetMapping("/test")
-    public void notificationTest(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        Club club = clubRepository.findById(18L).get();
-        SSEService.send(principalDetails.getUser(), NotificationType.APPLY,"알림 테스트입니당","알림 테스트입니당",club);
-    }
 }

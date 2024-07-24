@@ -1,5 +1,6 @@
 package com.crewing.notification.dto;
 
+import com.crewing.notification.entity.NotificationType;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,6 +14,7 @@ public class NotificationResponse {
     private String content;
     private ClubInfo clubInfo;
     private boolean isCheck;
+    private NotificationType type;
 
     @Getter
     @Builder

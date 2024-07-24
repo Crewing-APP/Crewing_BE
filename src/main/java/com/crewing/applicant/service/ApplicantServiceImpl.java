@@ -11,6 +11,7 @@ import com.crewing.club.repository.ClubRepository;
 import com.crewing.common.error.applicant.ApplicantAlreadyExistsException;
 import com.crewing.common.error.applicant.ApplicantNotFoundException;
 import com.crewing.common.error.club.ClubNotFoundException;
+import com.crewing.common.error.user.UserNotFoundException;
 import com.crewing.member.dto.MemberInfoResponse;
 import com.crewing.member.service.MemberServiceImpl;
 import com.crewing.notification.entity.NotificationType;
@@ -39,6 +40,7 @@ public class ApplicantServiceImpl implements ApplicantService {
     private final MemberServiceImpl memberService;
     private final SSEService SSEService;
     private final ReviewRepository reviewRepository;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
@@ -58,19 +60,42 @@ public class ApplicantServiceImpl implements ApplicantService {
 
     @Override
     @Transactional
+    public ApplicantCreateResponse createApplicantByManager(ApplicantEnrollRequest request, User manager) {
+        // 사용자가 동아리 운영진인지 확인
+        Club club = memberService.checking(request.getClubId(),manager);
+        // 추가하려는 회원이 존재하는지 확인
+        User user = userRepository.findById(request.getUserId()).orElseThrow(UserNotFoundException::new);
+        // 이미 존재하는 지원자인지 확인
+        if(applicantRepository.findByUserAndClub(user,club).isPresent()) throw new ApplicantAlreadyExistsException();
+
+        Applicant applicant = applicantRepository.save(Applicant.builder()
+                .club(club)
+                .user(user)
+                .status(Status.WAIT)
+                .build());
+        return getApplicantCreateResponse(applicant);
+    }
+
+    @Override
+    @Transactional
     public List<ApplicantCreateResponse> changeApplicantStatus(ApplicantsChangeStatusRequest request, User user) {
         // 운영진 여부 확인
         Club club = memberService.checking(request.getClubId(),user);
+
+        Status status = Status.valueOf(request.getStatus());
         List<Applicant> applicantList = applicantRepository.findAllByApplicantIdIn(request.getChangeList());
         List<Applicant> newApplicantList = new ArrayList<>();
         for(Applicant applicant : applicantList) {
-            newApplicantList.add(applicant.toBuilder().status(Status.valueOf(request.getStatus())).build());
+            newApplicantList.add(applicant.toBuilder().status(status).build());
         }
         List<Applicant> result = applicantRepository.saveAll(newApplicantList);
         List<Applicant> applicants = applicantRepository.findAllByApplicantIdIn(request.getChangeList());
         // 알림 기능
-        for(Applicant receiver: applicants){
-            SSEService.send(receiver.getUser(), NotificationType.APPLY,setMessage(club),request.getContent(),receiver.getClub());
+        NotificationType notificationType = setNotificationType(status);
+        if(notificationType!=null) {
+            for (Applicant receiver : applicants) {
+                SSEService.send(receiver.getUser(), notificationType, setMessage(club), request.getContent(), receiver.getClub());
+            }
         }
         return result.stream().map(this::getApplicantCreateResponse).toList();
     }
@@ -81,7 +106,7 @@ public class ApplicantServiceImpl implements ApplicantService {
         // 운영진 여부 확인
         Club club = memberService.checking(clubId,user);
         Sort sort = Sort.by(Sort.Order.asc("status").with(Sort.NullHandling.NULLS_LAST));
-        Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC,"applicantId"));
+        Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),sort.and(Sort.by(Sort.Direction.DESC,"applicantId")));
         Page<Applicant> applicantPage = applicantRepository.findAllByClub(club,pageRequest);
         return toApplicantListResponse(applicantPage,applicantPage.getContent());
     }
@@ -102,12 +127,6 @@ public class ApplicantServiceImpl implements ApplicantService {
         // 운영진 여부 확인
         Club club = memberService.checking(applicantsDeleteRequest.getClubId(), user);
         applicantRepository.deleteByApplicantIdIn(applicantsDeleteRequest.getDeleteList());
-
-        // 알림 기능
-        List<Applicant> applicants = applicantRepository.findAllByApplicantIdIn(applicantsDeleteRequest.getDeleteList());
-        for(Applicant receiver: applicants){
-            SSEService.send(receiver.getUser(), NotificationType.APPLY,setMessage(club),applicantsDeleteRequest.getContent(),receiver.getClub());
-        }
     }
 
     @Override
@@ -115,7 +134,7 @@ public class ApplicantServiceImpl implements ApplicantService {
     public MemberInfoResponse registerApplicants(ApplicantRegisterRequest applicantRegisterRequest, User user) {
         // 동아리 존재 여부 확인
         Club club = clubRepository.findById(applicantRegisterRequest.getClubId()).orElseThrow(ClubNotFoundException::new);
-        // 사용자가 면접합격한 지원자인지 확인
+        // 사용자가 최종 합격한 지원자인지 확인
         Applicant applicant = applicantRepository.findByUserAndClubAndStatus(user,club,Status.INTERVIEW).orElseThrow(ApplicantNotFoundException::new);
         // 동아리 회원으로 전환
         MemberInfoResponse memberInfoResponse = memberService.createMemberFromApplicant(club,user);
@@ -160,5 +179,15 @@ public class ApplicantServiceImpl implements ApplicantService {
 
     public String setMessage(Club club){
         return "연합동아리 "+club.getName()+"의 지원 결과가 발표되었습니다.";
+    }
+
+    public NotificationType setNotificationType(Status status){
+        if(status.equals(Status.DOC)||status.equals(Status.DOC_FAIL))
+            return NotificationType.DOC_RESULT;
+        else if(status.equals(Status.INTERVIEW))
+            return NotificationType.FINAL_RESULT_PASS;
+        else if(status.equals(Status.FINAL_FAIL))
+            return NotificationType.FINAL_RESULT_FAIL;
+        else return null;
     }
 }

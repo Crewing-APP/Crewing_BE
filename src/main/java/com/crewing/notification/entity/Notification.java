@@ -26,7 +26,7 @@ public class Notification extends BaseTimeEntity {
 
     private String content; // 자세한 내용
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = NotificationTypeConverter.class)
     private NotificationType type;
 
     @ManyToOne
@@ -57,6 +57,7 @@ public class Notification extends BaseTimeEntity {
                 .message(this.getMessage().getMessage())
                 .content(this.getContent())
                 .title(this.getTitle().getTitle())
+                .type(this.getType())
                 .build();
     }
 }

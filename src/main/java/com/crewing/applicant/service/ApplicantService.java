@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface ApplicantService {
     ApplicantCreateResponse createApplicant(ApplicantCreateRequest request, User user);
+    ApplicantCreateResponse createApplicantByManager(ApplicantEnrollRequest request, User manager);
     List<ApplicantCreateResponse> changeApplicantStatus(ApplicantsChangeStatusRequest request, User user);
     ApplicantListResponse getAllApplicantInfo(Pageable pageable,Long clubId,User user);
     ApplicantListResponse getAllStatusApplicantInfo(Pageable pageable,Long clubId, String status,User user);
