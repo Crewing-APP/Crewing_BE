@@ -33,4 +33,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("DELETE User u WHERE u.deleteAt < :time")
     void deleteAllByDeleteAtBeforeTime(LocalDate time);
 
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("DELETE User u WHERE u.id in :userIds ")
+    void deleteAllIdsIn(List<Long> userIds);
+
 }
