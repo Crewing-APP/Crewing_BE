@@ -72,7 +72,7 @@ public class ClubController {
                                                      @AuthenticationPrincipal PrincipalDetails principalDetails)
             throws IOException {
         ClubCreateResponse response = clubService.updateClub(clubId, clubUpdateRequest, principalDetails.getUser(),
-                profile, images, deletedImages.getDeletedImages());
+                profile, images, deletedImages);
         log.info("[CLUB] update club_id={},user_id={},club_name={}", response.getClubId(),
                 principalDetails.getUser().getId(), response.getName());
         return ResponseEntity.ok().body(response);

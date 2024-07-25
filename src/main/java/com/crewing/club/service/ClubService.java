@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface ClubService {
     ClubCreateResponse createClub(ClubCreateRequest clubCreateRequest, User user, MultipartFile profile, List<MultipartFile> images) throws IOException;
-    ClubCreateResponse updateClub(Long clubId, ClubUpdateRequest clubUpdateRequest, User user, MultipartFile profile, List<MultipartFile> images, List<String> deletedImages) throws IOException;
+    ClubCreateResponse updateClub(Long clubId, ClubUpdateRequest clubUpdateRequest, User user, MultipartFile profile, List<MultipartFile> images, ClubUpdateRequest.DeletedImages deletedImages) throws IOException;
     void deleteClub(Long clubId, User user);
     ClubCreateResponse changeStatus(ClubChangeStatusRequest clubChangeStatusRequest, User user);
 }

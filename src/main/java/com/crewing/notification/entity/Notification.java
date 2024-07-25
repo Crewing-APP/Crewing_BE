@@ -47,7 +47,7 @@ public class Notification extends BaseTimeEntity {
     public NotificationResponse toNotificationResponse() {
         return NotificationResponse.builder()
                 .notificationId(this.getId())
-                .clubInfo(NotificationResponse.ClubInfo.builder()
+                .clubInfo(this.club == null ? null : NotificationResponse.ClubInfo.builder()
                         .clubId(this.club.getClubId())
                         .name(this.club.getName())
                         .profile(this.club.getProfile())

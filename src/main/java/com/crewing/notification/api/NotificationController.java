@@ -4,6 +4,7 @@ import com.crewing.auth.entity.PrincipalDetails;
 import com.crewing.club.entity.Club;
 import com.crewing.club.repository.ClubRepository;
 import com.crewing.notification.dto.NotificationListResponse;
+import com.crewing.notification.dto.NotificationResponse;
 import com.crewing.notification.entity.NotificationType;
 import com.crewing.notification.service.NotificationService;
 import com.crewing.notification.service.NotificationServiceImpl;
@@ -56,5 +57,11 @@ public class NotificationController {
     public ResponseEntity<String> deleteNotification(@PathVariable("notificationId") Long notificationId){
         notificationServiceImpl.deleteNotification(notificationId);
         return ResponseEntity.ok().body("Delete Successful");
+    }
+
+    @Operation(summary = "알림 테스트", description = "sse 알림 테스트")
+    @GetMapping("/test")
+    public void test(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        SSEService.send(principalDetails.getUser(),NotificationType.CLUB_ACCEPT,"테스트","테스트",null);
     }
 }

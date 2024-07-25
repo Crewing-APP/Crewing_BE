@@ -79,7 +79,7 @@ public class ClubServiceImpl implements ClubService{
     @Override
     @Transactional
     public ClubCreateResponse updateClub(Long clubId, ClubUpdateRequest clubUpdateRequest, User user,
-                           MultipartFile profile, List<MultipartFile> images, List<String> deletedImages) throws IOException {
+                                         MultipartFile profile, List<MultipartFile> images, ClubUpdateRequest.DeletedImages deletedImages) throws IOException {
 
         Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
         Member member = memberRepository.findByClubAndUserAndRole(club,user, Role.MANAGER).orElseThrow(ClubAccessDeniedException::new);
@@ -100,9 +100,9 @@ public class ClubServiceImpl implements ClubService{
         }
 
         //삭제된 이미지 처리
-        if(deletedImages!=null && !deletedImages.isEmpty()){
+        if(deletedImages!=null && !deletedImages.getDeletedImages().isEmpty()){
             log.info("delete image");
-            fileService.deleteMultiFile(deletedImages);
+            fileService.deleteMultiFile(deletedImages.getDeletedImages());
         }
 
         Club result = clubRepository.save(club.toBuilder().
