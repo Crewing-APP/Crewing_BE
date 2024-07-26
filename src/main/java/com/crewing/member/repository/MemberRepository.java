@@ -32,4 +32,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("DELETE Member m WHERE m.user.id in :userIds")
     void deleteAllByUserIdsIn(List<Long> userIds);
+
+
+    void deleteAllByUserId(Long userId);
 }

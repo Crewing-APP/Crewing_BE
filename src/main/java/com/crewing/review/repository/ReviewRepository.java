@@ -27,4 +27,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("UPDATE Review r SET r.user = null WHERE r.user.id in :userIds")
     void updateReviewUserToNullByUserIdsIn(List<Long> userIds);
+
+    List<Review> findAllByUserId(Long userId);
 }

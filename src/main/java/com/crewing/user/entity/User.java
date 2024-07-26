@@ -67,7 +67,7 @@ public class User extends BaseTimeEntity {
     @Column
     private String name;
 
-    @OneToMany(mappedBy = "user", orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Interest> interests = new ArrayList<>();
 
     //학생 인증

@@ -14,31 +14,21 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-public class UserJobConfig {
+public class WithDrawJobConfig {
 
-    private final WithDrawUserTasklet withDrawUserTasklet;
-    private final RemoveDependencyUserTasklet removeDependencyUserTasklet;
+    private final WithDrawTasklet withDrawTasklet;
 
     @Bean
     public Job withDrawUserJob(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
-        return new JobBuilder("withDrawUserJob", jobRepository)
-                .start(removeDependencyUserStep(jobRepository, transactionManager))
-                .next(withDrawUserStep(jobRepository, transactionManager))
-                .build();
-    }
-
-    @Bean
-    public Step removeDependencyUserStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
-        return new StepBuilder("removeDependencyUserStep", jobRepository)
-                .tasklet(removeDependencyUserTasklet, transactionManager)
-                .allowStartIfComplete(true)
+        return new JobBuilder("withDrawJob", jobRepository)
+                .start(withDrawUserStep(jobRepository, transactionManager))
                 .build();
     }
 
     @Bean
     public Step withDrawUserStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
-        return new StepBuilder("withDrawUserStep", jobRepository)
-                .tasklet(withDrawUserTasklet, transactionManager)
+        return new StepBuilder("withDrawStep", jobRepository)
+                .tasklet(withDrawTasklet, transactionManager)
                 .allowStartIfComplete(true)
                 .build();
     }

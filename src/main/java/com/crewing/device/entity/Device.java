@@ -73,4 +73,8 @@ public class Device {
     public void updateCodePushVersion(String codePushVersion) {
         this.codePushVersion = codePushVersion;
     }
+
+    public void updateUser(User user) {
+        this.user = user;
+    }
 }

@@ -12,4 +12,6 @@ public interface InterestRepository extends JpaRepository<Interest, Long> {
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE Interest i SET i.user = null WHERE i.user.id in :userIds")
     void updateInterestUserToNullByUserIdsIn(List<Long> userIds);
+
+    List<Interest> findAllByUserId(Long userId);
 }
