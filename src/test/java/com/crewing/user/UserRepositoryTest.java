@@ -3,6 +3,8 @@ package com.crewing.user;
 import com.crewing.user.entity.Role;
 import com.crewing.user.entity.User;
 import com.crewing.user.repository.UserRepository;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -31,7 +33,7 @@ public class UserRepositoryTest {
 
     @AfterEach
     void after() {
-        userRepository.delete(user);
+        userRepository.deleteAll();
     }
 
     @Test
@@ -52,5 +54,22 @@ public class UserRepositoryTest {
         Optional<User> afterUser = userRepository.findById(1L);
 
         Assertions.assertFalse(afterUser.isPresent());
+    }
+
+    @Test
+    @DisplayName("Find All By Delete At After Year")
+    void findAllByDeleteAtAfterYear() {
+        User user = User.builder()
+                .email("test")
+                .role(Role.USER)
+                .build();
+        user.setDeleteAt(LocalDate.of(2024, 1, 1));
+
+        userRepository.save(user);
+
+        List<User> allByDeleteAtAfterYear = userRepository.findAllByDeleteAtBeforeTime(
+                LocalDate.of(2026, 1, 1));
+
+        Assertions.assertEquals("test", allByDeleteAtAfterYear.get(0).getEmail());
     }
 }

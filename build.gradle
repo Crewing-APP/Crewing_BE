@@ -51,6 +51,8 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-mail' //Mail
     implementation 'org.springframework.boot:spring-boot-starter-data-redis' //Redis
+
+    implementation 'org.springframework.boot:spring-boot-starter-batch' //batch
 }
 
 tasks.named('test') {
