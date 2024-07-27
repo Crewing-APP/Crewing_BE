@@ -115,9 +115,9 @@ public class MemberServiceImpl implements MemberService{
     @Transactional
     public MemberInfoResponse deleteManager(Long managerId, User manager) {
         Member member = memberRepository.findByMemberIdAndRole(managerId,Role.MANAGER).orElseThrow(MemberNotFoundException::new);
-        memberRepository.findByClubAndUserAndRole(member.getClub(),manager,Role.MANAGER).orElseThrow(MemberAccessDeniedException::new);
+        memberRepository.findByClubAndUser(member.getClub(),manager).orElseThrow(MemberAccessDeniedException::new);
         // 매니저가 1명 이하면 매니저 삭제 불가
-        if(memberRepository.findAllByRole(Role.MANAGER).size() <= 1){
+        if(memberRepository.findAllByClubAndRole(member.getClub(),Role.MANAGER).size() <= 1){
             throw new MemberFailedDeleteManagerException();
         }
         return memberRepository.save(member.toBuilder().role(Role.MEMBER).build()).toMemberInfoResponse();

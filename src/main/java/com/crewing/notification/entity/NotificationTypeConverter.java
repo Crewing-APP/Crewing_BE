@@ -12,12 +12,14 @@ public class NotificationTypeConverter implements AttributeConverter<Notificatio
         if (Objects.isNull(attribute)) {
             throw new NullPointerException("Enum Converting String - OrderStatus is null");
         }
-
         return attribute.toString();
     }
 
     @Override
     public NotificationType convertToEntityAttribute(String dbData) {
+        if(Objects.isNull(dbData)) {
+
+        }
         return NotificationType.valueOf(dbData);
     }
 }
