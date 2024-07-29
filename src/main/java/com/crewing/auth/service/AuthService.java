@@ -15,20 +15,22 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 public class AuthService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final OauthApi oauthApi;
     private final PasswordEncoder passwordEncoder;
 
-
     /**
      * Oauth 토큰을 통한 로그인
      */
+    @Transactional
     public OauthLoginResponse loginOauth(String oauthAccessToken, SocialType socialType) {
         OAuthAttributes attributes = OAuthAttributes.of(socialType,
                 oauthApi.getOauthUserInfo(oauthAccessToken, socialType));
@@ -79,6 +81,7 @@ public class AuthService {
     /**
      * 개발용 토큰 발급
      */
+    @Transactional
     public TokenResponse getDevToken(String email) {
         if (userRepository.existsByEmail(email)) {
             throw new RuntimeException();
@@ -106,6 +109,7 @@ public class AuthService {
     /**
      * 리프레쉬 토큰을 통한 토큰 재발급
      */
+    @Transactional
     public TokenResponse reissuedRefreshToken(String refreshToken) {
         if (!jwtService.isTokenValid(refreshToken)) {
             throw new InvalidTokenException();
