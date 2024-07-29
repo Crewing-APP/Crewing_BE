@@ -16,10 +16,12 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class SignUpService {
     private final UserRepository userRepository;
     private final InterestRepository interestRepository;
@@ -28,6 +30,7 @@ public class SignUpService {
     /**
      * Oauth 추가 회원가입
      */
+    @Transactional
     public TokenResponse signUpOauth(OauthSignUpRequest request, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
@@ -53,11 +56,12 @@ public class SignUpService {
     /**
      * 기본 회원가입
      */
+    @Transactional
     public TokenResponse signUpBasic(BasicSignUpRequest request) {
         if (!request.isVerified()) {
             throw new NotVerifiedEmailException();
         }
-        
+
         User user = User.builder()
                 .email(request.getEmail())
                 .name(request.getName())

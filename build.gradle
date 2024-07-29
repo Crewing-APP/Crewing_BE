@@ -53,6 +53,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis' //Redis
 
     implementation 'org.springframework.boot:spring-boot-starter-batch' //batch
+
+    implementation 'com.google.firebase:firebase-admin:9.2.0'           // Google Firebase Admin
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.16.1'     // Jackson Data Bind
+
 }
 
 tasks.named('test') {

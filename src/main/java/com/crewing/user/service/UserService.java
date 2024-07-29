@@ -8,8 +8,11 @@ import com.crewing.file.service.FileService;
 import com.crewing.user.dto.UserDTO.InterestUpdateRequest;
 import com.crewing.user.dto.UserDTO.UserInfoResponse;
 import com.crewing.user.entity.Interest;
+import com.crewing.user.entity.PointEvent;
+import com.crewing.user.entity.PointHistory;
 import com.crewing.user.entity.User;
 import com.crewing.user.repository.InterestRepository;
+import com.crewing.user.repository.PointHistoryRepository;
 import com.crewing.user.repository.UserRepository;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,7 +20,10 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -32,6 +38,7 @@ public class UserService {
     private final InterestRepository interestRepository;
     private final FileService fileService;
     private final StudentVerifyApiClient studentVerifyApiClient;
+    private final PointHistoryRepository pointHistoryRepository;
 
     public UserInfoResponse getUserInfo(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
@@ -92,6 +99,27 @@ public class UserService {
 
     public User getUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+    }
+
+
+    /**
+     * Point 갱신 이벤트 point + -> 포인트 적립(EARN) , - -> 포인트 사용(USE)
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void updatePoint(PointEvent event) {
+        log.info("Point Event Start");
+        User user = userRepository.findById(event.getUserId()).orElseThrow(UserNotFoundException::new);
+        user.updatePoint(user.getPoint() + event.getPoint());
+        User save = userRepository.save(user);
+
+        PointHistory history = PointHistory.builder()
+                .point(event.getPoint())
+                .type(event.getType())
+                .user(save)
+                .build();
+
+        pointHistoryRepository.save(history);
     }
 
 //    public void createStudentEmailVerification(StudentCreateVerificationRequest request) {

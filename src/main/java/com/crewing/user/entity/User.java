@@ -77,9 +77,12 @@ public class User extends BaseTimeEntity {
     @Column
     private LocalDate deleteAt;
 
+    @Column
+    private int point = 20; // 리뷰등을 볼 수 있는 포인트
+
     @Builder
     public User(String email, String password, String nickname, String profileImage, Role role, SocialType socialType,
-                String socialId, String refreshToken, String birth, String gender, String name) {
+                String socialId, String refreshToken, String birth, String gender, String name, int point) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
@@ -91,6 +94,7 @@ public class User extends BaseTimeEntity {
         this.birth = birth;
         this.gender = gender;
         this.name = name;
+        this.point = point;
     }
 
     public void authorizeUser() {
@@ -142,6 +146,10 @@ public class User extends BaseTimeEntity {
 
     public void delete() {
         this.deleteAt = LocalDate.now();
+    }
+
+    public void updatePoint(int point) {
+        this.point = point;
     }
 
 }
