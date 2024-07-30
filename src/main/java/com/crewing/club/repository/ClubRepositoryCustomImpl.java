@@ -118,6 +118,8 @@ public class ClubRepositoryCustomImpl implements ClubRepositoryCustom{
                 .orderBy(review.rate.avg().desc(),
                         Expressions.stringTemplate("SUM(CASE WHEN {0} = {1} THEN 1 ELSE 0 END)", user.birth, birth).desc(),
                         Expressions.stringTemplate("SUM(CASE WHEN {0} = {1} THEN 1 ELSE 0 END)", user.gender,gender).desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         Long total = queryFactory
