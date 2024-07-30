@@ -63,14 +63,14 @@ public class AuthService {
         User findUser = userRepository.findBySocialTypeAndSocialId(socialType, attributes.getOauth2UserInfo().getId())
                 .orElse(null);
 
+        if (findUser == null) {
+            return saveUser(attributes, socialType);
+        }
+
         if (findUser.getDeleteAt() != null) {
             findUser.setDeleteAt(null);
 
             return userRepository.save(findUser);
-        }
-
-        if (findUser == null) {
-            return saveUser(attributes, socialType);
         }
 
         return findUser;
