@@ -3,13 +3,11 @@ package com.crewing.club.service;
 import com.crewing.club.dto.ClubInfoResponse;
 import com.crewing.club.dto.ClubListInfoResponse;
 import com.crewing.club.dto.ClubListResponse;
-import com.crewing.club.entity.Category;
 import com.crewing.club.entity.Club;
 import com.crewing.club.entity.Status;
 import com.crewing.club.repository.ClubRepository;
 import com.crewing.common.error.club.ClubNotFoundException;
 import com.crewing.common.error.user.UserAccessDeniedException;
-import com.crewing.common.util.PaginationUtils;
 import com.crewing.file.entity.ClubFile;
 import com.crewing.member.entity.Member;
 import com.crewing.member.repository.MemberRepository;
@@ -29,7 +27,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -148,21 +145,20 @@ public class ClubReadServiceImpl implements ClubReadService{
             categories.add(setCategory(interest.getInterest()));
         }
 
-        List<ClubListInfoResponse> clubList = null;
+        Page<ClubListInfoResponse> clubList = null;
         if(search == null || search.isEmpty()){ // 전체 목록 조회
-            clubList = clubRepository.findAllClubsWithAverageRating(categories,Status.ACCEPT,user.getBirth());
+            clubList = clubRepository.findAllClubsWithAverageRating(categories,Status.ACCEPT,user.getBirth(),user.getGender(),pageable);
         }
         else{
             String keyword = search.replaceAll("\\s", "");
-            clubList = clubRepository.findAllClubsWithAverageRatingByKeyword(categories,Status.ACCEPT,user.getBirth(),keyword);
+            clubList = clubRepository.findAllClubsWithAverageRatingByKeyword(categories,Status.ACCEPT,user.getBirth(),keyword, user.getGender(),pageable);
         }
         for(ClubListInfoResponse clubInfo : clubList){
             Club club = clubRepository.findById(clubInfo.getClubId()).get();
             List<Review> reviewList = club.getReviewList();
             clubInfo.setLatestReview(reviewList.isEmpty() ? null : reviewList.get(reviewList.size()-1).getReview());
         }
-        Page<ClubListInfoResponse> clubsPage = PaginationUtils.listToPage(clubList, pageable);
-        return getClubListResponse(clubsPage);
+        return getClubListResponse(clubList);
     }
 
     private static ClubListResponse getClubListResponse(Page<ClubListInfoResponse> clubInfoPages) {
