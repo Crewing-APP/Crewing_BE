@@ -18,6 +18,14 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: create firebase key
+        run: |
+            cd ./src/main/resources
+            mkdir firebase
+            cd firebase
+            touch ./crewing-2dbfa-firebase-adminsdk-l1mc1-526917b443.json
+            echo "${{ secrets.FIREBASE_KEY }}" > ./crewing-2dbfa-firebase-adminsdk-l1mc1-526917b443.json
+        shell: bash
       
       - name: Gradle Caching
         uses: actions/cache@v3
