@@ -20,7 +20,7 @@ public class FcmConfig {
                 "firebase/crewing-2dbfa-firebase-adminsdk-l1mc1-526917b443.json");
 
         InputStream refreshToken = resource.getInputStream();
-
+        
         FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(refreshToken))
                 .build();

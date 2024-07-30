@@ -4,7 +4,6 @@ import com.crewing.user.entity.Role;
 import com.crewing.user.entity.SocialType;
 import com.crewing.user.entity.User;
 import java.util.Map;
-import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -56,7 +55,8 @@ public class OAuthAttributes {
         return User.builder()
                 .socialType(socialType)
                 .socialId(oauth2UserInfo.getId())
-                .email(UUID.randomUUID() + "@socialUser.com")
+//                .email(UUID.randomUUID() + "@socialUser.com")
+                .email(oauth2UserInfo.getEmail())
                 .nickname(oauth2UserInfo.getNickname())
                 .profileImage(oauth2UserInfo.getImageUrl())
                 .role(Role.GUEST)
