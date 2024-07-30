@@ -14,6 +14,7 @@ public enum ErrorCode {
     //User
     USER_ACCESS_DENIED("U01", "User Access is Denied.", HttpStatus.UNAUTHORIZED.value()),
     USER_NOT_FOUND("U02", "User is not Found.", HttpStatus.BAD_REQUEST.value()),
+    OVER_POINT("U03", "Point Over.", HttpStatus.BAD_REQUEST.value()),
     //Auth
     NOT_VERIFIED_EMAIL("A01", "Mail is not Verified", HttpStatus.BAD_REQUEST.value()),
     AUTH_CODE_NOT_FOUND("A02", "AuthCode is not Found", HttpStatus.BAD_REQUEST.value()),

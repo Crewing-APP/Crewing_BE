@@ -2,6 +2,7 @@ package com.crewing.user.service;
 
 import com.crewing.common.error.BusinessException;
 import com.crewing.common.error.ErrorCode;
+import com.crewing.common.error.user.OverPointException;
 import com.crewing.common.error.user.UserNotFoundException;
 import com.crewing.external.StudentVerifyApi.StudentVerifyApiClient;
 import com.crewing.file.service.FileService;
@@ -19,11 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.event.TransactionPhase;
-import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -103,23 +102,26 @@ public class UserService {
 
 
     /**
-     * Point 갱신 이벤트 point + -> 포인트 적립(EARN) , - -> 포인트 사용(USE)
+     * Point 적립 이벤트 point + -> 포인트 적립(EARN) , - -> 포인트 사용(USE)
      */
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @EventListener
     public void updatePoint(PointEvent event) {
-        log.info("Point Event Start");
+        log.info("Point Update Event Start");
         User user = userRepository.findById(event.getUserId()).orElseThrow(UserNotFoundException::new);
+        int presentPoint = user.getPoint();
+
+        if (presentPoint + event.getPoint() < 0) {
+            throw new OverPointException();
+        }
+
         user.updatePoint(user.getPoint() + event.getPoint());
         User save = userRepository.save(user);
 
-        PointHistory history = PointHistory.builder()
+        pointHistoryRepository.save(PointHistory.builder()
                 .point(event.getPoint())
-                .type(event.getType())
                 .user(save)
-                .build();
-
-        pointHistoryRepository.save(history);
+                .type(event.getType())
+                .build());
     }
 
 //    public void createStudentEmailVerification(StudentCreateVerificationRequest request) {

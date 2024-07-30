@@ -1,7 +1,7 @@
 package com.crewing.user.entity;
 
 public enum PointHistoryType {
-    USE, EARN
+    USE, SAVE
 
     //사용 , 적립
 }
