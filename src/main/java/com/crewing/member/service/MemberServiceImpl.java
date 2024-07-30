@@ -108,7 +108,6 @@ public class MemberServiceImpl implements MemberService{
         memberRepository.findByClubAndUserAndRole(member.getClub(),manager,Role.MANAGER).orElseThrow(MemberAccessDeniedException::new);
         // member -> manager
         return memberRepository.save(member.toBuilder().role(Role.MANAGER).build()).toMemberInfoResponse();
-
     }
 
     @Override

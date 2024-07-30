@@ -12,5 +12,6 @@ public interface ReviewService {
     ReviewResponse createReview(ReviewCreateRequest createRequest, User user);
     void deleteReview(Long reviewId, User user);
     ReviewResponse updateReview(ReviewUpdateRequest request, Long reviewId, User user);
-    ReviewListResponse getAllReviewInfo(Pageable pageable, Long clubId);
+    ReviewListResponse getAllReviewInfo(User user,Pageable pageable, Long clubId);
+    void addReviewAccess(User user, Long clubId);
 }

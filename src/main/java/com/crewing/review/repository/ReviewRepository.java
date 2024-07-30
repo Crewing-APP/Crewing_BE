@@ -29,4 +29,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     void updateReviewUserToNullByUserIdsIn(List<Long> userIds);
 
     List<Review> findAllByUserId(Long userId);
+    Boolean existsByClub(Club club);
 }
