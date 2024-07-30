@@ -12,6 +12,7 @@ import com.crewing.file.entity.ClubFile;
 import com.crewing.member.entity.Member;
 import com.crewing.member.repository.MemberRepository;
 import com.crewing.review.entity.Review;
+import com.crewing.review.repository.ReviewAccessRepository;
 import com.crewing.review.repository.ReviewRepository;
 import com.crewing.user.entity.Interest;
 import com.crewing.user.entity.Role;
@@ -37,15 +38,16 @@ public class ClubReadServiceImpl implements ClubReadService{
     private final ReviewRepository reviewRepository;
     private final MemberRepository memberRepository;
     private final UserRepository userRepository;
+    private final ReviewAccessRepository reviewAccessRepository;
 
     // 동아리 상세 정보 조회
     @Override
     @Transactional
-    public ClubInfoResponse getClubInfo(Long clubId) {
+    public ClubInfoResponse getClubInfo(Long clubId, User user) {
         Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
         List<ClubFile> clubFileList = club.getClubFileList();
         List<ClubFile.ImageInfo> imageInfoList = clubFileList.stream().map(ClubFile::toDto).toList();
-        return  ClubInfoResponse.builder().
+        return ClubInfoResponse.builder().
                     name(club.getName()).
                     clubId(club.getClubId()).
                     oneLiner(club.getOneLiner()).
@@ -64,6 +66,8 @@ public class ClubReadServiceImpl implements ClubReadService{
                     interviewStartDate(club.getInterviewStartDate()).
                     interviewEndDate(club.getInterviewEndDate()).
                     finalResultDate(club.getFinalResultDate()).
+                // 회원이거나 포인트 구매 이력이 있으면 리뷰 열람 가능
+                    isReviewAccess(memberRepository.existsByUserAndClub(user,club)||reviewAccessRepository.existsByUserAndClub(user,club)).
                     build();
     }
 

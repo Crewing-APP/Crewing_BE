@@ -15,6 +15,7 @@ import com.crewing.common.error.user.UserNotFoundException;
 import com.crewing.member.dto.MemberInfoResponse;
 import com.crewing.member.service.MemberServiceImpl;
 import com.crewing.notification.entity.NotificationType;
+import com.crewing.notification.entity.SSEEvent;
 import com.crewing.notification.service.SSEService;
 import com.crewing.review.repository.ReviewRepository;
 import com.crewing.user.entity.User;
@@ -22,6 +23,7 @@ import com.crewing.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,7 +40,7 @@ public class ApplicantServiceImpl implements ApplicantService {
     private final ApplicantRepository applicantRepository;
     private final ClubRepository clubRepository;
     private final MemberServiceImpl memberService;
-    private final SSEService SSEService;
+    private final ApplicationEventPublisher applicationEventPublisher;
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
 
@@ -94,7 +96,7 @@ public class ApplicantServiceImpl implements ApplicantService {
         NotificationType notificationType = setNotificationType(status);
         if(notificationType!=null) {
             for (Applicant receiver : applicants) {
-                SSEService.send(receiver.getUser(), notificationType, setMessage(club), request.getContent(), receiver.getClub());
+                applicationEventPublisher.publishEvent(new SSEEvent(notificationType,receiver.getUser(), setMessage(club), request.getContent(), receiver.getClub()));
             }
         }
         return result.stream().map(this::getApplicantCreateResponse).toList();

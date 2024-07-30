@@ -27,6 +27,7 @@ public enum ErrorCode {
     REVIEW_NOT_FOUND("R01", "Review is not Found.", HttpStatus.NOT_FOUND.value()),
     REVIEW_ACCESS_DENIED("R02", "No permission to review", HttpStatus.FORBIDDEN.value()),
     REVIEW_ALREADY_EXISTS("R03", "A review already exists for this club", HttpStatus.BAD_REQUEST.value()),
+    REVIEW_NOT_PURCHASE_WITH_POINT("R04", "A review is not purchase with point", HttpStatus.FORBIDDEN.value()),
     //File
     FILE_FAILED_S3_UPLOAD("F01", "File upload to S3 failed", HttpStatus.INTERNAL_SERVER_ERROR.value()),
     //Member

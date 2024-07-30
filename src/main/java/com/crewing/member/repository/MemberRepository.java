@@ -31,6 +31,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("DELETE Member m WHERE m.user.id in :userIds")
     void deleteAllByUserIdsIn(List<Long> userIds);
 
-
+    Boolean existsByUserAndClub(User user, Club club);
     void deleteAllByUserId(Long userId);
 }

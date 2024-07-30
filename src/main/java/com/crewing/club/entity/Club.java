@@ -4,13 +4,12 @@ import com.crewing.common.entity.BaseTimeEntity;
 import com.crewing.file.entity.ClubFile;
 import com.crewing.member.entity.Member;
 import com.crewing.review.entity.Review;
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.crewing.review.entity.ReviewAccess;
 import jakarta.persistence.*;
 import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.ColumnDefault;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,5 +69,9 @@ public class Club extends BaseTimeEntity {
     @Builder.Default
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
     private List<Review> reviewList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
+    private List<ReviewAccess> reviewAccessList = new ArrayList<>();
 
 }

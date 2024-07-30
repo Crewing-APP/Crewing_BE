@@ -39,14 +39,6 @@ public class ReviewController {
         return ResponseEntity.ok().body(reviewResponse);
     }
 
-    @Operation(summary = "리뷰 전체 조회", description = "특정 동아리에 대한 모든 리뷰 조회")
-    @GetMapping("/reviews/{clubId}")
-    @Parameter(name = "clubId", description = "동아리 아이디", required = true)
-    public ResponseEntity<ReviewListResponse> getAllReview(@PageableDefault(size = 10) Pageable pageable, @PathVariable Long clubId) {
-        ReviewListResponse reviewResponseList = reviewService.getAllReviewInfo(pageable,clubId);
-        return ResponseEntity.ok().body(reviewResponseList);
-    }
-
     @Operation(summary = "리뷰 삭제", description = "특정 동아리에 대한 리뷰 삭제, 작성자만 가능")
     @DeleteMapping("/delete/{reviewId}")
     @Parameter(name = "reviewId", description = "리뷰 아이디", required = true)
@@ -61,5 +53,21 @@ public class ReviewController {
     public ResponseEntity<ReviewResponse> update(@PathVariable Long reviewId, @RequestBody ReviewUpdateRequest updateRequest, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         ReviewResponse response = reviewService.updateReview(updateRequest,reviewId,principalDetails.getUser());
         return ResponseEntity.ok().body(response);
+    }
+
+    @Operation(summary = "리뷰 전체 조회", description = "특정 동아리에 대한 모든 리뷰 조회, 회원 또는 포인트로 구매한 회원만 열람 가능")
+    @GetMapping("/reviews/{clubId}")
+    @Parameter(name = "clubId", description = "동아리 아이디", required = true)
+    public ResponseEntity<ReviewListResponse> getAllReview(@PageableDefault(size = 10) Pageable pageable, @PathVariable Long clubId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        ReviewListResponse reviewResponseList = reviewService.getAllReviewInfo(principalDetails.getUser(),pageable,clubId);
+        return ResponseEntity.ok().body(reviewResponseList);
+    }
+
+    @Operation(summary = "리뷰 열람 권한 포인트 구매", description = "5포인트 차감하여 리뷰 열람 권한 획득")
+    @PostMapping("/reviews/{clubId}/purchase")
+    @Parameter(name = "clubId", description = "동아리 아이디", required = true)
+    public ResponseEntity<String> purchaseReviewAccess(@PathVariable Long clubId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        reviewService.addReviewAccess(principalDetails.getUser(),clubId);
+        return ResponseEntity.ok().body("Purchase successful");
     }
 }

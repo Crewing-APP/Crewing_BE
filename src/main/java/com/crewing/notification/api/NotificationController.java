@@ -6,12 +6,14 @@ import com.crewing.club.repository.ClubRepository;
 import com.crewing.notification.dto.NotificationListResponse;
 import com.crewing.notification.dto.NotificationResponse;
 import com.crewing.notification.entity.NotificationType;
+import com.crewing.notification.entity.SSEEvent;
 import com.crewing.notification.service.NotificationService;
 import com.crewing.notification.service.NotificationServiceImpl;
 import com.crewing.notification.service.SSEService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
@@ -26,8 +28,9 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RequestMapping("/api/v1/notification")
 public class NotificationController {
     private final SSEService SSEService;
-    private final NotificationService notificationServiceImpl;
-    private final ClubRepository clubRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
+    private final NotificationService notificationService;
+
     // Last-Event-ID는 sse 연결이 끊어졌을 때 클라이언트가 받은 마지막 메세지. 항상 존재 x
     @Operation(summary = "sse세션연결",description = "알림을 계속 받으려면 sse세션 연결을 먼저 실행해야함")
     @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -41,27 +44,27 @@ public class NotificationController {
             "페이징 처리\n")
     @GetMapping("/notifications")
     public ResponseEntity<NotificationListResponse> getAllNotificationInfo(@PageableDefault(size = 10) Pageable pageable, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        NotificationListResponse notificationListResponse = notificationServiceImpl.getAllNotificationInfo(principalDetails.getUser(),pageable);
+        NotificationListResponse notificationListResponse = notificationService.getAllNotificationInfo(principalDetails.getUser(),pageable);
         return ResponseEntity.ok().body(notificationListResponse);
     }
 
     @Operation(summary = "알림 확인 체크",description = "알림 조회 클릭 시 확인 여부를 true로 변경")
     @PatchMapping("/check/{notificationId}")
     public ResponseEntity<String> checkNotification(@PathVariable("notificationId") Long notificationId){
-        notificationServiceImpl.checkNotification(notificationId);
+        notificationService.checkNotification(notificationId);
         return ResponseEntity.ok().body("Checking Successful");
     }
 
     @Operation(summary = "알림 삭제",description = "특정 알림 삭제")
     @DeleteMapping("/delete/{notificationId}")
     public ResponseEntity<String> deleteNotification(@PathVariable("notificationId") Long notificationId){
-        notificationServiceImpl.deleteNotification(notificationId);
+        notificationService.deleteNotification(notificationId);
         return ResponseEntity.ok().body("Delete Successful");
     }
 
     @Operation(summary = "알림 테스트", description = "sse 알림 테스트")
     @GetMapping("/test")
     public void test(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        SSEService.send(principalDetails.getUser(),NotificationType.CLUB_ACCEPT,"테스트","테스트",null);
+        applicationEventPublisher.publishEvent(new SSEEvent(NotificationType.CLUB_ACCEPT,principalDetails.getUser(),"테스트","테스트",null));
     }
 }

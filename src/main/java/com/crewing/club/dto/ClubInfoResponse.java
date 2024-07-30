@@ -28,4 +28,5 @@ public class ClubInfoResponse {
     private String interviewStartDate; // 면접 시작일
     private String interviewEndDate; // 면접 종료일
     private String finalResultDate; // 최종 발표일
+    private Boolean isReviewAccess; // 리뷰 조회 권한이 있는지
 }

@@ -11,11 +11,15 @@ import com.crewing.member.dto.MemberListResponse;
 import com.crewing.member.entity.Member;
 import com.crewing.member.entity.Role;
 import com.crewing.member.repository.MemberRepository;
+import com.crewing.notification.entity.NotificationType;
+import com.crewing.notification.entity.SSEEvent;
+import com.crewing.notification.service.SSEService;
 import com.crewing.user.entity.User;
 import com.crewing.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +36,7 @@ public class MemberServiceImpl implements MemberService{
     private final MemberRepository memberRepository;
     private final ClubRepository clubRepository;
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     @Transactional
@@ -107,8 +112,12 @@ public class MemberServiceImpl implements MemberService{
             throw new MemberFailedAssignManagerException();
         memberRepository.findByClubAndUserAndRole(member.getClub(),manager,Role.MANAGER).orElseThrow(MemberAccessDeniedException::new);
         // member -> manager
-        return memberRepository.save(member.toBuilder().role(Role.MANAGER).build()).toMemberInfoResponse();
+        Member result = memberRepository.save(member.toBuilder().role(Role.MANAGER).build());
+        // sse 알림 보내기
+        String message = "연합동아리 '" + result.getClub().getName() +"'의 운영진으로 등록되었습니다.";
+        applicationEventPublisher.publishEvent(new SSEEvent(NotificationType.MEMBER_ASSIGN_MANAGER, result.getUser(), message,"",result.getClub()));
 
+        return result.toMemberInfoResponse();
     }
 
     @Override

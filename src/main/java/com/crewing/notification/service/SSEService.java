@@ -2,10 +2,7 @@ package com.crewing.notification.service;
 
 import com.crewing.club.entity.Club;
 import com.crewing.notification.dto.NotificationResponse;
-import com.crewing.notification.entity.Notification;
-import com.crewing.notification.entity.NotificationMessage;
-import com.crewing.notification.entity.NotificationTitle;
-import com.crewing.notification.entity.NotificationType;
+import com.crewing.notification.entity.*;
 import com.crewing.notification.repository.EmitterRepository;
 import com.crewing.notification.repository.NotificationRepository;
 import com.crewing.user.entity.User;
@@ -13,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -56,25 +54,25 @@ public class SSEService {
         return sseEmitter;
     }
 
-    public void send(User receiver, NotificationType notificationType, String message, String content, Club club) {
+    @EventListener
+    public void send(SSEEvent sseEvent) {
 
         Notification notification = notificationRepository.save(
                 Notification.builder()
-                        .type(notificationType)
-                        .receiver(receiver)
+                        .type(sseEvent.getNotificationType())
+                        .receiver(sseEvent.getReceiver())
                         .isCheck(false)
-                        .club(club)
-                        .message(new NotificationMessage(message))
-                        .content(content)
-                        .title(new NotificationTitle(setTitle(notificationType,club)))
+                        .club(sseEvent.getClub())
+                        .message(new NotificationMessage(sseEvent.getMessage()))
+                        .content(sseEvent.getMessage())
+                        .title(new NotificationTitle(setTitle(sseEvent.getNotificationType(),sseEvent.getClub())))
                         .build()
         );
-        String userId = String.valueOf(receiver.getId());
+        String userId = String.valueOf(sseEvent.getReceiver().getId());
         // 로그인한 유저의 sseEmitter 전체 호출
         Map<String,SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByUserId(userId);
         sseEmitters.forEach(
                 (key,emitter)->{
-                    log.info("key, notificationId : {}, {}", key, notification.getId());
                     emitterRepository.saveEventCache(key,notification);
                     NotificationResponse response = notification.toNotificationResponse();
                     ObjectMapper objectMapper = new ObjectMapper();
@@ -87,6 +85,7 @@ public class SSEService {
                     sendToClient(emitter,key,jsonData);
                 }
         );
+        log.info("[SSE] receiverId = {}, notificationId = {}",sseEvent.getReceiver().getId(), notification.getId());
     }
 
     private void sendToClient(SseEmitter sseEmitter, String emitterId, Object data) {

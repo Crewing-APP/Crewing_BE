@@ -89,8 +89,8 @@ public class ClubController {
     @Operation(summary = "동아리 상세 조회", description = "동아리 상세 정보 조회")
     @GetMapping("/{clubId}")
     @Parameter(name = "clubId", description = "동아리 아이디",required = true)
-    public ResponseEntity<ClubInfoResponse> getClubInfo(@PathVariable Long clubId){
-        ClubInfoResponse clubInfo = clubReadService.getClubInfo(clubId);
+    public ResponseEntity<ClubInfoResponse> getClubInfo(@PathVariable Long clubId, @AuthenticationPrincipal PrincipalDetails principalDetails){
+        ClubInfoResponse clubInfo = clubReadService.getClubInfo(clubId,principalDetails.getUser());
         return ResponseEntity.ok().body(clubInfo);
     }
 

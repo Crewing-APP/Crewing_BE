@@ -13,11 +13,13 @@ import com.crewing.member.entity.Member;
 import com.crewing.member.entity.Role;
 import com.crewing.member.repository.MemberRepository;
 import com.crewing.notification.entity.NotificationType;
+import com.crewing.notification.entity.SSEEvent;
 import com.crewing.notification.service.SSEService;
 import com.crewing.user.entity.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -31,7 +33,7 @@ public class ClubServiceImpl implements ClubService{
     private final MemberRepository memberRepository;
     private final ClubFileRepository clubFileRepository;
     private final FileServiceImpl fileService;
-    private final SSEService sseService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     @Transactional
@@ -152,7 +154,7 @@ public class ClubServiceImpl implements ClubService{
 
         if(notificationType!=null) {
             for (Member manager : managerList) {
-                sseService.send(manager.getUser(),notificationType, message, request.getContent(), club);
+                applicationEventPublisher.publishEvent(new SSEEvent(notificationType, manager.getUser(), message, request.getContent(), club));
             }
         }
         return toClubCreateResponse(newClub);
