@@ -3,6 +3,7 @@ package com.crewing.club.dto;
 import com.crewing.club.entity.Club;
 import com.crewing.club.entity.Status;
 import com.crewing.review.entity.Review;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
 
 import java.util.List;
@@ -32,7 +33,6 @@ public class ClubListInfoResponse {
         this.latestReview = latestReview;
     }
 
-    // for club repository jpql
     public ClubListInfoResponse(Long clubId, String name,String oneLiner,Double reviewAvg, Long reviewNum, String latestReview,
                                 String profile, int category, Status status, Boolean isRecruit, Boolean isOnlyStudent, String docDeadLine,
                                 String docResultDate, String interviewStartDate, String interviewEndDate, String finalResultDate) {
