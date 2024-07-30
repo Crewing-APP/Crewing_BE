@@ -57,6 +57,7 @@ public class ClubRepositoryCustomImpl implements ClubRepositoryCustom{
                         .and(club.status.eq(clubStatus))
                         .and(club.category.in(categories)))
                 .groupBy(club.clubId)
+                .having(review.rate.avg().goe(2.0d))  // 리뷰 평균 평점이 2.0 이상인 경우만
                 .orderBy(review.rate.avg().desc(),
                         Expressions.stringTemplate("SUM(CASE WHEN {0} = {1} THEN 1 ELSE 0 END)", user.birth, birth).desc(),
                         Expressions.stringTemplate("SUM(CASE WHEN {0} = {1} THEN 1 ELSE 0 END)", user.gender,gender).desc())
@@ -113,6 +114,7 @@ public class ClubRepositoryCustomImpl implements ClubRepositoryCustom{
                         .and(club.category.in(categories))
                         .and(Expressions.stringTemplate("REPLACE({0}, ' ', '')", club.name).like("%" + keyword + "%")))
                 .groupBy(club.clubId)
+                .having(review.rate.avg().goe(2.0d))  // 리뷰 평균 평점이 2.0 이상인 경우만
                 .orderBy(review.rate.avg().desc(),
                         Expressions.stringTemplate("SUM(CASE WHEN {0} = {1} THEN 1 ELSE 0 END)", user.birth, birth).desc(),
                         Expressions.stringTemplate("SUM(CASE WHEN {0} = {1} THEN 1 ELSE 0 END)", user.gender,gender).desc())
