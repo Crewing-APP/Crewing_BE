@@ -21,7 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u from User u where u.refreshToken = :refreshToken and u.deleteAt is null")
     Optional<User> findByRefreshToken(String refreshToken);
 
-    @Query("SELECT u from User u where u.socialType = :socialType and u.socialId = :socialId and u.deleteAt is null")
+    //    @Query("SELECT u from User u where u.socialType = :socialType and u.socialId = :socialId and u.deleteAt is null")
     Optional<User> findBySocialTypeAndSocialId(SocialType socialType, String socialId);
 
     @Query("SELECT u FROM User u WHERE u.deleteAt < :time")
