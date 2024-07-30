@@ -12,7 +12,7 @@ public enum NotificationType {
     FINAL_RESULT_FAIL("최종 발표 탈락"),
     FINAL_RESULT_PASS("최종 발표 합격"),
     CLUB_ACCEPT("동아리 승인"),
-    CLUB_RETURN("동아리 반려");
-
+    CLUB_RETURN("동아리 반려"),
+    MEMBER_ASSIGN_MANAGER("운영진 등록");
     private final String key;
 }

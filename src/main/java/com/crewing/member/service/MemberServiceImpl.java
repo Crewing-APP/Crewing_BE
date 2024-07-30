@@ -11,6 +11,8 @@ import com.crewing.member.dto.MemberListResponse;
 import com.crewing.member.entity.Member;
 import com.crewing.member.entity.Role;
 import com.crewing.member.repository.MemberRepository;
+import com.crewing.notification.entity.NotificationType;
+import com.crewing.notification.service.SSEService;
 import com.crewing.user.entity.User;
 import com.crewing.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -32,6 +34,7 @@ public class MemberServiceImpl implements MemberService{
     private final MemberRepository memberRepository;
     private final ClubRepository clubRepository;
     private final UserRepository userRepository;
+    private final SSEService sseService;
 
     @Override
     @Transactional
@@ -107,7 +110,12 @@ public class MemberServiceImpl implements MemberService{
             throw new MemberFailedAssignManagerException();
         memberRepository.findByClubAndUserAndRole(member.getClub(),manager,Role.MANAGER).orElseThrow(MemberAccessDeniedException::new);
         // member -> manager
-        return memberRepository.save(member.toBuilder().role(Role.MANAGER).build()).toMemberInfoResponse();
+        Member result = memberRepository.save(member.toBuilder().role(Role.MANAGER).build());
+        // sse 알림 보내기
+        String message = "연합동아리 '" + result.getClub().getName() +"'의 운영진으로 등록되었습니다.";
+        sseService.send(result.getUser(), NotificationType.MEMBER_ASSIGN_MANAGER,message,"",result.getClub());
+
+        return result.toMemberInfoResponse();
     }
 
     @Override
