@@ -3,6 +3,7 @@ package com.crewing.user.dto;
 import com.crewing.user.entity.Role;
 import com.crewing.user.entity.SocialType;
 import com.crewing.user.entity.User;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -70,8 +71,8 @@ public class UserDTO {
     @Builder
     @Jacksonized
     public static class InterestInfo {
+        @Schema(description = "관심사", example = "축구")
         private String interest;
-
     }
 
 }
