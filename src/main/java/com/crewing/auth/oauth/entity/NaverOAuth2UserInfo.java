@@ -50,6 +50,6 @@ public class NaverOAuth2UserInfo extends OAuth2UserInfo {
             return null;
         }
 
-        return (String) response.get("profile_image");
+        return (String) response.get("email");
     }
 }
