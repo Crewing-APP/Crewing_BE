@@ -1,7 +1,5 @@
 package com.crewing.auth.mail.service;
 
-import com.crewing.common.error.auth.AuthCodeNotFoundException;
-import com.crewing.common.error.auth.InvalidAuthCodeException;
 import com.crewing.common.util.RedisUtil;
 import com.crewing.user.repository.UserRepository;
 import jakarta.mail.MessagingException;
@@ -76,9 +74,9 @@ public class MailService {
         String authCode = redisUtil.getData(redisKey);
 
         if (authCode == null) {
-            throw new AuthCodeNotFoundException();
+            return false;
         } else if (!authCode.equals(inputAuthNum)) {
-            throw new InvalidAuthCodeException();
+            return false;
         }
 
         redisUtil.deleteData(redisKey);

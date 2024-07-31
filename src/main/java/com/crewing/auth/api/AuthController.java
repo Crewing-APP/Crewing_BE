@@ -1,5 +1,7 @@
 package com.crewing.auth.api;
 
+import com.crewing.auth.dto.LoginDTO.EmailLoginRequest;
+import com.crewing.auth.dto.LoginDTO.EmailLoginResponse;
 import com.crewing.auth.dto.LoginDTO.LoginRequest;
 import com.crewing.auth.dto.LoginDTO.LoginResponse;
 import com.crewing.auth.dto.LoginDTO.OauthLoginRequest;
@@ -43,10 +45,18 @@ public class AuthController {
     }
 
     @Operation(summary = "Oauth 로그인", description = "Oauth Token을 통한 로그인")
-    @PostMapping("/oauth/login/{socialType}")
+    @PostMapping("/login/oauth/{socialType}")
     public ResponseEntity<LoginResponse> loginOauth(@RequestBody OauthLoginRequest request,
                                                     @PathVariable SocialType socialType) {
         LoginResponse response = authService.loginOauth(request.getOauthAccessToken(), socialType);
+
+        return ResponseEntity.ok().body(response);
+    }
+
+    @Operation(summary = "Email 로그인", description = "Email 인증을 통한 로그인")
+    @PostMapping("/login/email")
+    public ResponseEntity<EmailLoginResponse> loginEmail(@RequestBody EmailLoginRequest request) {
+        EmailLoginResponse response = authService.loginEmail(request.getEmail(), request.getAuthNumber());
 
         return ResponseEntity.ok().body(response);
     }

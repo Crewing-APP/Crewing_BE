@@ -34,6 +34,17 @@ public class LoginDTO {
         private String password;
     }
 
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class EmailLoginRequest {
+        @Schema(description = "이메일", example = "gosu@gosu.com")
+        @Email
+        private String email;
+        @Schema(description = "인증번호", example = "123456")
+        private String authNumber;
+    }
+
     /**
      * Response
      */
