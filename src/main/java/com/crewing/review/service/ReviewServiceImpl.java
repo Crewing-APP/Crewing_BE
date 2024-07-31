@@ -60,16 +60,16 @@ public class ReviewServiceImpl implements ReviewService{
             throw new ReviewAlreadyExistsException();
         }
 
-        Review review = reviewRepository.save(Review.builder()
+        // 포인트 획득
+        applicationEventPublisher.publishEvent(new PointEvent(PointHistoryType.SAVE,user.getId(),
+                reviewRepository.existsByClub(club) ? 10 : 20)); // 최초 리뷰일 경우 20포인트 증정
+
+        return ReviewResponse.toReviewResponse(reviewRepository.save(Review.builder()
                 .review(createRequest.getReview())
                 .user(user)
                 .club(club)
                 .rate(createRequest.getRate())
-                .build());
-        // 포인트 획득
-        applicationEventPublisher.publishEvent(new PointEvent(PointHistoryType.SAVE,user.getId(),
-                reviewRepository.existsByClub(club) ? 10 : 20)); // 최초 리뷰일 경우 20포인트 증정
-        return ReviewResponse.toReviewResponse(review);
+                .build()));
     }
 
     @Override
@@ -80,6 +80,12 @@ public class ReviewServiceImpl implements ReviewService{
             throw new ReviewAccessDeniedException();
         }
         else{
+            // 최초로 쓴 리뷰일 경우 20포인트 차감
+            if(reviewRepository.findFirstByClubOrderByReviewIdDesc(review.getClub()).get().equals(review)){
+                applicationEventPublisher.publishEvent(new PointEvent(PointHistoryType.USE,user.getId(),-20));
+            }
+            else // 아닐 경우 10포인트 차감
+                applicationEventPublisher.publishEvent(new PointEvent(PointHistoryType.USE,user.getId(),-10));
             reviewRepository.delete(review);
         }
     }

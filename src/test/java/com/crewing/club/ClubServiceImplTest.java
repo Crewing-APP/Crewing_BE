@@ -150,11 +150,5 @@ public class ClubServiceImplTest {
         assertThat(clubLists.get(0).getIsRecruit().equals(true));
         assertThat(clubLists.get(1).getName()).isEqualTo("test2");
         assertThat(clubLists.get(2).getName()).isEqualTo("test3");
-        for(ClubListInfoResponse clubInfoResponse : clubLists){
-            System.out.println("=========================================");
-            System.out.println(clubInfoResponse.getName());
-            System.out.println(clubInfoResponse.getReviewAvg());
-            System.out.println(clubInfoResponse.getReviewNum());
-        }
     }
 }
