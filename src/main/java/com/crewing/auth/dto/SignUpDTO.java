@@ -49,7 +49,7 @@ public class SignUpDTO {
     @Getter
     @AllArgsConstructor
     @Builder
-    public static class OauthSignUpRequest {
+    public static class SignUpRequest {
         @Schema(description = "생년 월일", example = "2000-05-04")
         private String birth;
 
