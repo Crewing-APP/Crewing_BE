@@ -1,6 +1,5 @@
 package com.crewing.auth.mail.service;
 
-import com.crewing.auth.mail.dto.EmailDTO.EmailVerifyRequest;
 import com.crewing.common.error.auth.AuthCodeNotFoundException;
 import com.crewing.common.error.auth.InvalidAuthCodeException;
 import com.crewing.common.util.RedisUtil;
@@ -72,13 +71,13 @@ public class MailService {
         redisUtil.setDataExpire(REDIS_KEY + toMail, Integer.toString(authNumber), 60 * 5L);
     }
 
-    public boolean verifySignUpEmail(EmailVerifyRequest request) {
-        String redisKey = REDIS_KEY + request.getEmail();
+    public boolean verifySignUpEmail(String email, String inputAuthNum) {
+        String redisKey = REDIS_KEY + email;
         String authCode = redisUtil.getData(redisKey);
 
         if (authCode == null) {
             throw new AuthCodeNotFoundException();
-        } else if (!authCode.equals(request.getAuthNum())) {
+        } else if (!authCode.equals(inputAuthNum)) {
             throw new InvalidAuthCodeException();
         }
 

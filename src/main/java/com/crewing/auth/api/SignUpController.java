@@ -5,10 +5,10 @@ import com.crewing.auth.dto.SignUpDTO.EmailDuplicateCheckResponse;
 import com.crewing.auth.dto.SignUpDTO.OauthSignUpRequest;
 import com.crewing.auth.dto.SignUpDTO.TokenResponse;
 import com.crewing.auth.entity.PrincipalDetails;
+import com.crewing.auth.mail.dto.EmailDTO.EmailVerifyRequest;
+import com.crewing.auth.mail.dto.EmailDTO.SignUpEmailVerifyResponse;
+import com.crewing.auth.mail.service.MailService;
 import com.crewing.auth.service.SignUpService;
-import com.crewing.mail.dto.EmailDTO.EmailVerifyRequest;
-import com.crewing.mail.dto.EmailDTO.SignUpEmailVerifyResponse;
-import com.crewing.mail.service.MailService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -56,7 +56,7 @@ public class SignUpController {
     @Operation(summary = "인증 메일 검증", description = "인증 메일을 검증합니다")
     @PostMapping("/verification/email/verify")
     public ResponseEntity<SignUpEmailVerifyResponse> verifyEmail(@RequestBody EmailVerifyRequest request) {
-        boolean response = mailService.verifySignUpEmail(request);
+        boolean response = mailService.verifySignUpEmail(request.getEmail(), request.getAuthNum());
 
         return ResponseEntity.ok(
                 SignUpEmailVerifyResponse.builder()

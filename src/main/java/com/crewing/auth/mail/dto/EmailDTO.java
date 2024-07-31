@@ -1,5 +1,6 @@
 package com.crewing.auth.mail.dto;
 
+import com.crewing.auth.dto.SignUpDTO.TokenResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -38,7 +39,11 @@ public class EmailDTO {
         @Schema(description = "이메일", example = "gosu@gosu.com")
         private String email;
 
+        @Schema(description = "이메일 인증 성공 여부", example = "true")
         private boolean verifyResult;
+        
+        private TokenResponse tokenResponse;
+        private boolean needSignUp;
     }
 
     @Getter

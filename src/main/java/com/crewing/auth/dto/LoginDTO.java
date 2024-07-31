@@ -42,10 +42,26 @@ public class LoginDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class OauthLoginResponse {
-        private TokenResponse tokenResponse;
-
-        @Schema(description = "Oauth 회원가입 필요여뷰", example = "true")
+    public static class LoginResponse {
+        @Schema(description = "회원가입 필요여뷰", example = "true")
         private boolean needSignUp;
+
+        private TokenResponse tokenResponse;
     }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class EmailLoginResponse {
+        @Schema(description = "메일인증 성공여뷰", example = "true")
+        private boolean verifyResult;
+
+        @Schema(description = "회원가입 필요여뷰", example = "true")
+        private boolean needSignUp;
+
+        private TokenResponse tokenResponse;
+    }
+
+
 }
