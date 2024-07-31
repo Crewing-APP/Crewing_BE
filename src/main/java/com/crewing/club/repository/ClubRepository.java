@@ -15,6 +15,7 @@ import java.util.List;
 @Repository
 public interface ClubRepository extends JpaRepository<Club,Long>, ClubRepositoryCustom{
     Page<Club> findAllByStatus(Status status, Pageable pageable);
+    int countAllByStatus(Status status);
     Page<Club> findAllByCategoryAndStatus(int category, Status status,Pageable pageable);
 
     @Query("SELECT c FROM Club c WHERE REPLACE(c.name, ' ', '') LIKE %:keyword% AND c.status = :status AND c.category = :category")

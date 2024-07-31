@@ -109,9 +109,9 @@ public class ReviewServiceImpl implements ReviewService{
     public ReviewListResponse getAllReviewInfo(User user,Pageable pageable, Long clubId) {
         Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
         // 리뷰 열람 권한 확인 (해당 동아리 회원이거나, 포인트로 권한을 획득한 경우가 아니면 예외처리)
-        if(!(memberRepository.existsByUserAndClub(user,club)||reviewAccessRepository.existsByUserAndClub(user,club))){
-            throw new ReviewNotPurchaseWithPointException();
-        }
+//        if(!(memberRepository.existsByUserAndClub(user,club)||reviewAccessRepository.existsByUserAndClub(user,club))){
+//            throw new ReviewNotPurchaseWithPointException();
+//        }
         Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC,"reviewId"));
         Page<Review> reviewList = reviewRepository.findAllByClub(pageRequest, club);
 

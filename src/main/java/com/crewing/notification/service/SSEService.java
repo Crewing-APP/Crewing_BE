@@ -64,7 +64,7 @@ public class SSEService {
                         .isCheck(false)
                         .club(sseEvent.getClub())
                         .message(new NotificationMessage(sseEvent.getMessage()))
-                        .content(sseEvent.getMessage())
+                        .content(sseEvent.getContent())
                         .title(new NotificationTitle(setTitle(sseEvent.getNotificationType(),sseEvent.getClub())))
                         .build()
         );

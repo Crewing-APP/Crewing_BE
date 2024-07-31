@@ -32,14 +32,14 @@ import java.util.List;
 public class ReviewController {
     private final ReviewService reviewService;
 
-    @Operation(summary = "리뷰 생성", description = "특정 동아리에 대한 리뷰 생성")
+    @Operation(summary = "리뷰 생성", description = "특정 동아리에 대한 리뷰 생성, 작성 시 포인트 부여(최초 작성 : 20포인트, 일반 : 10포인트)")
     @PostMapping("/create")
     public ResponseEntity<ReviewResponse> create(@RequestBody ReviewCreateRequest createRequest, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         ReviewResponse reviewResponse = reviewService.createReview(createRequest,principalDetails.getUser());
         return ResponseEntity.ok().body(reviewResponse);
     }
 
-    @Operation(summary = "리뷰 삭제", description = "특정 동아리에 대한 리뷰 삭제, 작성자만 가능")
+    @Operation(summary = "리뷰 삭제", description = "특정 동아리에 대한 리뷰 삭제, 작성자만 가능, 삭제 시 포인트 회수(최초 작성 : 20포인트, 일반 : 10포인트)")
     @DeleteMapping("/delete/{reviewId}")
     @Parameter(name = "reviewId", description = "리뷰 아이디", required = true)
     public ResponseEntity<String> delete(@PathVariable Long reviewId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
