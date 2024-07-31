@@ -1,9 +1,6 @@
-package com.crewing.mail.service;
+package com.crewing.auth.mail.service;
 
-import com.crewing.common.error.auth.AuthCodeNotFoundException;
-import com.crewing.common.error.auth.InvalidAuthCodeException;
 import com.crewing.common.util.RedisUtil;
-import com.crewing.mail.dto.EmailDTO.EmailVerifyRequest;
 import com.crewing.user.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -69,17 +66,17 @@ public class MailService {
             // 이러한 경우 MessagingException이 발생
             e.printStackTrace();//e.printStackTrace()는 예외를 기본 오류 스트림에 출력하는 메서드
         }
-        redisUtil.setDataExpire(REDIS_KEY+toMail, Integer.toString(authNumber), 60 * 5L);
+        redisUtil.setDataExpire(REDIS_KEY + toMail, Integer.toString(authNumber), 60 * 5L);
     }
 
-    public boolean verifySignUpEmail(EmailVerifyRequest request){
-        String redisKey = REDIS_KEY + request.getEmail();
+    public boolean verifySignUpEmail(String email, String inputAuthNum) {
+        String redisKey = REDIS_KEY + email;
         String authCode = redisUtil.getData(redisKey);
 
-        if(authCode == null){
-            throw new AuthCodeNotFoundException();
-        } else if (!authCode.equals(request.getAuthNum())) {
-            throw new InvalidAuthCodeException();
+        if (authCode == null) {
+            return false;
+        } else if (!authCode.equals(inputAuthNum)) {
+            return false;
         }
 
         redisUtil.deleteData(redisKey);

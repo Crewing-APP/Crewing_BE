@@ -3,7 +3,7 @@ package com.crewing.auth;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 
-import com.crewing.auth.dto.LoginDTO.OauthLoginResponse;
+import com.crewing.auth.dto.LoginDTO.LoginResponse;
 import com.crewing.auth.dto.SignUpDTO.TokenResponse;
 import com.crewing.auth.jwt.service.JwtService;
 import com.crewing.auth.service.AuthService;
@@ -61,7 +61,7 @@ public class AuthServiceTest {
                 .role(Role.USER)
                 .build()));
 
-        OauthLoginResponse test = authService.loginOauth("eyzasd....", google);
+        LoginResponse test = authService.loginOauth("eyzasd....", google);
 
         Assertions.assertFalse(test.isNeedSignUp());
         Assertions.assertEquals("testAccessToken", test.getTokenResponse().getAccessToken());
@@ -86,7 +86,7 @@ public class AuthServiceTest {
                 .role(Role.USER)
                 .build()));
 
-        OauthLoginResponse test = authService.loginOauth("eyzasd...", naver);
+        LoginResponse test = authService.loginOauth("eyzasd...", naver);
 
         Assertions.assertFalse(test.isNeedSignUp());
         Assertions.assertEquals("testAccessToken", test.getTokenResponse().getAccessToken());
@@ -110,7 +110,7 @@ public class AuthServiceTest {
                 .role(Role.USER)
                 .build()));
 
-        OauthLoginResponse test = authService.loginOauth("eyzasd...", kakao);
+        LoginResponse test = authService.loginOauth("eyzasd...", kakao);
 
         Assertions.assertFalse(test.isNeedSignUp());
         Assertions.assertEquals("testAccessToken", test.getTokenResponse().getAccessToken());
@@ -134,7 +134,7 @@ public class AuthServiceTest {
                 .role(Role.GUEST)
                 .build()));
 
-        OauthLoginResponse test = authService.loginOauth("eyzasd...", kakao);
+        LoginResponse test = authService.loginOauth("eyzasd...", kakao);
 
         Assertions.assertTrue(test.isNeedSignUp());
     }

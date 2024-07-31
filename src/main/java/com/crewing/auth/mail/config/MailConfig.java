@@ -1,4 +1,4 @@
-package com.crewing.mail.config;
+package com.crewing.auth.mail.config;
 
 import java.util.Properties;
 import org.springframework.beans.factory.annotation.Value;

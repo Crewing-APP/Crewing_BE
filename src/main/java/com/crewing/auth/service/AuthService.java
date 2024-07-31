@@ -1,8 +1,10 @@
 package com.crewing.auth.service;
 
-import com.crewing.auth.dto.LoginDTO.OauthLoginResponse;
+import com.crewing.auth.dto.LoginDTO.EmailLoginResponse;
+import com.crewing.auth.dto.LoginDTO.LoginResponse;
 import com.crewing.auth.dto.SignUpDTO.TokenResponse;
 import com.crewing.auth.jwt.service.JwtService;
+import com.crewing.auth.mail.service.MailService;
 import com.crewing.auth.oauth.entity.OAuthAttributes;
 import com.crewing.common.error.auth.InvalidTokenException;
 import com.crewing.common.error.user.UserNotFoundException;
@@ -26,12 +28,49 @@ public class AuthService {
     private final JwtService jwtService;
     private final OauthApi oauthApi;
     private final PasswordEncoder passwordEncoder;
+    private final MailService mailService;
+
+    /**
+     * Email 인증을 통한 로그인
+     */
+    @Transactional
+    public EmailLoginResponse loginEmail(String email, String authNumber) {
+        boolean verifyResult = mailService.verifySignUpEmail(email, authNumber);
+        if (!verifyResult) {
+            return EmailLoginResponse.builder()
+                    .verifyResult(verifyResult)
+                    .build();
+        }
+
+        User user = getUserEmail(email);
+
+        String accessToken = jwtService.createAccessToken(user.getEmail());
+        String refreshToken = jwtService.createRefreshToken();
+        jwtService.updateRefreshToken(user.getEmail(), refreshToken);
+
+        TokenResponse tokenResponse = TokenResponse.builder().accessToken(accessToken).refreshToken(refreshToken)
+                .build();
+
+        if (user.getRole().equals(Role.GUEST)) {
+            return EmailLoginResponse.builder()
+                    .tokenResponse(tokenResponse)
+                    .needSignUp(true)
+                    .verifyResult(verifyResult)
+                    .build();
+        }
+
+        return EmailLoginResponse.builder()
+                .tokenResponse(tokenResponse)
+                .needSignUp(false)
+                .verifyResult(verifyResult)
+                .build();
+    }
 
     /**
      * Oauth 토큰을 통한 로그인
      */
     @Transactional
-    public OauthLoginResponse loginOauth(String oauthAccessToken, SocialType socialType) {
+    public LoginResponse loginOauth(String oauthAccessToken, SocialType socialType) {
         OAuthAttributes attributes = OAuthAttributes.of(socialType,
                 oauthApi.getOauthUserInfo(oauthAccessToken, socialType));
 
@@ -45,14 +84,15 @@ public class AuthService {
                 .build();
 
         if (user.getRole().equals(Role.GUEST)) {
-            return OauthLoginResponse.builder()
+            return LoginResponse.builder()
                     .tokenResponse(tokenResponse)
                     .needSignUp(true)
                     .build();
         }
 
-        return OauthLoginResponse.builder()
+        return LoginResponse.builder()
                 .tokenResponse(tokenResponse)
+                .needSignUp(false)
                 .build();
     }
 
@@ -85,6 +125,52 @@ public class AuthService {
     }
 
     /**
+     * Email 유저 조회
+     */
+    private User getUserEmail(String email) {
+        User user = userRepository.findByEmailAndDeleteAt(email).orElse(null);
+
+        if (user == null) {
+            return User.builder()
+                    .email(email)
+                    .nickname("User")
+                    .role(Role.GUEST)
+                    .build();
+        }
+
+        if (user.getDeleteAt() != null) {
+            user.setDeleteAt(null);
+            return userRepository.save(user);
+        }
+
+        return user;
+    }
+
+    /**
+     * 리프레쉬 토큰을 통한 토큰 재발급
+     */
+    @Transactional
+    public TokenResponse reissuedRefreshToken(String refreshToken) {
+        if (!jwtService.isTokenValid(refreshToken)) {
+            throw new InvalidTokenException();
+        }
+
+        User user = userRepository.findByRefreshToken(refreshToken).orElseThrow(
+                UserNotFoundException::new);
+        String reissuedRefreshToken = jwtService.createRefreshToken();
+        String accessToken = jwtService.createAccessToken(user.getEmail());
+
+        user.setRefreshToken(reissuedRefreshToken);
+
+        userRepository.save(user);
+
+        return TokenResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(reissuedRefreshToken)
+                .build();
+    }
+
+    /**
      * 개발용 토큰 발급
      */
     @Transactional
@@ -110,29 +196,5 @@ public class AuthService {
         jwtService.updateRefreshToken(email, refreshToken);
 
         return TokenResponse.builder().accessToken(accessToken).refreshToken(refreshToken).build();
-    }
-
-    /**
-     * 리프레쉬 토큰을 통한 토큰 재발급
-     */
-    @Transactional
-    public TokenResponse reissuedRefreshToken(String refreshToken) {
-        if (!jwtService.isTokenValid(refreshToken)) {
-            throw new InvalidTokenException();
-        }
-
-        User user = userRepository.findByRefreshToken(refreshToken).orElseThrow(
-                UserNotFoundException::new);
-        String reissuedRefreshToken = jwtService.createRefreshToken();
-        String accessToken = jwtService.createAccessToken(user.getEmail());
-
-        user.setRefreshToken(reissuedRefreshToken);
-
-        userRepository.save(user);
-
-        return TokenResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(reissuedRefreshToken)
-                .build();
     }
 }

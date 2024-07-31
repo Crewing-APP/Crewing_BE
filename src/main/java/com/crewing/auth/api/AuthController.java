@@ -1,8 +1,10 @@
 package com.crewing.auth.api;
 
+import com.crewing.auth.dto.LoginDTO.EmailLoginRequest;
+import com.crewing.auth.dto.LoginDTO.EmailLoginResponse;
 import com.crewing.auth.dto.LoginDTO.LoginRequest;
+import com.crewing.auth.dto.LoginDTO.LoginResponse;
 import com.crewing.auth.dto.LoginDTO.OauthLoginRequest;
-import com.crewing.auth.dto.LoginDTO.OauthLoginResponse;
 import com.crewing.auth.dto.SignUpDTO.RefreshRequest;
 import com.crewing.auth.dto.SignUpDTO.TokenResponse;
 import com.crewing.auth.service.AuthService;
@@ -35,6 +37,7 @@ public class AuthController {
         return ResponseEntity.ok().body(new TokenResponse());
     }
 
+
     @Operation(summary = "개발용 토큰 발급", description = "해당 이메일에 맞는 어드민 계정 생성 및 토큰 발급 , 비밀번호 1234 고정")
     @GetMapping("/test/{email}")
     public ResponseEntity<TokenResponse> login(@PathVariable String email) {
@@ -42,10 +45,18 @@ public class AuthController {
     }
 
     @Operation(summary = "Oauth 로그인", description = "Oauth Token을 통한 로그인")
-    @PostMapping("/oauth/login/{socialType}")
-    public ResponseEntity<OauthLoginResponse> loginOauth(@RequestBody OauthLoginRequest request,
-                                                         @PathVariable SocialType socialType) {
-        OauthLoginResponse response = authService.loginOauth(request.getOauthAccessToken(), socialType);
+    @PostMapping("/login/oauth/{socialType}")
+    public ResponseEntity<LoginResponse> loginOauth(@RequestBody OauthLoginRequest request,
+                                                    @PathVariable SocialType socialType) {
+        LoginResponse response = authService.loginOauth(request.getOauthAccessToken(), socialType);
+
+        return ResponseEntity.ok().body(response);
+    }
+
+    @Operation(summary = "Email 로그인", description = "Email 인증을 통한 로그인")
+    @PostMapping("/login/email")
+    public ResponseEntity<EmailLoginResponse> loginEmail(@RequestBody EmailLoginRequest request) {
+        EmailLoginResponse response = authService.loginEmail(request.getEmail(), request.getAuthNumber());
 
         return ResponseEntity.ok().body(response);
     }
