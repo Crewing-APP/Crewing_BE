@@ -3,9 +3,11 @@ package com.crewing.auth;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 
+import com.crewing.auth.dto.LoginDTO.EmailLoginResponse;
 import com.crewing.auth.dto.LoginDTO.LoginResponse;
 import com.crewing.auth.dto.SignUpDTO.TokenResponse;
 import com.crewing.auth.jwt.service.JwtService;
+import com.crewing.auth.mail.service.MailService;
 import com.crewing.auth.service.AuthService;
 import com.crewing.common.error.auth.InvalidTokenException;
 import com.crewing.common.error.user.UserNotFoundException;
@@ -39,6 +41,9 @@ public class AuthServiceTest {
 
     @Mock
     OauthApi oauthApi;
+
+    @Mock
+    MailService mailService;
 
     /**
      * Oauth Login Test
@@ -176,5 +181,100 @@ public class AuthServiceTest {
         given(userRepository.findByRefreshToken("eyj..test")).willReturn(Optional.empty());
         Assertions.assertThrows(UserNotFoundException.class,
                 () -> authService.reissuedRefreshToken("eyj..test"));
+    }
+
+    @Test
+    @DisplayName("Login Email Success Test (Valid Auth Number) (need Sign Up) (Not WithDraw User)")
+    void loginEmailValidAuthNumberNeedSignUpNotWithDrawUserTest() {
+        String email = "test@test.com";
+        String authNumber = "123456";
+        User user = User.builder()
+                .email(email)
+                .nickname("User")
+                .role(Role.GUEST)
+                .build();
+        String accessToken = "eyj..";
+        String refreshToken = "eyj,,..";
+
+        given(mailService.verifySignUpEmail(email, authNumber)).willReturn(true);
+        given(userRepository.findByEmailAndDeleteAt(email)).willReturn(Optional.empty());
+        given(userRepository.save(any())).willReturn(user);
+        given(jwtService.createAccessToken(email)).willReturn(accessToken);
+        given(jwtService.createRefreshToken()).willReturn(refreshToken);
+
+        EmailLoginResponse response = authService.loginEmail(email, authNumber);
+
+        Assertions.assertEquals(accessToken, response.getTokenResponse().getAccessToken());
+        Assertions.assertEquals(refreshToken, response.getTokenResponse().getRefreshToken());
+        Assertions.assertTrue(response.isNeedSignUp());
+        Assertions.assertTrue(response.isVerifyResult());
+    }
+
+    @Test
+    @DisplayName("Login Email Success Test (Invalid Auth Number)")
+    void loginEmailInValidAuthNumber() {
+        String email = "test@test.com";
+        String authNumber = "123456";
+
+        given(mailService.verifySignUpEmail(email, authNumber)).willReturn(false);
+
+        EmailLoginResponse response = authService.loginEmail(email, authNumber);
+
+        Assertions.assertFalse(response.isVerifyResult());
+    }
+
+    @Test
+    @DisplayName("Login Email Success Test (Valid Auth Number) (Not need Sign Up) (Not WithDraw User)")
+    void loginEmailValidAuthNumberNotNeedSignUpNotWithDrawUserTest() {
+        String email = "test@test.com";
+        String authNumber = "123456";
+        User user = User.builder()
+                .email(email)
+                .nickname("User")
+                .role(Role.USER)
+                .build();
+        String accessToken = "eyj..";
+        String refreshToken = "eyj,,..";
+
+        given(mailService.verifySignUpEmail(email, authNumber)).willReturn(true);
+        given(userRepository.findByEmailAndDeleteAt(email)).willReturn(Optional.of(user));
+        given(jwtService.createAccessToken(email)).willReturn(accessToken);
+        given(jwtService.createRefreshToken()).willReturn(refreshToken);
+
+        EmailLoginResponse response = authService.loginEmail(email, authNumber);
+
+        Assertions.assertEquals(accessToken, response.getTokenResponse().getAccessToken());
+        Assertions.assertEquals(refreshToken, response.getTokenResponse().getRefreshToken());
+        Assertions.assertFalse(response.isNeedSignUp());
+        Assertions.assertTrue(response.isVerifyResult());
+    }
+
+    @Test
+    @DisplayName("Login Email Success Test (Valid Auth Number) (Not need Sign Up) (WithDraw User)")
+    void loginEmailValidAuthNumberNotNeedSignUpWithDrawUserTest() {
+        String email = "test@test.com";
+        String authNumber = "123456";
+        User user = User.builder()
+                .email(email)
+                .nickname("User")
+                .role(Role.USER)
+                .build();
+        user.delete();
+
+        String accessToken = "eyj..";
+        String refreshToken = "eyj,,..";
+
+        given(mailService.verifySignUpEmail(email, authNumber)).willReturn(true);
+        given(userRepository.findByEmailAndDeleteAt(email)).willReturn(Optional.of(user));
+        given(userRepository.save(user)).willReturn(user);
+        given(jwtService.createAccessToken(email)).willReturn(accessToken);
+        given(jwtService.createRefreshToken()).willReturn(refreshToken);
+
+        EmailLoginResponse response = authService.loginEmail(email, authNumber);
+
+        Assertions.assertEquals(accessToken, response.getTokenResponse().getAccessToken());
+        Assertions.assertEquals(refreshToken, response.getTokenResponse().getRefreshToken());
+        Assertions.assertFalse(response.isNeedSignUp());
+        Assertions.assertTrue(response.isVerifyResult());
     }
 }
