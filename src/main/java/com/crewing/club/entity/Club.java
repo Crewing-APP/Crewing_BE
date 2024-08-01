@@ -8,6 +8,7 @@ import com.crewing.review.entity.ReviewAccess;
 import jakarta.persistence.*;
 import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;
+import org.checkerframework.checker.units.qual.C;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
@@ -27,10 +28,12 @@ public class Club extends BaseTimeEntity {
     @Column(nullable = false)
     private String name;
 
+    @Column(columnDefinition = "TEXT")
     private String introduction;
 
     private String oneLiner;
 
+    @Column(length = 500)
     private String application;
 
     private String profile;
