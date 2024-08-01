@@ -131,11 +131,11 @@ public class AuthService {
         User user = userRepository.findByEmailAndDeleteAt(email).orElse(null);
 
         if (user == null) {
-            return User.builder()
+            return userRepository.save(User.builder()
                     .email(email)
                     .nickname("User")
                     .role(Role.GUEST)
-                    .build();
+                    .build());
         }
 
         if (user.getDeleteAt() != null) {
