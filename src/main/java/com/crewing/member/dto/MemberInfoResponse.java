@@ -15,7 +15,7 @@ public class MemberInfoResponse {
     @Builder
     public static class UserInfo{
         private Long userId;
-        private String nickname;
+        private String name;
         private String imageUrl;
     }
 }

@@ -156,7 +156,7 @@ public class ApplicantServiceImpl implements ApplicantService {
     public ApplicantCreateResponse getApplicantCreateResponse(Applicant applicant) {
         MemberInfoResponse.UserInfo userInfo = MemberInfoResponse.UserInfo.builder()
                 .userId(applicant.getUser().getId())
-                .nickname(applicant.getUser().getNickname())
+                .name(applicant.getUser().getName())
                 .imageUrl(applicant.getUser().getProfileImage())
                 .build();
         return ApplicantCreateResponse.builder()

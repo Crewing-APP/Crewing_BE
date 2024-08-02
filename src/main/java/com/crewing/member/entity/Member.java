@@ -33,7 +33,7 @@ public class Member {
         MemberInfoResponse.UserInfo userInfo = MemberInfoResponse.UserInfo.builder()
                 .userId(this.user.getId())
                 .imageUrl(this.user.getProfileImage())
-                .nickname(this.user.getNickname())
+                .name(this.user.getName())
                 .build();
 
         return MemberInfoResponse.builder()
