@@ -67,6 +67,28 @@ public class AuthService {
     }
 
     /**
+     * Email 유저 조회
+     */
+    private User getUserEmail(String email) {
+        User user = userRepository.findByEmailAndDeleteAt(email).orElse(null);
+
+        if (user == null) {
+            return userRepository.save(User.builder()
+                    .email(email)
+                    .nickname("User")
+                    .role(Role.GUEST)
+                    .build());
+        }
+
+        if (user.getDeleteAt() != null) {
+            user.setDeleteAt(null);
+            return userRepository.save(user);
+        }
+
+        return user;
+    }
+
+    /**
      * Oauth 토큰을 통한 로그인
      */
     @Transactional
@@ -122,28 +144,6 @@ public class AuthService {
     private User saveUser(OAuthAttributes attributes, SocialType socialType) {
         User createdUser = attributes.toEntity(socialType, attributes.getOauth2UserInfo());
         return userRepository.save(createdUser);
-    }
-
-    /**
-     * Email 유저 조회
-     */
-    private User getUserEmail(String email) {
-        User user = userRepository.findByEmailAndDeleteAt(email).orElse(null);
-
-        if (user == null) {
-            return userRepository.save(User.builder()
-                    .email(email)
-                    .nickname("User")
-                    .role(Role.GUEST)
-                    .build());
-        }
-
-        if (user.getDeleteAt() != null) {
-            user.setDeleteAt(null);
-            return userRepository.save(user);
-        }
-
-        return user;
     }
 
     /**
