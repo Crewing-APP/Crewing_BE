@@ -24,6 +24,7 @@ public class Notification extends BaseTimeEntity {
     @Embedded
     private NotificationTitle title; // 제목
 
+    @Column(columnDefinition = "TEXT")
     private String content; // 자세한 내용
 
     @Convert(converter = NotificationTypeConverter.class)
