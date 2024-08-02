@@ -32,6 +32,7 @@ public class UserDTO {
         private String name;
         private LocalDate deleteAt;
         private List<InterestInfo> interests;
+        private int point;
 
         public static UserInfoResponse toDTO(User user) {
             return new UserInfoResponse(user.getId(), user.getEmail(), user.getPassword(), user.getNickname(),
@@ -39,7 +40,7 @@ public class UserDTO {
                     user.getGender(), user.getName(), user.getDeleteAt(),
                     user.getInterests().stream()
                             .map(data -> InterestInfo.builder().interest(data.getInterest()).build())
-                            .toList()
+                            .toList(), user.getPoint()
             );
         }
     }
