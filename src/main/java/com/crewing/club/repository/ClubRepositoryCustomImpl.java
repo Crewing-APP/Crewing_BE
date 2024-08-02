@@ -12,6 +12,7 @@ import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -98,12 +99,14 @@ public class ClubRepositoryCustomImpl implements ClubRepositoryCustom{
     }
 
     private ConstructorExpression<ClubListInfoResponse> createClubListInfoProjection(QClub club, QReview review) {
+        NumberTemplate<Long> reviewCount = Expressions.numberTemplate(Long.class, "COUNT(DISTINCT {0})", review.reviewId);
+
         return Projections.constructor(ClubListInfoResponse.class,
                 club.clubId,
                 club.name,
                 club.oneLiner,
                 review.rate.avg(),
-                review.count(),
+                reviewCount,
                 Expressions.asString(""),
                 club.profile,
                 club.category,
