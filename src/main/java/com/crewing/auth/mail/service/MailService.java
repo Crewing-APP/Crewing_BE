@@ -71,7 +71,7 @@ public class MailService {
 
     public boolean verifySignUpEmail(String email, String inputAuthNum) {
         String redisKey = REDIS_KEY + email;
-        String authCode = redisUtil.getData(redisKey);
+        String authCode = redisUtil.getData(redisKey, String.class);
 
         if (authCode == null) {
             return false;

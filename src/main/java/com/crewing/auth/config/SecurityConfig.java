@@ -11,6 +11,7 @@ import com.crewing.auth.jwt.service.LoginSuccessHandler;
 import com.crewing.auth.oauth.deprecated.service.service.CustomOAuth2UserService;
 import com.crewing.auth.oauth.deprecated.service.service.OAuth2LoginFailureHandler;
 import com.crewing.auth.oauth.deprecated.service.service.OAuth2LoginSuccessHandler;
+import com.crewing.common.util.RedisUtil;
 import com.crewing.user.entity.Role;
 import com.crewing.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,6 +38,7 @@ public class SecurityConfig {
     private final LoginService loginService;
     private final JwtService jwtService;
     private final UserRepository userRepository;
+    private final RedisUtil redisUtil;
     private final ObjectMapper objectMapper;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
@@ -133,7 +135,7 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
         return new JwtAuthenticationProcessingFilter(jwtService,
-                userRepository);
+                userRepository, redisUtil);
     }
 
 
