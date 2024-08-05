@@ -1,6 +1,6 @@
 # Crewing(크루잉)
 
-<img width="1242" alt="crewingInfo" src="https://github.com/user-attachments/assets/96b0ae54-fe04-4ab9-8ef6-79849b6a7665">
+<img width="1242" height="700" alt="crewingInfo" src="https://github.com/user-attachments/assets/96b0ae54-fe04-4ab9-8ef6-79849b6a7665">
 
 
 ## 1. 서비스 소개
