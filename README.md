@@ -3,6 +3,7 @@
 <img width="1242" height="480" alt="crewingInfo" src="https://github.com/user-attachments/assets/96b0ae54-fe04-4ab9-8ef6-79849b6a7665">
 
 
+
 ## 1. 서비스 소개
 
 **🎥데모 영상 : https://www.youtube.com/watch?v=O9viJRKPLRI**
@@ -24,6 +25,7 @@
 - CI/CD 배포 성공, **[스파르탄 코딩클럽]  All - in 코딩 공모전: 대학 생활 개선편 본선 진출**
 
 ![crewingInfo2](https://github.com/user-attachments/assets/4fc464c2-57fa-470e-857a-5061158b1f81)
+
 
 
 ## 2. 개발 (2024.05.18~)
@@ -57,18 +59,20 @@
 
 <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"> <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"> <img src="https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=slack&logoColor=white"> <img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white">
 
-## 3. 아키텍처
+
+## 4. 아키텍처
 
 ![crewingArchitecture](https://github.com/user-attachments/assets/52287caa-6f4a-4b41-bc50-be7b88b85588)
 
 
-## 4. 협업 방식
+## 5. 협업 방식
 
 - **깃 & 깃허브 : 깃플로우** **전략**
 - Slack, Notion을 이용한 회의 진행 및 진행 상황 공유
 - 프론트엔드 - 백엔드 간 api 명세서 공유(Swagger)
 
-## 5. 팀원 소개
+
+## 6. 팀원 소개
 
 | **김민아(PM)** | **임경진(FE)** | **고 수(BE)** | **신은혜(BE)** |
 | --- | --- | --- | --- |
