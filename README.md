@@ -1,6 +1,7 @@
 # Crewing(크루잉)
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/cde84515-c58a-432e-96ba-fc090f132756/e4c1ed8f-749e-4360-b33f-0def72198bb7/Untitled.png)
+<img width="1242" alt="crewingInfo" src="https://github.com/user-attachments/assets/96b0ae54-fe04-4ab9-8ef6-79849b6a7665">
+
 
 ## 1. 서비스 소개
 
@@ -22,7 +23,8 @@
 
 - CI/CD 배포 성공, **[스파르탄 코딩클럽]  All - in 코딩 공모전: 대학 생활 개선편 본선 진출**
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/cde84515-c58a-432e-96ba-fc090f132756/49c99f66-fb0b-44db-a884-c3f2404bb03b/Untitled.png)
+![crewingInfo2](https://github.com/user-attachments/assets/4fc464c2-57fa-470e-857a-5061158b1f81)
+
 
 ## 2. 개발 (2024.05.18~)
 
@@ -90,7 +92,8 @@
 
 ## 3. 아키텍처
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/cde84515-c58a-432e-96ba-fc090f132756/a9354b4c-8dd5-4ae2-8ef3-8a866d197775/Untitled.png)
+![crewingArchitecture](https://github.com/user-attachments/assets/52287caa-6f4a-4b41-bc50-be7b88b85588)
+
 
 ## 4. 협업 방식
 
@@ -103,7 +106,10 @@
 | **김민아(PM)** | **임경진(FE)** | **고 수(BE)** | **신은혜(BE)** |
 | --- | --- | --- | --- |
 | [@kmina02](https://github.com/kmina02) |  | [@bandalgomsu](https://github.com/bandalgomsu) | [@HideOnCodec](https://github.com/HideOnCodec) |
-| ![김민아](https://github.com/user-attachments/assets/32993a53-8c8a-45dd-b775-f1e71848a9e7) | ![임경진](https://github.com/user-attachments/assets/8c03da37-d7db-4426-8788-734e544d6d09) | ![고 수](https://github.com/user-attachments/assets/3f5b869d-48b6-4bd3-b982-c777853c4bd1) | ![신은혜](https://github.com/user-attachments/assets/3c70d156-2ba1-4e83-92b5-75f7ecfa8492) |
+| ![김민아](https://github.com/user-attachments/assets/32993a53-8c8a-45dd-b775-f1e71848a9e7) | ![임경진](https://github.com/user-attachments/assets/27c4141c-92c1-4977-9707-95b836d546fc)
+ | ![고수](https://github.com/user-attachments/assets/f5080174-29da-4a95-a759-1bcb3368beab)
+) | ![신은혜](https://github.com/user-attachments/assets/9d2edf9e-dda8-4c3e-8d81-86ae5f98908f)
+ |
 
 
 
