@@ -5,13 +5,13 @@
 
 ## 1. 서비스 소개
 
-**데모 영상 : https://www.youtube.com/watch?v=O9viJRKPLRI**
+**🎥데모 영상 : https://www.youtube.com/watch?v=O9viJRKPLRI**
 
 **대학생들을 위한 연합 동아리 리크루팅 지원 및 후기를 공유할 수 있는 IOS 어플 서비스** 입니다.
 
 대학생 동아리 모집 정보를 통합하여 제공하고 후기까지 한눈에 볼 수 있는 서비스를 제공합니다. 또한 사용자에게 어울리는 동아리를 추천합니다. 대부분의 대학생들이 여러 사이트를 일일이 검색하며 동아리를 지원하는 번거로움을 해결하고자 개발했습니다.
 
-**핵심기능**
+**⭐️핵심기능**
 
 - 카테고리별 연합동아리 분류 및 정보 제공 & 개인 맞춤형 연합동아리 추천 알고리즘
 - 고유 번호를 통한 연합동아리 회원 인증
@@ -42,7 +42,7 @@
 
 ### 프론트엔드
 
-<img src="https://img.shields.io/badge/swift-F05138?style=for-the-badge&logo=swift&logoColor=white"><img src="https://img.shields.io/badge/ios-000000?style=for-the-badge&logo=ios&logoColor=white">
+<img src="https://img.shields.io/badge/swift-F05138?style=for-the-badge&logo=swift&logoColor=white"> <img src="https://img.shields.io/badge/ios-000000?style=for-the-badge&logo=ios&logoColor=white">
 
 ---
 
@@ -73,10 +73,7 @@
 | **김민아(PM)** | **임경진(FE)** | **고 수(BE)** | **신은혜(BE)** |
 | --- | --- | --- | --- |
 | [@kmina02](https://github.com/kmina02) |  | [@bandalgomsu](https://github.com/bandalgomsu) | [@HideOnCodec](https://github.com/HideOnCodec) |
-| ![김민아](https://github.com/user-attachments/assets/32993a53-8c8a-45dd-b775-f1e71848a9e7) | ![임경진](https://github.com/user-attachments/assets/27c4141c-92c1-4977-9707-95b836d546fc)
- | ![고수](https://github.com/user-attachments/assets/f5080174-29da-4a95-a759-1bcb3368beab)
-) | ![신은혜](https://github.com/user-attachments/assets/9d2edf9e-dda8-4c3e-8d81-86ae5f98908f)
- |
+| ![김민아](https://github.com/user-attachments/assets/32993a53-8c8a-45dd-b775-f1e71848a9e7) | ![임경진](https://github.com/user-attachments/assets/ef568ec4-19ff-4861-8397-2b7ef4486adc) | ![고수](https://github.com/user-attachments/assets/f5080174-29da-4a95-a759-1bcb3368beab) | ![신은혜](https://github.com/user-attachments/assets/9d2edf9e-dda8-4c3e-8d81-86ae5f98908f) |
 
 
 
