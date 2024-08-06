@@ -1,4 +1,4 @@
-# Crewing(크루잉)
+![image](https://github.com/user-attachments/assets/feaa3f9b-4e73-4d73-840d-d3f99bf1d940)# Crewing(크루잉)
 
 <img width="1242" height="480" alt="crewingInfo" src="https://github.com/user-attachments/assets/96b0ae54-fe04-4ab9-8ef6-79849b6a7665">
 
@@ -38,7 +38,7 @@
 - **SSE**를 이용한 실시간 알림 서비스 및 **FCM(Firebase Cloud Message)**를 이용한 푸시 알림 구현
 - **QueryDSL, JPA, 페이지네이션**을 적용하여 동아리 추천 알고리즘 구현
 - **AOP ControllerAdvice**를 통한 전역 에러 처리
-- 각 기능별 테스트 구현**(Junit5)** 및 **SwaggerUI**를 이용한 api 명세서 구현
+- 각 기능별 테스트 구현 **(Junit5)** 및 **SwaggerUI**를 이용한 api 명세서 구현
 
 ## 3. 기술 스택🛠️
 
@@ -79,7 +79,7 @@
 
 | **김민아(PM)** | **임경진(FE)** | **고 수(BE)** | **신은혜(BE)** |
 | --- | --- | --- | --- |
-| [@kmina02](https://github.com/kmina02) |  | [@bandalgomsu](https://github.com/bandalgomsu) | [@HideOnCodec](https://github.com/HideOnCodec) |
+| [@kmina02](https://github.com/kmina02) | [@ImKyungJin](https://github.com/ImKyungJin) | [@bandalgomsu](https://github.com/bandalgomsu) | [@HideOnCodec](https://github.com/HideOnCodec) |
 | ![김민아](https://github.com/user-attachments/assets/32993a53-8c8a-45dd-b775-f1e71848a9e7) | ![임경진](https://github.com/user-attachments/assets/ef568ec4-19ff-4861-8397-2b7ef4486adc) | ![고수](https://github.com/user-attachments/assets/f5080174-29da-4a95-a759-1bcb3368beab) | ![신은혜](https://github.com/user-attachments/assets/9d2edf9e-dda8-4c3e-8d81-86ae5f98908f) |
 
 
