@@ -3,6 +3,7 @@ package com.crewing.auth.jwt.filter;
 import com.crewing.auth.entity.PrincipalDetails;
 import com.crewing.auth.jwt.PasswordUtil;
 import com.crewing.auth.jwt.service.JwtService;
+import com.crewing.common.util.RedisUtil;
 import com.crewing.user.entity.User;
 import com.crewing.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
@@ -24,9 +25,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Slf4j
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     private static final String NO_CHECK_URL = "/api/v1/auth/login"; // "/login"으로 들어오는 요청은 Filter 작동 X
+    private static final String USER_CACHE_PREFIX = "USER_TOKEN_CACHE";
+    private static final Long CACHE_EXP = 60 * 60L; // 60 = 1
 
     private final JwtService jwtService;
     private final UserRepository userRepository;
+    private final RedisUtil redisUtil;
 
     private final GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
@@ -61,29 +65,48 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
      */
     public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
                                                   FilterChain filterChain) throws ServletException, IOException {
-        jwtService.extractAccessToken(request)
+//        jwtService.extractAccessToken(request)
+//                .filter(jwtService::isTokenValid)
+//                .ifPresent(accessToken -> jwtService.extractEmail(accessToken)
+//                        .ifPresent(email -> userRepository.findByEmail(email)
+//                                .ifPresent(this::saveAuthentication)));
+
+        String token = jwtService.extractAccessToken(request)
                 .filter(jwtService::isTokenValid)
-                .ifPresent(accessToken -> jwtService.extractEmail(accessToken)
-                        .ifPresent(email -> userRepository.findByEmail(email)
-                                .ifPresent(this::saveAuthentication)));
+                .orElse(null);
+
+        String email = jwtService.extractEmail(token).orElse(null);
+
+        User user = getUser(email);
+
+        if (user != null) {
+            saveAuthentication(user);
+        }
 
         filterChain.doFilter(request, response);
     }
 
-    /**
-     * [인증 허가 메소드] 파라미터의 유저 : 우리가 만든 회원 객체 / 빌더의 유저 : UserDetails의 User 객체
-     * <p>
-     * new UsernamePasswordAuthenticationToken()로 인증 객체인 Authentication 객체 생성 UsernamePasswordAuthenticationToken의 파라미터
-     * 1. 위에서 만든 UserDetailsUser 객체 (유저 정보) 2. credential(보통 비밀번호로, 인증 시에는 보통 null로 제거) 3. Collection < ? extends
-     * GrantedAuthority>로, UserDetails의 User 객체 안에 Set<GrantedAuthority> authorities이 있어서 getter로 호출한 후에, new
-     * NullAuthoritiesMapper()로 GrantedAuthoritiesMapper 객체를 생성하고 mapAuthorities()에 담기
-     * <p>
-     * SecurityContextHolder.getContext()로 SecurityContext를 꺼낸 후, setAuthentication()을 이용하여 위에서 만든 Authentication 객체에 대한
-     * 인증 허가 처리
-     */
-    public void saveAuthentication(User myUser) {
+    private User getUser(String email) {
+        String key = USER_CACHE_PREFIX + email;
+        User cacheUser = redisUtil.getData(key, User.class);
+
+        if (cacheUser == null) {
+            User user = userRepository.findByEmail(email).orElse(null);
+
+            if (user == null) {
+                return null;
+            }
+
+            redisUtil.setData(key, user, CACHE_EXP);
+            return user;
+        }
+
+        return cacheUser;
+    }
+
+    private void saveAuthentication(User myUser) {
         String password = myUser.getPassword();
-        if (password == null) { // 소셜 로그인 유저의 비밀번호 임의로 설정 하여 소셜 로그인 유저도 인증 되도록 설정
+        if (password == null) {
             password = PasswordUtil.generateRandomPassword();
         }
 
