@@ -64,15 +64,18 @@
 
 ![crewingArchitecture](https://github.com/user-attachments/assets/52287caa-6f4a-4b41-bc50-be7b88b85588)
 
+## 5. ERD
+<img width="1030" alt="image" src="https://github.com/user-attachments/assets/4f2f1f3b-32c3-4200-a6f6-11fc5429ddcc">
 
-## 5. 협업 방식
+
+## 6. 협업 방식
 
 - **깃 & 깃허브 : 깃플로우** **전략**
 - Slack, Notion을 이용한 회의 진행 및 진행 상황 공유
 - 프론트엔드 - 백엔드 간 api 명세서 공유(Swagger)
 
 
-## 6. 팀원 소개
+## 7. 팀원 소개
 
 | **김민아(PM)** | **임경진(FE)** | **고 수(BE)** | **신은혜(BE)** |
 | --- | --- | --- | --- |
