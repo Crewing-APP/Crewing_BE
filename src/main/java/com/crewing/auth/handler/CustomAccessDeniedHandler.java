@@ -15,8 +15,9 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest request, HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException {
         log.error("[AUTH] : 권한이 없는 사용자 접근 {}", accessDeniedException.getMessage(), accessDeniedException);
-        
+
         response.setContentType("application/json; charset=UTF-8");
+        response.setStatus(401);
         response.getWriter().write(
                 ErrorResponse.of(ErrorCode.USER_ACCESS_DENIED, request.getRequestURI()).convertToJson()
         );

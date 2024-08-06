@@ -1,6 +1,7 @@
 package com.crewing.auth;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 import com.crewing.auth.mail.service.MailService;
@@ -36,7 +37,7 @@ public class MailServiceTest {
         String redisKey = "REDIS";
         String authNumber = "123456";
 
-        given(redisUtil.getData(redisKey)).willReturn(authNumber);
+        given(redisUtil.getData(any(), any())).willReturn(authNumber);
 
         boolean response = mailService.verifySignUpEmail(email, authNumber);
 
@@ -50,7 +51,7 @@ public class MailServiceTest {
         String redisKey = "REDIS";
         String authNumber = "123456";
 
-        given(redisUtil.getData(any())).willReturn("654321");
+        given(redisUtil.getData(anyString(), any())).willReturn("654321");
 
         boolean response = mailService.verifySignUpEmail(email, authNumber);
 
@@ -64,7 +65,7 @@ public class MailServiceTest {
         String redisKey = "REDIS";
         String authNumber = "123456";
 
-        given(redisUtil.getData(any())).willReturn(null);
+        given(redisUtil.getData(any(), any())).willReturn(null);
 
         boolean response = mailService.verifySignUpEmail(email, authNumber);
 
