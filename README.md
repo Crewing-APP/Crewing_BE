@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/feaa3f9b-4e73-4d73-840d-d3f99bf1d940)# Crewing(크루잉)
+# Crewing(크루잉)
 
 <img width="1242" height="480" alt="crewingInfo" src="https://github.com/user-attachments/assets/96b0ae54-fe04-4ab9-8ef6-79849b6a7665">
 
