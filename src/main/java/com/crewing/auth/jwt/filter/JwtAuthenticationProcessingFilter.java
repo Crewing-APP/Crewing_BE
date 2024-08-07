@@ -76,7 +76,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                 .orElse(null);
 
         String email = jwtService.extractEmail(token).orElse(null);
-
+        
         User user = getUser(email);
 
         if (user != null) {
@@ -87,6 +87,10 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     }
 
     private User getUser(String email) {
+        if (email == null) {
+            return null;
+        }
+
         String key = USER_CACHE_PREFIX + email;
         User cacheUser = redisUtil.getData(key, User.class);
 

@@ -37,7 +37,6 @@ public class AuthController {
         return ResponseEntity.ok().body(new TokenResponse());
     }
 
-
     @Operation(summary = "개발용 토큰 발급", description = "해당 이메일에 맞는 어드민 계정 생성 및 토큰 발급 , 비밀번호 1234 고정")
     @GetMapping("/test/{email}")
     public ResponseEntity<TokenResponse> login(@PathVariable String email) {
