@@ -110,7 +110,7 @@ public class ClubController {
 
     @Operation(summary = "동아리 목록 조회", description = "동아리 목록 조회, 페이징으로 조회 가능")
     @GetMapping("/clubs")
-    public ResponseEntity<ClubListResponse> getAllClub(@PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<ClubListResponse> getAllClub(Pageable pageable) {
         log.info("[CLUB] Request page = {}, size = {}",pageable.getPageNumber(),pageable.getPageSize());
         ClubListResponse clubList = clubReadService.getAllClubInfo(pageable);
         return ResponseEntity.ok().body(clubList);
