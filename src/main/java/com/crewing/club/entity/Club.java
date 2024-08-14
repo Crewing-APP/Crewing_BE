@@ -41,7 +41,7 @@ public class Club extends BaseTimeEntity {
     @Column(nullable = false)
     private int category;
 
-    @Column(nullable = false)
+    @Convert(converter = StatusConverter.class)
     private Status status;
 
     @ColumnDefault("false")

@@ -112,12 +112,12 @@ public class ClubReadServiceImpl implements ClubReadService{
 
     @Override
     @Transactional
-    public ClubListResponse getAllStatusClubInfo(Pageable pageable,String status, User user) {
+    public ClubListResponse getAllStatusClubInfo(Pageable pageable,Status status, User user) {
         if(!user.getRole().equals(Role.ADMIN)){
             throw new UserAccessDeniedException();
         }
         Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC,"clubId"));
-        Page<Club> clubPage = clubRepository.findAllByStatus(Status.valueOf(status), pageRequest);
+        Page<Club> clubPage = clubRepository.findAllByStatus(status, pageRequest);
         Page<ClubListInfoResponse> clubInfoPages = clubPage.map(club ->
                 ClubListInfoResponse.toClubListInfoResponse(club,reviewRepository.findAverageRateByClubId(club).orElse(0f)));
 

@@ -84,7 +84,7 @@ public class ApplicantServiceImpl implements ApplicantService {
         // 운영진 여부 확인
         Club club = memberService.checking(request.getClubId(),user);
 
-        Status status = Status.valueOf(request.getStatus());
+        Status status = request.getStatus();
         List<Applicant> applicantList = applicantRepository.findAllByApplicantIdIn(request.getChangeList());
         List<Applicant> newApplicantList = new ArrayList<>();
         for(Applicant applicant : applicantList) {
@@ -115,11 +115,11 @@ public class ApplicantServiceImpl implements ApplicantService {
 
     @Override
     @Transactional
-    public ApplicantListResponse getAllStatusApplicantInfo(Pageable pageable, Long clubId, String status, User user) {
+    public ApplicantListResponse getAllStatusApplicantInfo(Pageable pageable, Long clubId, Status status, User user) {
         // 운영진 여부 확인
         Club club = memberService.checking(clubId,user);
         Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.DESC,"applicantId");
-        Page<Applicant> applicantPage = applicantRepository.findAllByClubAndStatus(club,Status.valueOf(status),pageRequest);
+        Page<Applicant> applicantPage = applicantRepository.findAllByClubAndStatus(club,status,pageRequest);
         return toApplicantListResponse(applicantPage,applicantPage.getContent());
     }
 

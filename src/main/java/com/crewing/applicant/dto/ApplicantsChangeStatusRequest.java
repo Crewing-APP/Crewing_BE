@@ -1,5 +1,6 @@
 package com.crewing.applicant.dto;
 
+import com.crewing.applicant.entity.Status;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -15,7 +16,7 @@ public class ApplicantsChangeStatusRequest {
     private List<Long> changeList;
 
     @NotBlank
-    private String status;
+    private Status status;
 
     @NotBlank
     private String content;

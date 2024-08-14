@@ -1,6 +1,7 @@
 package com.crewing.applicant.api;
 
 import com.crewing.applicant.dto.*;
+import com.crewing.applicant.entity.Status;
 import com.crewing.applicant.service.ApplicantService;
 import com.crewing.auth.entity.PrincipalDetails;
 import com.crewing.club.dto.ClubListInfoResponse;
@@ -60,7 +61,7 @@ public class ApplicantController {
             @Parameter(name = "status", description = "지원자 상태 : WAIT(서류 제출 지원자),DOC(서류 합격),INTERVIEW(면접 합격),DOC_FAIL(서류 불합격),FINAL_FAIL(최종 불합격)", required = true)
     })
     @GetMapping("/applicants/status/{clubId}")
-    public ResponseEntity<ApplicantListResponse> getAllStatusApplicants(@PageableDefault(size = 10) Pageable pageable, @PathVariable Long clubId, @RequestParam String status, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<ApplicantListResponse> getAllStatusApplicants(@PageableDefault(size = 10) Pageable pageable, @PathVariable Long clubId, @RequestParam Status status, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         ApplicantListResponse response = applicantService.getAllStatusApplicantInfo(pageable,clubId,status,principalDetails.getUser());
         return ResponseEntity.ok().body(response);
     }

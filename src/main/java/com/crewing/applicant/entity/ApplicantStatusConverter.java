@@ -1,4 +1,4 @@
-package com.crewing.notification.entity;
+package com.crewing.applicant.entity;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
@@ -6,9 +6,9 @@ import jakarta.persistence.Converter;
 import java.util.Objects;
 
 @Converter(autoApply = true)
-public class NotificationTypeConverter implements AttributeConverter<NotificationType, String> {
+public class ApplicantStatusConverter implements AttributeConverter<Status,String> {
     @Override
-    public String convertToDatabaseColumn(NotificationType attribute) {
+    public String convertToDatabaseColumn(Status attribute) {
         if (Objects.isNull(attribute)) {
             throw new NullPointerException("Enum Converting String - OrderStatus is null");
         }
@@ -16,10 +16,10 @@ public class NotificationTypeConverter implements AttributeConverter<Notificatio
     }
 
     @Override
-    public NotificationType convertToEntityAttribute(String dbData) {
+    public Status convertToEntityAttribute(String dbData) {
         if(Objects.isNull(dbData)) {
             throw new NullPointerException("Enum Converting String - OrderStatus is null");
         }
-        return NotificationType.valueOf(dbData);
+        return Status.valueOf(dbData);
     }
 }
