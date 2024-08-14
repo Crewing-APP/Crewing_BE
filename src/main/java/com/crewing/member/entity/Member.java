@@ -26,7 +26,8 @@ public class Member {
     @JoinColumn(name = "club_id")
     private Club club;
 
-    @NotBlank
+    @Convert(converter = RoleConverter.class)
+    @Column(nullable = false)
     private Role role;
 
     public MemberInfoResponse toMemberInfoResponse(){

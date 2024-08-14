@@ -5,6 +5,7 @@ import com.crewing.auth.entity.PrincipalDetails;
 import com.crewing.club.dto.ClubChangeStatusRequest;
 import com.crewing.club.dto.ClubCreateResponse;
 import com.crewing.club.dto.ClubListResponse;
+import com.crewing.club.entity.Status;
 import com.crewing.club.service.ClubReadService;
 import com.crewing.club.service.ClubService;
 import com.crewing.user.dto.UserDTO.UserInfoResponse;
@@ -56,7 +57,7 @@ public class AdminController {
     @Operation(summary = "수락 신청 동아리 목록 조회", description = "HOLD 상태인 동아리 목록 조회, 페이징으로 조회 가능, 관리자만 조회")
     @GetMapping("/clubs")
     public ResponseEntity<ClubListResponse> getAllHOLDClub(@PageableDefault(size = 10) Pageable pageable,
-                                                           @RequestParam String status,
+                                                           @RequestParam Status status,
                                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
         ClubListResponse clubList = clubReadService.getAllStatusClubInfo(pageable, status,
                 principalDetails.getUser());

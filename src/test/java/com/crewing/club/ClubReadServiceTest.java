@@ -136,7 +136,7 @@ public class ClubReadServiceTest {
                 .role(Role.USER)
                 .build());
 
-        assertThatThrownBy(()->clubReadService.getAllStatusClubInfo(pageRequest, "ACCEPT", user))
+        assertThatThrownBy(()->clubReadService.getAllStatusClubInfo(pageRequest, Status.ACCEPT, user))
                 .isInstanceOf(UserAccessDeniedException.class);
     }
 
