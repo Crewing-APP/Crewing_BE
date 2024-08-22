@@ -31,10 +31,11 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    @Operation(summary = "어드민 로그인", description = "어드민 전용 로그인")
+    @Operation(summary = "ID/PW 로그인", description = "어드민 전용 로그인")
     public ResponseEntity<TokenResponse> loginAdmin(@RequestBody LoginRequest request) {
+        TokenResponse response = authService.loginBasic(request.getEmail(), request.getPassword());
 
-        return ResponseEntity.ok().body(new TokenResponse());
+        return ResponseEntity.ok().body(response);
     }
 
     @Operation(summary = "개발용 토큰 발급", description = "해당 이메일에 맞는 어드민 계정 생성 및 토큰 발급 , 비밀번호 1234 고정")

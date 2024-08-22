@@ -30,6 +30,21 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
 
+    @Transactional
+    public TokenResponse loginBasic(String email, String password) {
+        User user = userRepository.findByEmailAndPassword(email, passwordEncoder.encode(password))
+                .orElseThrow(UserNotFoundException::new);
+
+        String accessToken = jwtService.createAccessToken(user.getEmail());
+        String refreshToken = jwtService.createRefreshToken();
+        jwtService.updateRefreshToken(user.getEmail(), refreshToken);
+
+        return TokenResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
     /**
      * Email 인증을 통한 로그인
      */
@@ -38,7 +53,7 @@ public class AuthService {
         boolean verifyResult = mailService.verifySignUpEmail(email, authNumber);
         if (!verifyResult) {
             return EmailLoginResponse.builder()
-                    .verifyResult(verifyResult)
+                    .verifyResult(false)
                     .build();
         }
 

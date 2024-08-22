@@ -1,5 +1,6 @@
 package com.crewing.auth.api;
 
+import com.crewing.auth.dto.SignUpDTO.BasicSignUpRequest;
 import com.crewing.auth.dto.SignUpDTO.EmailDuplicateCheckResponse;
 import com.crewing.auth.dto.SignUpDTO.SignUpRequest;
 import com.crewing.auth.dto.SignUpDTO.TokenResponse;
@@ -30,6 +31,13 @@ public class SignUpController {
     private final SignUpService signUpService;
     private final MailService mailService;
 
+    @Operation(summary = "ID/PW 회원가입", description = "기본 회원가입을 요청합니다")
+    @PostMapping
+    public ResponseEntity<TokenResponse> signUpBasic(@RequestBody BasicSignUpRequest request) {
+        TokenResponse response = signUpService.signUpBasic(request);
+        return ResponseEntity.ok(response);
+    }
+
     @Operation(summary = "추가 회원가입", description = "추가정보가 필요한 유저 회원가입")
     @PostMapping
     public ResponseEntity<TokenResponse> signUp(@AuthenticationPrincipal PrincipalDetails principalDetails,
@@ -37,13 +45,6 @@ public class SignUpController {
         TokenResponse response = signUpService.signUp(request, principalDetails.getId());
         return ResponseEntity.ok(response);
     }
-
-//    @Operation(summary = "기본 회원가입", description = "기본 회원가입을 요청합니다")
-//    @PostMapping
-//    public ResponseEntity<TokenResponse> signUpBasic(@RequestBody BasicSignUpRequest request) {
-//        TokenResponse response = signUpService.signUpBasic(request);
-//        return ResponseEntity.ok(response);
-//    }
 
     @Operation(summary = "인증 메일 발송", description = "인증 메일을 발송합니다")
     @PostMapping("/verification/{email}")
