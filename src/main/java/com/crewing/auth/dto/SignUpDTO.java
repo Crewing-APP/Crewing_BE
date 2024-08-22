@@ -42,6 +42,9 @@ public class SignUpDTO {
         @Email
         private String email;
 
+        @Schema(description = "비밀번호", example = "testtest")
+        private String password;
+
         @Schema(description = "이메일 인증 여부", example = "true")
         private boolean verified;
     }

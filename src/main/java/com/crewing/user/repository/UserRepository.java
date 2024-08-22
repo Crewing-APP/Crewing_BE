@@ -27,6 +27,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     //    @Query("SELECT u from User u where u.socialType = :socialType and u.socialId = :socialId and u.deleteAt is null")
     Optional<User> findBySocialTypeAndSocialId(SocialType socialType, String socialId);
 
+    @Query("SELECT u from User u where u.email = :email and u.password = :password and u.deleteAt is null")
+    Optional<User> findByEmailAndPassword(String email, String password);
+
     @Query("SELECT u FROM User u WHERE u.deleteAt < :time")
     List<User> findAllByDeleteAtBeforeTime(LocalDate time);
 
@@ -39,5 +42,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("DELETE User u WHERE u.id in :userIds ")
     void deleteAllIdsIn(List<Long> userIds);
-
 }

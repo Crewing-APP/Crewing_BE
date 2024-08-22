@@ -48,7 +48,7 @@ public class LoginDTO {
     /**
      * Response
      */
-
+    
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
