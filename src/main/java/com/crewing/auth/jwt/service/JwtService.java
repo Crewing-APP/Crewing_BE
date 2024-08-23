@@ -181,6 +181,11 @@ public class JwtService {
                 );
     }
 
+    public void updateRefreshToken(User user, String refreshToken) {
+        user.updateRefreshToken(refreshToken);
+        userRepository.saveAndFlush(user);
+    }
+
 
     public boolean isTokenValid(String token) {
         try {
