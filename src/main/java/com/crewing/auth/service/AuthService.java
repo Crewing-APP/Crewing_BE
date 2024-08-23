@@ -32,17 +32,13 @@ public class AuthService {
 
     @Transactional
     public TokenResponse loginBasic(String email, String password) {
-        User user = userRepository.findByEmailAndPassword(email, passwordEncoder.encode(password))
-                .orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
 
-        String accessToken = jwtService.createAccessToken(user.getEmail());
-        String refreshToken = jwtService.createRefreshToken();
-        jwtService.updateRefreshToken(user.getEmail(), refreshToken);
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new UserNotFoundException();
+        }
 
-        return TokenResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
+        return getToken(user);
     }
 
     /**
@@ -59,12 +55,7 @@ public class AuthService {
 
         User user = getUserEmail(email);
 
-        String accessToken = jwtService.createAccessToken(user.getEmail());
-        String refreshToken = jwtService.createRefreshToken();
-        jwtService.updateRefreshToken(user.getEmail(), refreshToken);
-
-        TokenResponse tokenResponse = TokenResponse.builder().accessToken(accessToken).refreshToken(refreshToken)
-                .build();
+        TokenResponse tokenResponse = getToken(user);
 
         if (user.getRole().equals(Role.GUEST)) {
             return EmailLoginResponse.builder()
@@ -78,6 +69,17 @@ public class AuthService {
                 .tokenResponse(tokenResponse)
                 .needSignUp(false)
                 .verifyResult(verifyResult)
+                .build();
+    }
+
+    private TokenResponse getToken(User user) {
+        String accessToken = jwtService.createAccessToken(user.getEmail());
+        String refreshToken = jwtService.createRefreshToken();
+        jwtService.updateRefreshToken(user, refreshToken);
+
+        return TokenResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .build();
     }
 
