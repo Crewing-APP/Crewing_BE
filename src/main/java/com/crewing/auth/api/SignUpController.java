@@ -32,7 +32,7 @@ public class SignUpController {
     private final MailService mailService;
 
     @Operation(summary = "ID/PW 회원가입", description = "기본 회원가입을 요청합니다")
-    @PostMapping
+    @PostMapping("/basic")
     public ResponseEntity<TokenResponse> signUpBasic(@RequestBody BasicSignUpRequest request) {
         TokenResponse response = signUpService.signUpBasic(request);
         return ResponseEntity.ok(response);
