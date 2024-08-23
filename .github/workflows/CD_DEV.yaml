@@ -49,9 +49,9 @@ jobs:
         uses: appleboy/ssh-action@master
         id: deploy-prod
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          host: ${{ secrets.EC2_HOST_DEV }}
+          username: ${{ secrets.EC2_USERNAME_DEV }}
+          key: ${{ secrets.EC2_PRIVATE_KEY_DEV }}
           envs: GITHUB_SHA
           script: |
             cd ./project
