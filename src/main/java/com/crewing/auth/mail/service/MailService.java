@@ -6,6 +6,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MailService {
     private static final String REDIS_KEY = "EMAIL_VERIFY:";
 
@@ -71,6 +73,7 @@ public class MailService {
 
     public boolean verifySignUpEmail(String email, String inputAuthNum) {
         String redisKey = REDIS_KEY + email;
+        log.info("redis Start");
         String authCode = redisUtil.getData(redisKey, String.class);
 
         if (authCode == null) {

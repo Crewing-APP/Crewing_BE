@@ -47,11 +47,14 @@ public class AuthService {
     @Transactional
     public EmailLoginResponse loginEmail(String email, String authNumber) {
         boolean verifyResult = mailService.verifySignUpEmail(email, authNumber);
+
         if (!verifyResult) {
             return EmailLoginResponse.builder()
                     .verifyResult(false)
                     .build();
         }
+
+        log.info("redis end");
 
         User user = getUserEmail(email);
 
