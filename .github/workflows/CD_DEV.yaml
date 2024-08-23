@@ -2,6 +2,9 @@ name: CD_DEV
 
 on:
   workflow_dispatch:
+  push: 
+    branches:
+        - main
 
 permissions: write-all #테스트 결과 작성을 위해 쓰기권한 추가
 
@@ -57,7 +60,7 @@ jobs:
             cd ./project
             sudo docker stop crewing-server
             sudo docker rm crewing-server
-            sudo docker rmi $(sudo docker images -q --filter "dangling=true")
+            sudo docker rmi $(sudo docker images -q)
             sudo docker pull ${{ secrets.DOCKER_REPO }}/crewing-server
             sudo docker run -i -t --env-file ./crewing.env -p 8081:8081 -d --name crewing-server ${{ secrets.DOCKER_REPO }}/crewing-server:latest
 
