@@ -16,7 +16,15 @@ public class StatusConverter implements AttributeConverter<Status,String> {
     }
 
     @Override
-    public Status convertToEntityAttribute(String s) {
-        return null;
+    public Status convertToEntityAttribute(String dbData) {
+        if (Objects.isNull(dbData) || dbData.isEmpty()) {
+            return null;
+        }
+        for (Status status : Status.values()) {
+            if (status.getKey().equals(dbData)) {
+                return status;
+            }
+        }
+        throw new IllegalArgumentException("Unknown status value: " + dbData);
     }
 }
