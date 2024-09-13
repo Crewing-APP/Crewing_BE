@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import java.util.List;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -47,10 +48,21 @@ public class SignUpDTO {
 
         @Schema(description = "이메일 인증 여부", example = "true")
         private boolean verified;
+
+        public BasicSignUpRequest(String birth, String gender, String name, String nickname, List<String> interests,
+                                  String email, String password, boolean verified) {
+            this.birth = Objects.requireNonNullElse(birth, "");
+            this.gender = Objects.requireNonNullElse(gender, "");
+            this.name = name;
+            this.nickname = nickname;
+            this.interests = interests;
+            this.email = email;
+            this.password = password;
+            this.verified = verified;
+        }
     }
 
     @Getter
-    @AllArgsConstructor
     @Builder
     public static class SignUpRequest {
         @Schema(description = "생년 월일", example = "2000-05-04")
@@ -67,6 +79,14 @@ public class SignUpDTO {
 
         @Schema(description = "관심항목", example = "[\"개발\",\"축구\"]")
         private List<String> interests;
+
+        public SignUpRequest(String birth, String gender, String name, String nickname, List<String> interests) {
+            this.birth = Objects.requireNonNullElse(birth, "");
+            this.gender = Objects.requireNonNullElse(gender, "");
+            this.name = name;
+            this.nickname = nickname;
+            this.interests = interests;
+        }
     }
 
     @Getter
