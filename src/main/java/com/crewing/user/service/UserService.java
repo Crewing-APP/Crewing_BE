@@ -45,6 +45,24 @@ public class UserService {
     }
 
     @Transactional
+    public void updateGender(Long userId, String gender) {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+
+        user.updateGender(gender);
+
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void updateBirth(Long userId, String birth) {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+
+        user.updateBirth(birth);
+
+        userRepository.save(user);
+    }
+
+    @Transactional
     public void updateInterest(Long userId, InterestUpdateRequest request) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 

@@ -36,10 +36,26 @@ public class UserController {
         return ResponseEntity.ok().body(userInfo);
     }
 
+    @Operation(summary = "유저 성별 수정", description = "로그인 유저의 성별을 수정합니다")
+    @PatchMapping("/me/gender/{gender}")
+    public ResponseEntity<Void> updateGender(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                             @PathVariable String gender) {
+        userService.updateGender(principalDetails.getId(), gender);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "유저 나이 수정", description = "로그인 유저의 성별을 수정합니다")
+    @PatchMapping("/me/birth/{birth}")
+    public ResponseEntity<Void> updateBirth(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                            @PathVariable String birth) {
+        userService.updateBirth(principalDetails.getId(), birth);
+        return ResponseEntity.ok().build();
+    }
+
     @Operation(summary = "유저 관심사 수정", description = "로그인 유저의 관심사를 수정합니다")
     @PatchMapping("/me/interest")
-    public ResponseEntity<?> updateInterest(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                            @RequestBody InterestUpdateRequest request) {
+    public ResponseEntity<Void> updateInterest(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                               @RequestBody InterestUpdateRequest request) {
         userService.updateInterest(principalDetails.getId(), request);
 
         return ResponseEntity.ok().build();
