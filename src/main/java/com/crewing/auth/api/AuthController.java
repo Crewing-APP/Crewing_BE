@@ -31,7 +31,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    @Operation(summary = "ID/PW 로그인", description = "어드민 전용 로그인")
+    @Operation(summary = "ID/PW 로그인", description = "ID/PW 로그인")
     public ResponseEntity<TokenResponse> loginAdmin(@RequestBody LoginRequest request) {
         TokenResponse response = authService.loginBasic(request.getEmail(), request.getPassword());
 
