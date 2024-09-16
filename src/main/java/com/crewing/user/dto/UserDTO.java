@@ -21,7 +21,6 @@ public class UserDTO {
     public static class UserInfoResponse {
         private Long id;
         private String email;
-        private String password;
         private String nickname;
         private String profileImage;
         private Role role;
@@ -35,7 +34,7 @@ public class UserDTO {
         private int point;
 
         public static UserInfoResponse toDTO(User user) {
-            return new UserInfoResponse(user.getId(), user.getEmail(), user.getPassword(), user.getNickname(),
+            return new UserInfoResponse(user.getId(), user.getEmail(), user.getNickname(),
                     user.getProfileImage(), user.getRole(), user.getSocialType(), user.getSocialId(), user.getBirth(),
                     user.getGender(), user.getName(), user.getDeleteAt(),
                     user.getInterests().stream()
