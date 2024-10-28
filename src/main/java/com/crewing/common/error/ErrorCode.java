@@ -20,6 +20,10 @@ public enum ErrorCode {
     AUTH_CODE_NOT_FOUND("A02", "AuthCode is not Found", HttpStatus.BAD_REQUEST.value()),
     INVALID_AUTH_CODE("A03", "AuthCode is Invalid", HttpStatus.BAD_REQUEST.value()),
     INVALID_TOKEN("A04", "Token is Invalid", HttpStatus.BAD_REQUEST.value()),
+    APPLE_PUBLIC_KEY_ERROR("A05","애플 공개키를 이용한 서명 검증에 실패했습니다.",HttpStatus.BAD_REQUEST.value()),
+    APPLE_TOKEN_VALIDATION_ERROR("AO6","애플 토큰이 유효하지 않습니다.",HttpStatus.BAD_REQUEST.value()),
+    APPLE_USER_IDENTIFIER_ERROR("A07","애플 USERIDENTIFIER가 유효하지 않습니다.",HttpStatus.BAD_REQUEST.value()),
+    APPLE_NEED_SIGN_UP("A08","애플 최초 회원가입이 필요합니다.",HttpStatus.BAD_REQUEST.value()),
     //Club
     CLUB_NOT_FOUND("CL01", "Club is not Found.", HttpStatus.NOT_FOUND.value()),
     CLUB_ACCESS_DENIED("CL02", "No permission to club", HttpStatus.FORBIDDEN.value()),

@@ -1,24 +1,23 @@
 package com.crewing.user.api;
 
+import com.crewing.auth.dto.AppleDto;
 import com.crewing.auth.entity.PrincipalDetails;
 import com.crewing.user.dto.UserDTO.InterestUpdateRequest;
 import com.crewing.user.dto.UserDTO.UserInfoResponse;
 import com.crewing.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import static com.crewing.auth.dto.AppleDto.*;
 
 @Tag(name = "유저", description = "유저 정보를 관리 합니다")
 @RequiredArgsConstructor
@@ -84,6 +83,14 @@ public class UserController {
     @DeleteMapping("/me")
     public ResponseEntity<?> deleteUser(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         userService.deleteUser(principalDetails.getId());
+
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "애플 유저 삭제", description = "애플 로그인 유저를 삭제합니다")
+    @PostMapping("/me/apple")
+    public ResponseEntity<?> deleteAppleUser(@RequestBody @Valid AppleCodeRequestDto appleCodeRequestDto, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        userService.deleteAppleUser(principalDetails.getId(),appleCodeRequestDto);
 
         return ResponseEntity.ok().build();
     }
