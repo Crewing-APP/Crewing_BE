@@ -48,7 +48,7 @@ public class AuthController {
     @PostMapping("/login/oauth/{socialType}")
     public ResponseEntity<LoginResponse> loginOauth(@RequestBody OauthLoginRequest request,
                                                     @PathVariable SocialType socialType) {
-        LoginResponse response = authService.loginOauth(request.getOauthAccessToken(), socialType);
+        LoginResponse response = authService.loginOauth(request.getOauthAccessToken(), request.getAuthorizationCode(),socialType);
 
         return ResponseEntity.ok().body(response);
     }

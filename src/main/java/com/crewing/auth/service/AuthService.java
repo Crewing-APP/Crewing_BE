@@ -1,23 +1,33 @@
 package com.crewing.auth.service;
 
+import com.crewing.auth.dto.AppleTokenResponseDto;
+import com.crewing.auth.dto.LoginDTO;
 import com.crewing.auth.dto.LoginDTO.EmailLoginResponse;
 import com.crewing.auth.dto.LoginDTO.LoginResponse;
 import com.crewing.auth.dto.SignUpDTO.TokenResponse;
 import com.crewing.auth.jwt.service.JwtService;
 import com.crewing.auth.mail.service.MailService;
 import com.crewing.auth.oauth.entity.OAuthAttributes;
+import com.crewing.common.error.BusinessException;
+import com.crewing.common.error.ErrorCode;
 import com.crewing.common.error.auth.InvalidTokenException;
 import com.crewing.common.error.user.UserNotFoundException;
+import com.crewing.common.util.AppleAuthUtil;
 import com.crewing.external.OauthApi;
 import com.crewing.user.entity.Role;
 import com.crewing.user.entity.SocialType;
 import com.crewing.user.entity.User;
 import com.crewing.user.repository.UserRepository;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
+
+import static com.crewing.auth.dto.LoginDTO.*;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -29,6 +39,7 @@ public class AuthService {
     private final OauthApi oauthApi;
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
+    private final AppleAuthUtil appleAuthUtil;
 
     @Transactional
     public TokenResponse loginBasic(String email, String password) {
@@ -112,11 +123,10 @@ public class AuthService {
      * Oauth 토큰을 통한 로그인
      */
     @Transactional
-    public LoginResponse loginOauth(String oauthAccessToken, SocialType socialType) {
-        OAuthAttributes attributes = OAuthAttributes.of(socialType,
-                oauthApi.getOauthUserInfo(oauthAccessToken, socialType));
-
-        User user = getUserOauth(attributes, socialType);
+    public LoginResponse loginOauth(String oauthAccessToken, String authorizationCode, SocialType socialType) {
+        User user = socialType.equals(SocialType.APPLE)
+                ? getAppleUser(appleVerification(oauthAccessToken, authorizationCode))
+                : getUserOauth(OAuthAttributes.of(socialType, oauthApi.getOauthUserInfo(oauthAccessToken, socialType)), socialType);
 
         String accessToken = jwtService.createAccessToken(user.getEmail());
         String refreshToken = jwtService.createRefreshToken();
@@ -136,6 +146,51 @@ public class AuthService {
                 .tokenResponse(tokenResponse)
                 .needSignUp(false)
                 .build();
+    }
+
+    /**
+     * Apple 로그인 유저 조회
+     */
+    private User getAppleUser(String socialId){
+        User findUser = userRepository.findBySocialTypeAndSocialId(SocialType.APPLE, socialId)
+                .orElseGet(() -> userRepository.save(User.builder()
+                        .socialType(SocialType.APPLE)
+                        .socialId(socialId)
+                        .email(UUID.randomUUID() + "@socialUser.com")
+                        .role(Role.GUEST)
+                        .build()));
+
+        if (findUser.getDeleteAt() != null) {
+            findUser.setDeleteAt(null);
+            return userRepository.save(findUser);
+        }
+
+        return findUser;
+
+    }
+
+    /**
+     * Apple 로그인 유저 검증
+     */
+    private String appleVerification(String identityToken, String authorizationCode){
+        log.info("[AUTH] apple login request : identityToken = {} authorizationCode = {}", identityToken, authorizationCode);
+
+        // identityToken 서명 검증
+        Claims claims = appleAuthUtil.verifyIdentityToken(identityToken);
+        log.info("[AUTH] apple login verification : identityToken 검증 성공");
+        // apple ID Server에 애플 토큰 요청
+        AppleTokenResponseDto appleTokenResponseDto = appleAuthUtil.getAppleToken(authorizationCode);
+
+        String idToken = appleTokenResponseDto.idToken();
+        log.info("[AUTH] apple login token request : idToken = {}",idToken);
+        // 유효한 idToken이 없을 경우
+        if(idToken==null || idToken.isEmpty()){
+            throw new BusinessException(ErrorCode.APPLE_NEED_SIGN_UP);
+        }
+        // 유효한 idToken이 있을 경우 -> 애플 회원가입을 완료한 유저
+
+        // sub(고유 id) 클레임 추출
+        return claims.get("sub", String.class);
     }
 
     /**

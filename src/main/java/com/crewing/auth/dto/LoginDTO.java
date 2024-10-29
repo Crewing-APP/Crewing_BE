@@ -21,6 +21,9 @@ public class LoginDTO {
     public static class OauthLoginRequest {
         @Schema(description = "Oauth 인증용 토큰", example = "eyj....")
         private String oauthAccessToken;
+        @Schema(description = "애플 로그인용 인가 코드")
+        private String authorizationCode;
+
     }
 
     @Getter

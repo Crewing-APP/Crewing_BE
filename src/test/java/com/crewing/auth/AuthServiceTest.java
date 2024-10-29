@@ -66,7 +66,7 @@ public class AuthServiceTest {
                 .role(Role.USER)
                 .build()));
 
-        LoginResponse test = authService.loginOauth("eyzasd....", google);
+        LoginResponse test = authService.loginOauth("eyzasd....","", google);
 
         Assertions.assertFalse(test.isNeedSignUp());
         Assertions.assertEquals("testAccessToken", test.getTokenResponse().getAccessToken());
@@ -91,7 +91,7 @@ public class AuthServiceTest {
                 .role(Role.USER)
                 .build()));
 
-        LoginResponse test = authService.loginOauth("eyzasd...", naver);
+        LoginResponse test = authService.loginOauth("eyzasd...","", naver);
 
         Assertions.assertFalse(test.isNeedSignUp());
         Assertions.assertEquals("testAccessToken", test.getTokenResponse().getAccessToken());
@@ -115,7 +115,7 @@ public class AuthServiceTest {
                 .role(Role.USER)
                 .build()));
 
-        LoginResponse test = authService.loginOauth("eyzasd...", kakao);
+        LoginResponse test = authService.loginOauth("eyzasd...","", kakao);
 
         Assertions.assertFalse(test.isNeedSignUp());
         Assertions.assertEquals("testAccessToken", test.getTokenResponse().getAccessToken());
@@ -139,7 +139,7 @@ public class AuthServiceTest {
                 .role(Role.GUEST)
                 .build()));
 
-        LoginResponse test = authService.loginOauth("eyzasd...", kakao);
+        LoginResponse test = authService.loginOauth("eyzasd...","", kakao);
 
         Assertions.assertTrue(test.isNeedSignUp());
     }

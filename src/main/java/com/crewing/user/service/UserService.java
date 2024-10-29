@@ -1,9 +1,12 @@
 package com.crewing.user.service;
 
+import com.crewing.auth.dto.AppleDto;
+import com.crewing.auth.dto.AppleTokenResponseDto;
 import com.crewing.common.error.BusinessException;
 import com.crewing.common.error.ErrorCode;
 import com.crewing.common.error.user.OverPointException;
 import com.crewing.common.error.user.UserNotFoundException;
+import com.crewing.common.util.AppleAuthUtil;
 import com.crewing.external.StudentVerifyApi.StudentVerifyApiClient;
 import com.crewing.file.service.FileService;
 import com.crewing.user.dto.UserDTO.InterestUpdateRequest;
@@ -18,12 +21,16 @@ import com.crewing.user.repository.UserRepository;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import static com.crewing.auth.dto.AppleDto.*;
 
 @Service
 @Slf4j
@@ -38,6 +45,7 @@ public class UserService {
     private final FileService fileService;
     private final StudentVerifyApiClient studentVerifyApiClient;
     private final PointHistoryRepository pointHistoryRepository;
+    private final AppleAuthUtil appleAuthUtil;
 
     public UserInfoResponse getUserInfo(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
@@ -112,6 +120,22 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         user.delete();
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void deleteAppleUser(Long userId, AppleCodeRequestDto appleCodeRequestDto){
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        // identityToken 서명 검증
+        Claims claims = appleAuthUtil.verifyIdentityToken(appleCodeRequestDto.getIdentityToken());
+        log.info("[AUTH] apple login verification : identityToken 검증 성공");
+        // apple ID Server에 애플 토큰 요청
+        AppleTokenResponseDto appleTokenResponseDto = appleAuthUtil.getAppleToken(appleCodeRequestDto.getAuthorizationCode());
+        appleAuthUtil.revoke(appleTokenResponseDto.accessToken());
+        log.info("[AUTH] revoke apple account, userId = {}", user.getId());
+
+        user.delete();
+        userRepository.save(user);
+
     }
 
     public User getUserById(Long userId) {
