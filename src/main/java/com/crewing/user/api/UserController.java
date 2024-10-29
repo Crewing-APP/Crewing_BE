@@ -17,6 +17,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
+
 import static com.crewing.auth.dto.AppleDto.*;
 
 @Tag(name = "유저", description = "유저 정보를 관리 합니다")
@@ -93,6 +95,24 @@ public class UserController {
         userService.deleteAppleUser(principalDetails.getId(),appleCodeRequestDto);
 
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/apple/notification")
+    public ResponseEntity<String> handleAppleNotification(@RequestBody Map<String, Object> payload) {
+        // Apple이 보낸 알림을 처리하는 로직
+        String notificationType = (String) payload.get("notification_type");
+        switch (notificationType) {
+            case "DID_RENEW":
+                // 구독 갱신 처리
+                break;
+            case "CANCEL":
+                // 구독 취소 처리
+                break;
+            default:
+                // 기타 이벤트 처리
+                break;
+        }
+        return ResponseEntity.ok("Notification received");
     }
 
 //    @Operation(summary = "유저 학생 인증 메일 발송", description = "학생 인증 메일을 발송합니다")
