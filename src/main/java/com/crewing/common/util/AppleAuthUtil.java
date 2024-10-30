@@ -21,9 +21,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.*;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -38,6 +36,8 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.crewing.auth.dto.AppleDto.*;
 import static com.nimbusds.oauth2.sdk.GrantType.AUTHORIZATION_CODE;
@@ -139,8 +139,9 @@ public class AppleAuthUtil {
     }
 
     private PrivateKey getPrivateKey() throws IOException {
-        ClassPathResource resource = new ClassPathResource(appleSignKeyFilePath);
-        String privateKey = new String(Files.readAllBytes(Paths.get(resource.getURI())));
+        InputStream inputStream = ClassLoader.getSystemResourceAsStream(appleSignKeyFilePath);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        String privateKey = reader.lines().collect(Collectors.joining("\n"));
 
         Reader pemReader = new StringReader(privateKey);
         PEMParser pemParser = new PEMParser(pemReader);
