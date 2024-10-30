@@ -139,10 +139,11 @@ public class AppleAuthUtil {
     }
 
     public PrivateKey getPrivateKey() throws IOException {
+        log.info("appleKeyPath = {}",appleSignKeyFilePath);
         InputStream inputStream = ClassLoader.getSystemResourceAsStream(appleSignKeyFilePath);
+        log.info("inputStream={}",inputStream);
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         String privateKey = reader.lines().collect(Collectors.joining("\n"));
-        log.info("Apple Private Key: {}", privateKey);
 
         Reader pemReader = new StringReader(privateKey);
         PEMParser pemParser = new PEMParser(pemReader);
