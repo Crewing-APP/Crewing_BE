@@ -142,6 +142,7 @@ public class AppleAuthUtil {
         InputStream inputStream = ClassLoader.getSystemResourceAsStream(appleSignKeyFilePath);
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         String privateKey = reader.lines().collect(Collectors.joining("\n"));
+        log.info("Apple Private Key: {}", privateKey);
 
         Reader pemReader = new StringReader(privateKey);
         PEMParser pemParser = new PEMParser(pemReader);
