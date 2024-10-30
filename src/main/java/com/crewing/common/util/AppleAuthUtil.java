@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.*;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -102,7 +103,12 @@ public class AppleAuthUtil {
                 .grant_type(String.valueOf(AUTHORIZATION_CODE))
                 .build();
 
-        return appleClient.findAppleToken(appleTokenRequest);
+        try {
+            return appleClient.findAppleToken(appleTokenRequest);
+        } catch (UndeclaredThrowableException e) {
+            Throwable cause = e.getCause();
+            throw new RuntimeException("Apple Token 요청 중 오류 발생: " + cause.getMessage(), cause);
+        }
     }
 
     // 회원 탈퇴 애플 서버에 요청
@@ -139,7 +145,6 @@ public class AppleAuthUtil {
     }
 
     public PrivateKey getPrivateKey() throws IOException {
-        log.info("appleKeyPath = {}",appleSignKeyFilePath);
         ClassPathResource resource = new ClassPathResource(appleSignKeyFilePath);
         String privateKey = new String(Files.readAllBytes(Paths.get(resource.getURI())));
 
@@ -147,6 +152,8 @@ public class AppleAuthUtil {
         PEMParser pemParser = new PEMParser(pemReader);
         JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
         PrivateKeyInfo object = (PrivateKeyInfo) pemParser.readObject();
+        log.info("apple getPrivateKey 성공");
+
         return converter.getPrivateKey(object);
     }
 }
