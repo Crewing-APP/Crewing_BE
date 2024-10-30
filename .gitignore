@@ -44,4 +44,4 @@ nginx.conf
 **/._.DS_Store
 
 **.json
-/src/main/resources/apple/*
+/src/main/resources/*.p8
