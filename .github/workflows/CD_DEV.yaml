@@ -33,8 +33,6 @@ jobs:
       - name: create apple private key
         run: |
           cd ./src/main/resources
-          mkdir apple
-          cd apple
           touch ./AuthKey_5279TX84R4.p8
           echo "${{ secrets.APPLE_PRIVATE_KEY }}" > ./AuthKey_5279TX84R4.p8
         shell: bash
