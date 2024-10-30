@@ -102,8 +102,8 @@ public class AppleAuthUtil {
                 .code(authorizationCode)
                 .grant_type(String.valueOf(AUTHORIZATION_CODE))
                 .build();
-
-            return appleClient.findAppleToken(appleTokenRequest);
+        log.info("clientId={}",clientId);
+        return appleClient.findAppleToken(appleTokenRequest);
     }
 
     // 회원 탈퇴 애플 서버에 요청
