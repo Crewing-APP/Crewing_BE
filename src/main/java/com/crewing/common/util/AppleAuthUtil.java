@@ -103,12 +103,7 @@ public class AppleAuthUtil {
                 .grant_type(String.valueOf(AUTHORIZATION_CODE))
                 .build();
 
-        try {
             return appleClient.findAppleToken(appleTokenRequest);
-        } catch (UndeclaredThrowableException e) {
-            Throwable cause = e.getCause();
-            throw new RuntimeException("Apple Token 요청 중 오류 발생: " + cause.getMessage(), cause);
-        }
     }
 
     // 회원 탈퇴 애플 서버에 요청

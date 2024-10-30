@@ -5,9 +5,12 @@ import com.crewing.common.error.external.DuplicatedEmailException;
 import com.crewing.common.error.external.NotSupportedUniversityException;
 import com.crewing.common.error.external.StudentInvalidAuthCodeException;
 import feign.Response;
+import feign.Util;
 import feign.codec.ErrorDecoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 
 @Component
 @Slf4j
@@ -22,6 +25,15 @@ public class FeignErrorDecoder implements ErrorDecoder {
         if (status == 400) {
             if (methodKey.contains("verifyEmail")) {
                 return new StudentInvalidAuthCodeException();
+            }
+            else if (methodKey.contains("findAppleToken")) {  // Apple Token 요청 예외
+                String errorMessage = null;
+                try {
+                    errorMessage = response.body() != null ? Util.toString(response.body().asReader()) : "Unknown error";
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                return new RuntimeException("Apple Token 요청 실패: " + errorMessage);
             }
         } else if (status == 404) {
             if (methodKey.contains("createStudentVerification")) {
