@@ -101,7 +101,7 @@ public class ClubServiceTest {
 
         ClubChangeStatusRequest clubChangeStatusRequest = ClubChangeStatusRequest.builder()
                 .clubId(club.getClubId())
-                .status("ACCEPT")
+                .status(Status.ACCEPT)
                 .content("test")
                 .build();
 
@@ -161,7 +161,7 @@ public class ClubServiceTest {
 
         ClubChangeStatusRequest clubChangeStatusRequest = ClubChangeStatusRequest.builder()
                 .clubId(club.getClubId())
-                .status("ACCEPT")
+                .status(Status.ACCEPT)
                 .content("test")
                 .build();
         assertThatThrownBy(() -> clubService.changeStatus(clubChangeStatusRequest,other))

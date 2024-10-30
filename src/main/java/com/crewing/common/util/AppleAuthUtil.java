@@ -138,7 +138,7 @@ public class AppleAuthUtil {
         }
     }
 
-    private PrivateKey getPrivateKey() throws IOException {
+    public PrivateKey getPrivateKey() throws IOException {
         InputStream inputStream = ClassLoader.getSystemResourceAsStream(appleSignKeyFilePath);
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         String privateKey = reader.lines().collect(Collectors.joining("\n"));
