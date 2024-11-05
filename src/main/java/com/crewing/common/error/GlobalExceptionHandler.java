@@ -2,6 +2,7 @@ package com.crewing.common.error;
 
 
 import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.crewing.common.error.auth.AppleFeignException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -113,5 +114,14 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = ErrorResponse.of(errorCode, request.getRequestURI());
 
         return new ResponseEntity<>(errorResponse, HttpStatus.valueOf(errorCode.getStatus()));
+    }
+
+    @ExceptionHandler(value = AppleFeignException.class)
+    public ResponseEntity<ErrorResponse> handleAppleFeignException(AppleFeignException e, HttpServletRequest request) {
+        log.error("[ERROR] : {}", e.getMessage(), e);
+
+        ErrorResponse errorResponse = new ErrorResponse(e.getStatus(),e.getMessage(),"A09",request.getRequestURI());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.valueOf(e.getStatus()));
     }
 }

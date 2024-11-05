@@ -8,9 +8,11 @@ import com.crewing.auth.dto.LoginDTO.OauthLoginRequest;
 import com.crewing.auth.dto.SignUpDTO.RefreshRequest;
 import com.crewing.auth.dto.SignUpDTO.TokenResponse;
 import com.crewing.auth.service.AuthService;
+import com.crewing.common.error.auth.AppleFeignException;
 import com.crewing.user.entity.SocialType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -67,5 +69,4 @@ public class AuthController {
         TokenResponse tokenResponse = authService.reissuedRefreshToken(request.getRefreshToken());
         return ResponseEntity.ok().body(tokenResponse);
     }
-
 }

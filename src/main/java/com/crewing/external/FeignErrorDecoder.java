@@ -1,5 +1,6 @@
 package com.crewing.external;
 
+import com.crewing.common.error.auth.AppleFeignException;
 import com.crewing.common.error.auth.AuthCodeNotFoundException;
 import com.crewing.common.error.external.DuplicatedEmailException;
 import com.crewing.common.error.external.NotSupportedUniversityException;
@@ -33,7 +34,7 @@ public class FeignErrorDecoder implements ErrorDecoder {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                return new RuntimeException("Apple Token 요청 실패: " + errorMessage);
+                return new AppleFeignException("Apple Token 요청 실패: " + errorMessage,status);
             }
         } else if (status == 404) {
             if (methodKey.contains("createStudentVerification")) {
