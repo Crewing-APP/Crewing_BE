@@ -12,10 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @Component
 @Slf4j
 public class FeignErrorDecoder implements ErrorDecoder {
+    private String[] appleMethods = {"findAppleToken", "findAppleAuthPublicKeys", "revoke"};
     @Override
     public Exception decode(String methodKey, Response response) {
         int status = response.status();
@@ -27,14 +29,14 @@ public class FeignErrorDecoder implements ErrorDecoder {
             if (methodKey.contains("verifyEmail")) {
                 return new StudentInvalidAuthCodeException();
             }
-            else if (methodKey.contains("findAppleToken")) {  // Apple Token 요청 예외
-                String errorMessage = null;
+            else if(Arrays.stream(appleMethods).anyMatch(methodKey::contains)) {  // Apple Token 요청 예외
+                String errorMessage;
                 try {
                     errorMessage = response.body() != null ? Util.toString(response.body().asReader()) : "Unknown error";
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                return new AppleFeignException("Apple Token 요청 실패: " + errorMessage,status);
+                return new AppleFeignException("Apple 서버 요청 실패: " + errorMessage,status);
             }
         } else if (status == 404) {
             if (methodKey.contains("createStudentVerification")) {
