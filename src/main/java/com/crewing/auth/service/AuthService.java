@@ -165,7 +165,7 @@ public class AuthService {
                                 .socialId(socialId)
                                 .email(UUID.randomUUID() + "@socialUser.com")
                                 .role(Role.GUEST)
-                                .appleRefreshToken(TokenEncryptionUtil.encrypt(refreshToken))
+                                .appleRefreshToken(refreshToken)
                                 .build());
                     } catch (Exception e) {
                         throw new RuntimeException(e);

@@ -126,7 +126,7 @@ public class UserService {
     @Transactional
     public void deleteAppleUser(Long userId) throws Exception {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        appleAuthUtil.revoke(TokenEncryptionUtil.decrypt(user.getRefreshToken()));
+        appleAuthUtil.revoke(user.getRefreshToken());
         log.info("[AUTH] revoke apple account, userId = {}", user.getId());
 
         user.delete();
