@@ -91,8 +91,8 @@ public class UserController {
 
     @Operation(summary = "애플 유저 삭제", description = "애플 로그인 유저를 삭제합니다")
     @PostMapping("/me/apple")
-    public ResponseEntity<?> deleteAppleUser(@RequestBody @Valid AppleCodeRequestDto appleCodeRequestDto, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        userService.deleteAppleUser(principalDetails.getId(),appleCodeRequestDto);
+    public ResponseEntity<?> deleteAppleUser(@AuthenticationPrincipal PrincipalDetails principalDetails) throws Exception {
+        userService.deleteAppleUser(principalDetails.getId());
 
         return ResponseEntity.ok().build();
     }

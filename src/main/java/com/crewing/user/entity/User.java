@@ -58,6 +58,8 @@ public class User extends BaseTimeEntity {
     private String socialId;
     @Column
     private String refreshToken;
+    @Column
+    private String appleRefreshToken;
 
     //추가 회원 가입
     @Column
@@ -84,7 +86,7 @@ public class User extends BaseTimeEntity {
 
     @Builder
     public User(String email, String password, String nickname, String profileImage, Role role, SocialType socialType,
-                String socialId, String refreshToken, String birth, String gender, String name) {
+                String socialId, String refreshToken, String appleRefreshToken, String birth, String gender, String name) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
@@ -93,6 +95,7 @@ public class User extends BaseTimeEntity {
         this.socialType = socialType;
         this.socialId = socialId;
         this.refreshToken = refreshToken;
+        this.appleRefreshToken = appleRefreshToken;
         this.birth = birth;
         this.gender = gender;
         this.name = name;

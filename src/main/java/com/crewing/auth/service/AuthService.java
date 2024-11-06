@@ -1,6 +1,7 @@
 package com.crewing.auth.service;
 
 import com.crewing.auth.dto.AppleTokenResponseDto;
+import com.crewing.auth.dto.AppleVerifyResponseDto;
 import com.crewing.auth.dto.LoginDTO;
 import com.crewing.auth.dto.LoginDTO.EmailLoginResponse;
 import com.crewing.auth.dto.LoginDTO.LoginResponse;
@@ -13,6 +14,7 @@ import com.crewing.common.error.ErrorCode;
 import com.crewing.common.error.auth.InvalidTokenException;
 import com.crewing.common.error.user.UserNotFoundException;
 import com.crewing.common.util.AppleAuthUtil;
+import com.crewing.common.util.TokenEncryptionUtil;
 import com.crewing.external.OauthApi;
 import com.crewing.user.entity.Role;
 import com.crewing.user.entity.SocialType;
@@ -124,9 +126,12 @@ public class AuthService {
      */
     @Transactional
     public LoginResponse loginOauth(String oauthAccessToken, String authorizationCode, SocialType socialType) {
-        User user = socialType.equals(SocialType.APPLE)
-                ? getAppleUser(appleVerification(oauthAccessToken, authorizationCode))
-                : getUserOauth(OAuthAttributes.of(socialType, oauthApi.getOauthUserInfo(oauthAccessToken, socialType)), socialType);
+        User user;
+        if(socialType.equals(SocialType.APPLE)){
+            AppleVerifyResponseDto response = appleVerification(oauthAccessToken, authorizationCode);
+            user = getAppleUser(response.sub(),response.refreshToken());
+        }
+        else user = getUserOauth(OAuthAttributes.of(socialType, oauthApi.getOauthUserInfo(oauthAccessToken, socialType)), socialType);
 
         String accessToken = jwtService.createAccessToken(user.getEmail());
         String refreshToken = jwtService.createRefreshToken();
@@ -151,14 +156,21 @@ public class AuthService {
     /**
      * Apple 로그인 유저 조회
      */
-    private User getAppleUser(String socialId){
+    private User getAppleUser(String socialId, String refreshToken){
         User findUser = userRepository.findBySocialTypeAndSocialId(SocialType.APPLE, socialId)
-                .orElseGet(() -> userRepository.save(User.builder()
-                        .socialType(SocialType.APPLE)
-                        .socialId(socialId)
-                        .email(UUID.randomUUID() + "@socialUser.com")
-                        .role(Role.GUEST)
-                        .build()));
+                .orElseGet(() -> {
+                    try {
+                        return userRepository.save(User.builder()
+                                .socialType(SocialType.APPLE)
+                                .socialId(socialId)
+                                .email(UUID.randomUUID() + "@socialUser.com")
+                                .role(Role.GUEST)
+                                .appleRefreshToken(TokenEncryptionUtil.encrypt(refreshToken))
+                                .build());
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
 
         if (findUser.getDeleteAt() != null) {
             findUser.setDeleteAt(null);
@@ -172,7 +184,7 @@ public class AuthService {
     /**
      * Apple 로그인 유저 검증
      */
-    private String appleVerification(String identityToken, String authorizationCode){
+    private AppleVerifyResponseDto appleVerification(String identityToken, String authorizationCode){
         log.info("[AUTH] apple login request : identityToken = {} authorizationCode = {}", identityToken, authorizationCode);
 
         // identityToken 서명 검증
@@ -190,7 +202,7 @@ public class AuthService {
         // 유효한 idToken이 있을 경우 -> 애플 회원가입을 완료한 유저
 
         // sub(고유 id) 클레임 추출
-        return claims.get("sub", String.class);
+        return new AppleVerifyResponseDto(claims.get("sub", String.class),appleTokenResponseDto.refreshToken());
     }
 
     /**
