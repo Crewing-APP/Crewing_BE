@@ -7,6 +7,7 @@ import com.crewing.common.error.ErrorCode;
 import com.crewing.common.error.user.OverPointException;
 import com.crewing.common.error.user.UserNotFoundException;
 import com.crewing.common.util.AppleAuthUtil;
+import com.crewing.common.util.TokenEncryptionUtil;
 import com.crewing.external.StudentVerifyApi.StudentVerifyApiClient;
 import com.crewing.file.service.FileService;
 import com.crewing.user.dto.UserDTO.InterestUpdateRequest;
@@ -123,14 +124,9 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteAppleUser(Long userId, AppleCodeRequestDto appleCodeRequestDto){
+    public void deleteAppleUser(Long userId) throws Exception {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        // identityToken 서명 검증
-        Claims claims = appleAuthUtil.verifyIdentityToken(appleCodeRequestDto.getIdentityToken());
-        log.info("[AUTH] apple login verification : identityToken 검증 성공");
-        // apple ID Server에 애플 토큰 요청
-        AppleTokenResponseDto appleTokenResponseDto = appleAuthUtil.getAppleToken(appleCodeRequestDto.getAuthorizationCode());
-        appleAuthUtil.revoke(appleTokenResponseDto.accessToken());
+        appleAuthUtil.revoke(TokenEncryptionUtil.decrypt(user.getRefreshToken()));
         log.info("[AUTH] revoke apple account, userId = {}", user.getId());
 
         user.delete();

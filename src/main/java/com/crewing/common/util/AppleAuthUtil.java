@@ -107,13 +107,13 @@ public class AppleAuthUtil {
     }
 
     // 회원 탈퇴 애플 서버에 요청
-    public void revoke(String accessToken) {
+    public void revoke(String refreshToken) {
         try {
             AppleRevokeRequest appleRevokeRequest = AppleRevokeRequest.builder()
                     .client_id(clientId)
                     .client_secret(this.createClientSecret())
-                    .token(accessToken)
-                    .token_type_hint("access_token")
+                    .token(refreshToken)
+                    .token_type_hint("refresh_token")
                     .build();
             appleClient.revoke(appleRevokeRequest);
         } catch (HttpClientErrorException e) {

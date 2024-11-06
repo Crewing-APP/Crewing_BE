@@ -7,16 +7,6 @@ import lombok.ToString;
 
 public class AppleDto {
     @Getter
-    public static class AppleCodeRequestDto {
-        @NotBlank
-        private String userIdentifier;
-        @NotBlank
-        private String identityToken;
-        @NotBlank
-        private String authorizationCode;
-    }
-
-    @Getter
     @Builder
     @ToString
     public static class AppleTokenRequestDto {
