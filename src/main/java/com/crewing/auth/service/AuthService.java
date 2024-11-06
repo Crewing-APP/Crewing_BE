@@ -192,7 +192,7 @@ public class AuthService {
         log.info("[AUTH] apple login verification : identityToken 검증 성공");
         // apple ID Server에 애플 토큰 요청
         AppleTokenResponseDto appleTokenResponseDto = appleAuthUtil.getAppleToken(authorizationCode);
-
+        log.info("apple refresh_token = {}",appleTokenResponseDto.refreshToken());
         String idToken = appleTokenResponseDto.idToken();
         log.info("[AUTH] apple login token request : idToken = {}",idToken);
         // 유효한 idToken이 없을 경우
