@@ -174,6 +174,7 @@ public class AuthService {
 
         if (findUser.getDeleteAt() != null) {
             findUser.setDeleteAt(null);
+            findUser.setAppleRefreshToken(refreshToken);
             return userRepository.save(findUser);
         }
 
