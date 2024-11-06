@@ -172,12 +172,11 @@ public class AuthService {
                     }
                 });
 
-        if (findUser.getDeleteAt() != null) {
+        if (findUser.getDeleteAt() != null)
             findUser.setDeleteAt(null);
-            findUser.setAppleRefreshToken(refreshToken);
-            return userRepository.save(findUser);
-        }
 
+        findUser.setAppleRefreshToken(refreshToken);
+        userRepository.save(findUser);
         return findUser;
 
     }
