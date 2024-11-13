@@ -89,14 +89,6 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "애플 유저 삭제", description = "애플 로그인 유저를 삭제합니다")
-    @PostMapping("/me/apple")
-    public ResponseEntity<?> deleteAppleUser(@AuthenticationPrincipal PrincipalDetails principalDetails) throws Exception {
-        userService.deleteAppleUser(principalDetails.getId());
-
-        return ResponseEntity.ok().build();
-    }
-
     @PostMapping("/apple/notification")
     public ResponseEntity<String> handleAppleNotification(@RequestBody Map<String, Object> payload) {
         // Apple이 보낸 알림을 처리하는 로직

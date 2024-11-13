@@ -1,21 +1,16 @@
 package com.crewing.user.service;
 
-import com.crewing.auth.dto.AppleDto;
-import com.crewing.auth.dto.AppleTokenResponseDto;
 import com.crewing.common.error.BusinessException;
 import com.crewing.common.error.ErrorCode;
 import com.crewing.common.error.user.OverPointException;
 import com.crewing.common.error.user.UserNotFoundException;
 import com.crewing.common.util.AppleAuthUtil;
-import com.crewing.common.util.TokenEncryptionUtil;
+import com.crewing.common.util.KmsUtil;
 import com.crewing.external.StudentVerifyApi.StudentVerifyApiClient;
 import com.crewing.file.service.FileService;
 import com.crewing.user.dto.UserDTO.InterestUpdateRequest;
 import com.crewing.user.dto.UserDTO.UserInfoResponse;
-import com.crewing.user.entity.Interest;
-import com.crewing.user.entity.PointEvent;
-import com.crewing.user.entity.PointHistory;
-import com.crewing.user.entity.User;
+import com.crewing.user.entity.*;
 import com.crewing.user.repository.InterestRepository;
 import com.crewing.user.repository.PointHistoryRepository;
 import com.crewing.user.repository.UserRepository;
@@ -23,15 +18,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import static com.crewing.auth.dto.AppleDto.*;
 
 @Service
 @Slf4j
@@ -47,6 +39,7 @@ public class UserService {
     private final StudentVerifyApiClient studentVerifyApiClient;
     private final PointHistoryRepository pointHistoryRepository;
     private final AppleAuthUtil appleAuthUtil;
+    private final KmsUtil kmsUtil;
 
     public UserInfoResponse getUserInfo(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
@@ -118,26 +111,19 @@ public class UserService {
 
     @Transactional
     public void deleteUser(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        user.delete();
-        userRepository.save(user);
-    }
-
-    @Transactional
-    public void deleteAppleUser(Long userId) throws Exception {
-        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        appleAuthUtil.revoke(user.getRefreshToken());
-        log.info("[AUTH] revoke apple account, userId = {}", user.getId());
-
-        user.delete();
-        userRepository.save(user);
-
+        userRepository.findById(userId).ifPresentOrElse(user -> {
+            if (SocialType.APPLE.equals(user.getSocialType())) {
+                appleAuthUtil.revoke(kmsUtil.decrypt(user.getRefreshToken()));
+                log.info("[AUTH] revoke apple account, userId = {}", user.getId());
+            }
+            user.delete();
+            userRepository.save(user);
+        }, UserNotFoundException::new);
     }
 
     public User getUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     }
-
 
     /**
      * Point 적립 이벤트 point + -> 포인트 적립(EARN) , - -> 포인트 사용(USE)

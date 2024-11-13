@@ -2,7 +2,6 @@ package com.crewing.auth.service;
 
 import com.crewing.auth.dto.AppleTokenResponseDto;
 import com.crewing.auth.dto.AppleVerifyResponseDto;
-import com.crewing.auth.dto.LoginDTO;
 import com.crewing.auth.dto.LoginDTO.EmailLoginResponse;
 import com.crewing.auth.dto.LoginDTO.LoginResponse;
 import com.crewing.auth.dto.SignUpDTO.TokenResponse;
@@ -14,7 +13,7 @@ import com.crewing.common.error.ErrorCode;
 import com.crewing.common.error.auth.InvalidTokenException;
 import com.crewing.common.error.user.UserNotFoundException;
 import com.crewing.common.util.AppleAuthUtil;
-import com.crewing.common.util.TokenEncryptionUtil;
+import com.crewing.common.util.KmsUtil;
 import com.crewing.external.OauthApi;
 import com.crewing.user.entity.Role;
 import com.crewing.user.entity.SocialType;
@@ -29,8 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
-import static com.crewing.auth.dto.LoginDTO.*;
-
 @RequiredArgsConstructor
 @Slf4j
 @Service
@@ -42,6 +39,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
     private final AppleAuthUtil appleAuthUtil;
+    private final KmsUtil kmsUtil;
 
     @Transactional
     public TokenResponse loginBasic(String email, String password) {
@@ -165,7 +163,7 @@ public class AuthService {
                                 .socialId(socialId)
                                 .email(UUID.randomUUID() + "@socialUser.com")
                                 .role(Role.GUEST)
-                                .appleRefreshToken(refreshToken)
+                                .appleRefreshToken(kmsUtil.encrypt(refreshToken))
                                 .build());
                     } catch (Exception e) {
                         throw new RuntimeException(e);
@@ -175,7 +173,7 @@ public class AuthService {
         if (findUser.getDeleteAt() != null)
             findUser.setDeleteAt(null);
 
-        findUser.setAppleRefreshToken(refreshToken);
+        findUser.setAppleRefreshToken(kmsUtil.encrypt(refreshToken));
         userRepository.save(findUser);
         return findUser;
 
