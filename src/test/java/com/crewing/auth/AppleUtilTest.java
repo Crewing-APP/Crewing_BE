@@ -44,8 +44,6 @@ public class AppleUtilTest {
         String token = "dfjalkdsjflaskdfjlj.test.test.testestest"; // 임의의 토큰
         String encryption = kmsUtil.encrypt(token);
         String decryption = kmsUtil.decrypt(encryption);
-
         Assertions.assertThat(decryption).isEqualTo(token);
-        System.out.println(encryption);
     }
 }
