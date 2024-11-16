@@ -45,8 +45,9 @@ public class KmsUtil {
             request.withKeyId(KEY_ID);
             request.withEncryptionAlgorithm(EncryptionAlgorithmSpec.RSAES_OAEP_SHA_256);
             ByteBuffer plainText = kmsClient.decrypt(request).getPlaintext();
-
-            return new String(plainText.array());
+            byte[] bytes = new byte[plainText.remaining()];
+            plainText.get(bytes);
+            return new String(bytes, StandardCharsets.UTF_8);
         } catch (Exception e) {
             throw new RuntimeException("Decryption failed", e);
         }
