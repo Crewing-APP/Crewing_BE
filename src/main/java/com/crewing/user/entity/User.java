@@ -58,7 +58,7 @@ public class User extends BaseTimeEntity {
     private String socialId;
     @Column
     private String refreshToken;
-    @Column
+    @Column(length = 1000)
     private String appleRefreshToken;
 
     //추가 회원 가입
