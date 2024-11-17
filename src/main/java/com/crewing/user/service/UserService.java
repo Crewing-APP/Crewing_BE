@@ -113,7 +113,7 @@ public class UserService {
     public void deleteUser(Long userId) {
         userRepository.findById(userId).ifPresentOrElse(user -> {
             if (SocialType.APPLE.equals(user.getSocialType())) {
-                appleAuthUtil.revoke(kmsUtil.decrypt(user.getRefreshToken()));
+                appleAuthUtil.revoke(kmsUtil.decrypt(user.getAppleRefreshToken()));
                 log.info("[AUTH] revoke apple account, userId = {}", user.getId());
             }
             user.delete();
