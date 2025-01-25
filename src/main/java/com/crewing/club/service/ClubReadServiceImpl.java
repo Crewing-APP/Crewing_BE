@@ -6,8 +6,10 @@ import com.crewing.club.dto.ClubListResponse;
 import com.crewing.club.entity.Club;
 import com.crewing.club.entity.Status;
 import com.crewing.club.repository.ClubRepository;
+import com.crewing.club.repository.ClubRepositoryCustom;
 import com.crewing.common.error.club.ClubNotFoundException;
 import com.crewing.common.error.user.UserAccessDeniedException;
+import com.crewing.common.util.RedisUtil;
 import com.crewing.file.entity.ClubFile;
 import com.crewing.member.entity.Member;
 import com.crewing.member.repository.MemberRepository;
@@ -17,28 +19,33 @@ import com.crewing.review.repository.ReviewRepository;
 import com.crewing.user.entity.Interest;
 import com.crewing.user.entity.Role;
 import com.crewing.user.entity.User;
+import com.crewing.user.repository.InterestRepository;
 import com.crewing.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class ClubReadServiceImpl implements ClubReadService{
     private final ClubRepository clubRepository;
+    private final ClubRepositoryCustom clubRepositoryCustomImpl;
     private final ReviewRepository reviewRepository;
     private final MemberRepository memberRepository;
     private final UserRepository userRepository;
     private final ReviewAccessRepository reviewAccessRepository;
+    private final RedisUtil redisUtil;
+    private static final long EXPIRE = 3600L;
+    private final InterestRepository interestRepository;
 
     // 동아리 상세 정보 조회
     @Override
@@ -142,6 +149,13 @@ public class ClubReadServiceImpl implements ClubReadService{
     @Override
     @Transactional
     public ClubListResponse getAllRecommendedClubInfo(Pageable pageable, String search, User user) {
+        String cacheKey = makeCacheKey(user, pageable.getPageNumber());
+        ClubListResponse cachedData = redisUtil.getData(cacheKey, ClubListResponse.class);
+        log.info("cacheKey : {}, cachedData : {}", cacheKey, cachedData);
+        if(cachedData != null){
+            return cachedData;
+        }
+
         User loginedUser = userRepository.findById(user.getId()).get();
         List<Interest> interestList = loginedUser.getInterests();
         List<Integer> categories = new ArrayList<>();
@@ -151,18 +165,71 @@ public class ClubReadServiceImpl implements ClubReadService{
 
         Page<ClubListInfoResponse> clubList = null;
         if(search == null || search.isEmpty()){ // 전체 목록 조회
-            clubList = clubRepository.findAllClubsWithAverageRating(categories,Status.ACCEPT,user.getBirth(),user.getGender(),pageable);
+            clubList = clubRepositoryCustomImpl.findAllClubsWithAverageRating(categories,Status.ACCEPT,user.getBirth(),user.getGender(),pageable);
         }
         else{
             String keyword = search.replaceAll("\\s", "");
-            clubList = clubRepository.findAllClubsWithAverageRatingByKeyword(categories,Status.ACCEPT,user.getBirth(),keyword, user.getGender(),pageable);
+            clubList = clubRepositoryCustomImpl.findAllClubsWithAverageRatingByKeyword(categories,Status.ACCEPT,user.getBirth(),keyword, user.getGender(),pageable);
         }
         for(ClubListInfoResponse clubInfo : clubList){
             Club club = clubRepository.findById(clubInfo.getClubId()).get();
             List<Review> reviewList = club.getReviewList();
             clubInfo.setLatestReview(reviewList.isEmpty() ? null : reviewList.get(reviewList.size()-1).getReview());
         }
-        return getClubListResponse(clubList);
+        ClubListResponse result = getClubListResponse(clubList);
+        redisUtil.setData(cacheKey, result, EXPIRE);
+        return result;
+    }
+
+    @Override
+    @Transactional
+    public List<ClubListInfoResponse> getAllRecommendedClubInfoLegacy(String search, User user) {
+        User loginedUser = userRepository.findById(user.getId()).get();
+        List<Interest> interestList = loginedUser.getInterests();
+        List<Integer> categories = new ArrayList<>();
+        for(Interest interest : interestList){
+            categories.add(setCategory(interest.getInterest()));
+        }
+
+        List<ClubListInfoResponse> clubList = null;
+        if(search == null || search.isEmpty()){ // 전체 목록 조회
+            clubList = clubRepository.findAllClubsWithAverageRatingLegacy(
+                    categories,
+                    Status.ACCEPT,
+                    user.getBirth(),
+                    user.getGender());
+            log.info("size = {}", clubList.size());
+        }
+        else{
+            String keyword = search.replaceAll("\\s", "");
+            clubList = clubRepository.findAllClubsWithAverageRatingAndKeywordLegacy(
+                    categories,
+                    Status.ACCEPT,
+                    user.getBirth(),
+                    keyword,
+                    user.getGender());
+        }
+        for(ClubListInfoResponse clubInfo : clubList){
+            Club club = clubRepository.findById(clubInfo.getClubId()).get();
+            List<Review> reviewList = club.getReviewList();
+            clubInfo.setLatestReview(reviewList.isEmpty() ? null : reviewList.get(reviewList.size()-1).getReview());
+        }
+        return clubList;
+    }
+
+    public String makeCacheKey(User user, int pageNum){
+        List<Interest> interestList = interestRepository.findAllByUserId(user.getId());
+        List<Integer> list = new ArrayList<>();
+        for(Interest interest : interestList){
+            list.add(setCategory(interest.getInterest()));
+        }
+        Collections.sort(list);
+        StringBuilder sb = new StringBuilder();
+        for(int num : list){
+            sb.append(num);
+        }
+
+        return sb.toString() + "_" + (user.getGender().equals("녀") ? "F" :  "M") + "_" + user.getBirth() + "_" + pageNum;
     }
 
     private static ClubListResponse getClubListResponse(Page<ClubListInfoResponse> clubInfoPages) {

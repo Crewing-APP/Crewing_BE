@@ -1,15 +1,11 @@
 package com.crewing.club.api;
 
+import com.crewing.club.dto.*;
 import com.crewing.club.entity.Status;
+import com.crewing.common.util.RedisUtil;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.crewing.auth.entity.PrincipalDetails;
-import com.crewing.club.dto.ClubChangeStatusRequest;
-import com.crewing.club.dto.ClubCreateRequest;
-import com.crewing.club.dto.ClubCreateResponse;
-import com.crewing.club.dto.ClubInfoResponse;
-import com.crewing.club.dto.ClubListResponse;
-import com.crewing.club.dto.ClubUpdateRequest;
 import com.crewing.club.service.ClubReadService;
 import com.crewing.club.service.ClubService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +44,7 @@ public class ClubController {
     private final ClubService clubService;
     private final ClubReadService clubReadService;
     private final ObjectMapper objectMapper;
+    private final RedisUtil redisUtil;
 
     @Operation(summary = "동아리 생성", description = "최초 동아리 생성, 생성자는 매니저 자동 임명")
     @PostMapping(value = "/create",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -109,6 +107,18 @@ public class ClubController {
         return ResponseEntity.ok().body(clubList);
     }
 
+    @Operation(summary = "추천 동아리 목록 조회", description = "추천 동아리 목록 조회, search가 비어있을 경우 전체 목록 조회, 페이징으로 조회 가능")
+    @GetMapping("/clubs/recommend/legacy")
+    public ResponseEntity<ClubListResponse> getAllRecommendClub(@RequestParam String search, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        List<ClubListInfoResponse> clubList = clubReadService.getAllRecommendedClubInfoLegacy(search, principalDetails.getUser());
+        return ResponseEntity.ok().body(ClubListResponse.builder()
+                        .clubs(clubList)
+                        .pageSize(0)
+                        .pageNum(0)
+                        .totalCnt((long)clubList.size())
+                        .build());
+    }
+
     @Operation(summary = "동아리 목록 조회", description = "동아리 목록 조회, 페이징으로 조회 가능")
     @GetMapping("/clubs")
     public ResponseEntity<ClubListResponse> getAllClub(Pageable pageable) {
@@ -147,5 +157,17 @@ public class ClubController {
                                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
         ClubCreateResponse clubInfo = clubService.changeStatus(clubChangeStatusRequest, principalDetails.getUser());
         return ResponseEntity.ok().body(clubInfo);
+    }
+
+    @GetMapping("/test")
+    public String test(){
+        String key = "2000";
+        String data = "test";
+        String cachedData = redisUtil.getData(key, String.class);
+        log.info(cachedData);
+        if(cachedData == null){
+            redisUtil.setData(key, data, 3600L);
+        }
+        return redisUtil.getData(key, String.class);
     }
 }

@@ -1,6 +1,7 @@
 package com.crewing.club.service;
 
 import com.crewing.club.dto.ClubInfoResponse;
+import com.crewing.club.dto.ClubListInfoResponse;
 import com.crewing.club.dto.ClubListResponse;
 import com.crewing.club.entity.Club;
 import com.crewing.club.entity.Status;
@@ -17,4 +18,5 @@ public interface ClubReadService {
     ClubListResponse getAllStatusClubInfo(Pageable pageable, Status status, User user);
     ClubListResponse getAllMyClubInfo(Pageable pageable, User user);
     ClubListResponse getAllRecommendedClubInfo(Pageable pageable, String search, User user);
+    List<ClubListInfoResponse> getAllRecommendedClubInfoLegacy(String search, User user);
 }

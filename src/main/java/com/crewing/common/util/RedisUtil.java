@@ -1,7 +1,13 @@
 package com.crewing.common.util;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -45,6 +51,7 @@ public class RedisUtil {
         try {
             return objectMapper.readValue(redisTemplate.opsForValue().get(key), classType);
         } catch (Exception e) {
+            log.error(e.getMessage());
             return null;
         }
     }
